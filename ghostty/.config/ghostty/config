@@ -1,0 +1,5 @@
+window-decoration = none
+macos-option-as-alt = left
+macos-titlebar-style = hidden
+macos-non-native-fullscreen = true
+theme = tokyonight

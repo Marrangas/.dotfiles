@@ -1,0 +1,29 @@
+# Direnv files #
+################
+**/.direnv
+**/.envrc
+
+# OS generated files #
+######################
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Temporary files #
+###################
+*.bak
+*.swp
+*.swo
+*~
+*#
+
+# IDE files #
+#############
+.vscode
+.idea
+.iml
+*.sublime-workspace

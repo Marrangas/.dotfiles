@@ -1,0 +1,18 @@
+# Mac
+.DS_Store
+
+# Tmux install
+tmux/.config/tmux/plugins/**
+
+# Gcloud ...
+gcloud/.config/gcloud/logs
+
+**/AppSupport
+
+# lua and nvim
+tags
+test.sh
+.luarc.json
+
+spell/
+lazy-lock.json

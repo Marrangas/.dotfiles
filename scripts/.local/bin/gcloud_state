@@ -1,0 +1,16 @@
+#!/bin/bash
+
+out=""
+if [ -n "$CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT" ]; then
+  out="impersonating: $CLOUDSDK_AUTH_IMPERSONATE_SERVICE_ACCOUNT"
+else
+  config=$(gcloud config configurations list --filter="is_active:true" --format="value(name)" 2>/dev/null)
+  account=$(gcloud config get-value account 2>/dev/null)
+  if [ -n "$account" ]; then
+    out="gcp($config): $account"
+  elif [ -n "$config" ]; then
+    out="gcp($config)"
+  fi
+fi
+
+echo "$out" > ~/.cache/gcp_status

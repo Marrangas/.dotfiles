@@ -1,0 +1,47 @@
+with import <nixpkgs> {}; [
+  neovim
+  p7zip
+  git-lfs
+  tmux
+  fzf
+  ripgrep
+  parallel
+  sed
+  direnv
+  ssh
+  stow
+]
+
+  gh
+  tldr
+
+  act
+  ansible
+  bat
+  catimg
+  chafa
+  coreutils
+  csvq
+  curl
+  ffmpeg
+  gnused
+  gnutar
+  hcl2json
+  imagemagick
+  infracost
+  ipcalc
+  jq
+  kubectl
+  lsd
+  mtr
+  nginx
+  nmap
+  openssh
+  openssl
+  pandoc
+  perl
+  pulumi
+  pyenv
+  rclone
+  redis
+  zsh-powerlevel10k
