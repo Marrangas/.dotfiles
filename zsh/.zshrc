@@ -320,6 +320,7 @@ path_prepend() {
     zsh_log "Directory not found, not adding to path: $1"
   fi
 }
+
 path_append() {
   if [[ -d "$1" ]]; then
     zsh_log "Appending to path: $1"
@@ -354,7 +355,7 @@ path_prepend "$HOME/.nix-profile/bin"
 path_prepend "/nix/var/nix/profiles/default/bin"
 
 # Go
-path_prepend "$HOME/go/bin"
+path_prepend "$HOME/.local/go/bin"
 path_prepend "/usr/local/go/bin"
 
 # User-installed binaries

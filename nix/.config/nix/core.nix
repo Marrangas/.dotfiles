@@ -1,12 +1,13 @@
 with import <nixpkgs> {}; [
-  git
   xz
-  cmake
+  git
+  zsh
   bash
   curl
-  zsh
+  cmake
+  coreutils
   gettext
-  luarocks
   lua
+  luarocks
   ansible
 ]

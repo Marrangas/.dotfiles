@@ -6,5 +6,9 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[.sh]
+[{*.sh, Makefile}]
 indent_style = tab
+
+[*.py]
+indent_style = space
+indent_size = 4
