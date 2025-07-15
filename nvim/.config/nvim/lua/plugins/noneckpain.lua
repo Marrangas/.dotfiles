@@ -4,7 +4,7 @@ return {
     require('no-neck-pain').setup {
       version = '*',
       autocmds = {
-        enableOnVimEnter = true,
+        enableOnVimEnter = false,
         enableOnTabEnter = true,
       },
       buffers = {

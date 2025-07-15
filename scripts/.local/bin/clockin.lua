@@ -63,4 +63,3 @@ if weekday >= 2 and weekday <= 6 then -- 2 is Monday, 6 is Friday
 else
     print("It's not a workday. Skipping clock-in.")
 end
-

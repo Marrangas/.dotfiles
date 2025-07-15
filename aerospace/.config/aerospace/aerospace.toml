@@ -4,25 +4,28 @@
 # You can use it to add commands that run after login to macOS user session.
 # 'start-at-login' needs to be 'true' for 'after-login-command' to work
 # Available commands: https://nikitabobko.github.io/AeroSpace/commands
-after-login-command = [
-    # TODO: check if it works as expected
-    # create also a sum up for today based on my current tasks...
-    # could it be a jira with cli?
-    'exec-and-forget "$HOME/bin/scipts/clockin.lua"',
-    'exec-and-forget open -na "Slack"',
-    'exec-and-forget open -na "Flycut"',
-    'exec-and-forget open -na "Ghostty"',
-    'exec-and-forget open -na "Google Chrome"', # com.brave.Browser
-]
+
+# after-login-command = [
+#     # TODO: check if it works as expected
+#     # create also a sum up for today based on my current tasks...
+#     # could it be a jira with cli?
+#     'exec-and-forget "$HOME/bin/scipts/clockin.lua"',
+#     'exec-and-forget open -na "Slack"',
+#     'exec-and-forget open -na "Flycut"',
+#     'exec-and-forget open -na "Ghostty"',
+#     'exec-and-forget open -na "Google Chrome"', # com.brave.Browser
+# ]
 
 # You can use it to add commands that run after AeroSpace startup.
 # 'after-startup-command' is run after 'after-login-command'
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
-after-startup-command = [
-    'move-node-to-workspace 2 --app-id "com.google.Chrome"',
-    'move-node-to-workspace 4 --app-id "com.apple.mail"',
-    'workspace 1' # Return to your main workspace after launching
-]
+
+# after-startup-command = [
+#     'move-node-to-workspace 2 --app-id "com.google.Chrome"',
+#     'move-node-to-workspace 4 --app-id "com.apple.mail"',
+#     'workspace 1' # Return to your main workspace after launching
+# ]
+
 # Start AeroSpace at login
 start-at-login = true
 

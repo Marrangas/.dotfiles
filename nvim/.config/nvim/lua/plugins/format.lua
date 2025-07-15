@@ -1,4 +1,4 @@
-return { -- Autoformat
+return { -- Autoformatform
   'stevearc/conform.nvim',
   opts = {
     notify_on_error = false,
@@ -8,21 +8,16 @@ return { -- Autoformat
     },
     formatters_by_ft = {
       lua = { 'stylua' },
-      terraform = { 'terraformls' },
       bash = { 'shfmt' },
-      -- html = { 'prettierd' },
+      terraform = { 'terraformls' },
+      -- templ = { 'rustwind', 'templ', 'gopls' },
       markdown = { 'prettierd' },
-      templ = { 'rustwind', 'templ', 'gopls' },
-      -- typescript = { 'rustwind' },
-      -- typescripttpreacrt = { 'rustwind' },
-      -- javascritp = { 'rustwind' },
-      -- javascritpreacrt = { 'prettierd' },
-      -- Conform can also run multiple formatters sequentially
-      python = { 'brunette' },
-      --
-      -- You can use a sub-list to tell conform to run *until* a formatter
-      -- is found.
-      -- javascript = { { "prettierd", "prettier" } },
+      html = { 'prettier' },
+      typescript = { 'prettier' },
+      typescripttpreacrt = { 'prettier' },
+      javascript = { 'prettier' },
+      javascritpreacrt = { 'prettier' },
+      python = { 'black' },
     },
   },
 }

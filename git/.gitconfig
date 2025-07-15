@@ -34,13 +34,12 @@
 	prompt = false
 
 [alias]
-	chof = "commit --amend --no-edit"
+	chof = "!git add . && git commit --amend --no-edit"
 	last = log -1 HEAD
 	unstage = reset HEAD --
 	parent = rev-parse --abbrev-ref --symbolic-full-name @{u}
 	tree = log --graph --date=format:'%y-%m-%d %H:%M' --pretty='format:%C(auto)%h %C(red)%d%C(reset)%n%C(yellow)%an -> %ae%n%C(green)%ad%C(reset) %s%n' --all
-
-	users = shortlog --summary --numbered
+	authors = shortlog --summary --numbered
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f

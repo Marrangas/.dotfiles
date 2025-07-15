@@ -1,13 +1,24 @@
 -- Fast leader
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
+-- the most repeated, with one less keypress
+-- who knows if I will still be doing it
+vim.keymap.set('n', '<leader>w', ':w')
+
+--[[ :help ALT (I always forget)
+M-…>           alt-key or meta-key             *META* *ALT* *<M-*
+<A-…>           same as <M-…>                   *<A-*
+<T-…>           meta-key when it's not alt      *<T-*
+<D-…>           command-key or "super" key      *<D-*
+]]
+
 -- paste without loosing clipboard
 vim.keymap.set('x', '<leader>p', [["_dP]])
 
 -- copy to clypboard: asbjornHaland
 vim.keymap.set({ 'n', 'v' }, '<leader>y', [["+y]])
 vim.keymap.set('n', '<leader>Y', [["+Y]])
-vim.keymap.set({ 'n', 'v' }, '<leader>d', [["_d]])
+vim.keymap.set({ 'n', 'v' }, '<leader>d', [["+d]])
 
 -- Control C as Esc for all
 vim.keymap.set('i', '<C-c>', '<Esc>')
@@ -22,7 +33,8 @@ vim.keymap.set({ 'n', 'v' }, '<leader>rl', [[:s/\(^\s*\)\(.*\S\)\s*/\1\2<Left><L
 -- Visualization
 vim.keymap.set({ 'n', 'v' }, '<Space>w', ':set nowrap<CR>', { silent = true })
 vim.keymap.set({ 'n', 'v' }, '<leader>n', ':NoNeckPain<CR>', { silent = true })
-vim.keymap.set({ 'n', 'v' }, '<leader>i', ':set foldmethod=indent<CR>', { silent = true })
+vim.keymap.set({ 'n', 'v' }, '<leader>zi', ':set foldmethod=indent<CR>', { silent = true })
+vim.keymap.set({ 'n', 'v' }, '<leader>zc', ':set foldmethod=manual<CR>', { silent = true })
 
 -- Line move
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
@@ -127,7 +139,7 @@ vim.keymap.set('n', '<leader>tqa', ':!terraform apply -no-color -auto-approve -r
 
 -- Obsidian Xanadu
 vim.keymap.set('n', '<leader>sx', function()
-  require('telescope.builtin').find_files { cwd = '~/Documents/xanadu/' }
+  require('telescope.builtin').find_files { cwd = '~/Documents/wiki/' }
 end, { desc = '[S]earch [X]anadu' })
 
 vim.keymap.set('n', '<leader>xg', ':ObsidianSearch', { desc = '[X]anadu [G]rep' })

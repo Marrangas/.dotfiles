@@ -4,6 +4,8 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+POWERLEVEL9K_INSTANT_PROMPT=quiet
+
 BOTO_PATH="$HOME/.config"
 
 
@@ -134,7 +136,6 @@ else
 fi
 export today=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-alias xana='cd ~/Documents/xanadu/ && nvim'
 alias rc="${EDITOR} ${HOME}/.zshrc && source ${HOME}/.zshrc"
 
 alias g='git'
@@ -301,7 +302,7 @@ source_if_exists "$HOME/.local/bin/google-cloud-sdk/completion.zsh.inc"
 
 # FZF and related plugins
 source_if_exists "${XDG_CONFIG_HOME:-$HOME/.config}/fzf/fzf.zsh"
-source_if_exists "${XDG_CONFIG_HOME:-$HOME/.config}/.local/.fzf-gcloud.plugin.zsh"
+source_if_exists "${XDG_CONFIG_HOME:-$HOME/.config}/.local/bin/.fzf-gcloud.plugin.zsh"
 
 # =============================================================================
 # PATH CONFIGURATION
@@ -320,6 +321,7 @@ path_prepend() {
     zsh_log "Directory not found, not adding to path: $1"
   fi
 }
+
 path_append() {
   if [[ -d "$1" ]]; then
     zsh_log "Appending to path: $1"
@@ -354,7 +356,7 @@ path_prepend "$HOME/.nix-profile/bin"
 path_prepend "/nix/var/nix/profiles/default/bin"
 
 # Go
-path_prepend "$HOME/go/bin"
+path_prepend "$HOME/.local/go/bin"
 path_prepend "/usr/local/go/bin"
 
 # User-installed binaries
@@ -399,4 +401,3 @@ if command_exists fzf; then
 else
   zsh_log "fzf not found, skipping setup"
 fi
-

@@ -227,7 +227,7 @@ This is equivalent to:
    require('Comment').setup({})
 ```
 
-# Patterns easy 
+# Patterns easy
 
 Plugins can also be configured to run lua code when they are loaded.
 

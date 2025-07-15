@@ -1,0 +1,402 @@
+#!/usr/bin/env bash
+
+# Terraform Automation Script
+# Automates planning and applying Terraform configurations across multiple directories
+set -euo pipefail
+
+# Terminal formatting
+readonly BOLD=$(tput bold)
+readonly NORMAL=$(tput sgr0)
+readonly RED=$(tput setaf 1)
+readonly GREEN=$(tput setaf 2)
+readonly YELLOW=$(tput setaf 3)
+
+# Script configuration
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly THIS_PATH=$(basename "$(pwd)")
+readonly TEMP_DIR="/tmp/tfall/${THIS_PATH}"
+readonly DEFAULT_PARALLEL_JOBS="75%"
+
+# Directories to exclude from processing
+readonly EXCLUDE_DIRS=(
+    "^.$"
+    ".git$"
+    "scripts$"
+    "data$"
+    ".terraform$"
+    "modules$"
+    "poc$"
+    "docs$"
+    "project-deprecated$"
+    "cloud-functions-sap$"
+    "templates$"
+)
+
+# Global variables
+TF_FILTER=".*"
+TARGET_PATH=""
+
+# Trap for cleanup on interrupt
+trap cleanup_on_interrupt INT
+
+# Logging functions
+log_info() {
+    echo -e "${GREEN}[INFO]${NORMAL} $*"
+}
+
+log_warn() {
+    echo -e "${YELLOW}[WARN]${NORMAL} $*"
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NORMAL} $*" >&2
+}
+
+log_step() {
+    echo -e "${BOLD}[STEP]${NORMAL} $*"
+}
+
+# Cleanup function for interrupt handling
+cleanup_on_interrupt() {
+    log_warn "Force exit requested"
+    tput cnorm > /dev/null 2>&1
+    echo
+    cleanup_tfplan_files
+    exit 1
+}
+
+# Clean up terraform plan files
+cleanup_tfplan_files() {
+    if [[ -d "${SCRIPT_DIR}" ]]; then
+        find "${SCRIPT_DIR}" -type f -name "*.tfplan" -print0 | xargs -0 -r rm -f
+    fi
+}
+
+# Display usage information
+usage() {
+    cat << EOF
+Usage: $0 [OPTIONS]
+
+Terraform automation script for planning and applying configurations across multiple directories.
+
+Options:
+    ${BOLD}-h, --help${NORMAL}              Display this help message
+    ${BOLD}-p, --plan${NORMAL} [pattern]    Plan terraform configurations (optional pattern for filtering)
+    ${BOLD}-a, --apply${NORMAL}             Apply terraform configurations from previous plans
+    ${BOLD}--path${NORMAL} <path>           Target specific path (not implemented in original)
+
+Examples:
+    $0 --plan                    # Plan all terraform directories
+    $0 --plan "dev.*"           # Plan directories matching pattern
+    $0 --apply                  # Apply all planned configurations
+
+EOF
+}
+
+# Validate dependencies
+check_dependencies() {
+    local missing_deps=()
+
+    command -v terraform >/dev/null 2>&1 || missing_deps+=("terraform")
+    command -v parallel >/dev/null 2>&1 || missing_deps+=("parallel")
+
+    if [[ ${#missing_deps[@]} -gt 0 ]]; then
+        log_error "Missing required dependencies: ${missing_deps[*]}"
+        log_error "Please install missing dependencies and try again"
+        exit 1
+    fi
+}
+
+# Setup temporary directory structure
+setup_temp_directory() {
+    log_step "Setting up temporary directory: ${TEMP_DIR}"
+    mkdir -p "${TEMP_DIR}"
+
+    # Clean existing files
+    if [[ -d "${TEMP_DIR}" ]]; then
+        find "${TEMP_DIR}" -type f -print0 | xargs -0 -r rm -f
+    fi
+}
+
+# Ask for user confirmation
+ask_confirm() {
+    local prompt="${1:-Do you want to continue?}"
+    local response
+
+    read -r -p "${prompt} [yes/no]: " response
+    case "${response,,}" in
+        yes|y) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+# Parse terraform directories based on filter
+parse_terraform_directories() {
+    local exclude_regex
+    exclude_regex=$(IFS="|"; echo "${EXCLUDE_DIRS[*]}")
+
+    find . -type d -maxdepth 1 -name "*terraform*" -o -name "*tf*" | \
+        grep -E "${TF_FILTER}" | \
+        grep -vE "${exclude_regex}" | \
+        sort
+}
+
+# Initialize terraform in a directory
+terraform_init() {
+    local workspace="$1"
+    local init_output
+
+    log_info "Initializing terraform for workspace: ${workspace}"
+
+    if ! init_output=$(terraform init -upgrade -no-color 2>&1); then
+        log_error "Terraform init failed for workspace ${workspace}"
+        echo "INIT ERROR: ${workspace}" > "${TEMP_DIR}/${workspace}-$(basename "$(pwd)").tfshow"
+        echo "${init_output}" >> "${TEMP_DIR}/${workspace}-$(basename "$(pwd)").tfshow"
+        return 1
+    fi
+
+    log_info "Terraform init completed for workspace: ${workspace}"
+    return 0
+}
+
+# Plan terraform configuration
+terraform_plan() {
+    local workspace="$1"
+    local plan_output
+    local plan_file="${workspace}.tfplan"
+
+    log_info "Planning terraform for workspace: ${workspace}"
+
+    if ! plan_output=$(terraform plan -lock=false -out="${plan_file}" -no-color 2>&1); then
+        log_error "Terraform plan failed for workspace ${workspace}"
+        echo "PLAN ERROR: ${workspace}" >> "${TEMP_DIR}/${workspace}-$(basename "$(pwd)").tfshow"
+        echo "${plan_output}" >> "${TEMP_DIR}/${workspace}-$(basename "$(pwd)").tfshow"
+        return 1
+    fi
+
+    if echo "${plan_output}" | grep -q "No changes."; then
+        log_info "No changes detected for workspace ${workspace}"
+        rm -f "${plan_file}"
+    else
+        log_info "Changes detected for workspace ${workspace}"
+        if terraform show -no-color "${plan_file}" | tail -n+6 > "${TEMP_DIR}/${workspace}-$(basename "$(pwd)").tfshow"; then
+            log_info "Plan saved for workspace ${workspace}"
+        else
+            log_warn "Failed to save plan output for workspace ${workspace}"
+        fi
+    fi
+
+    return 0
+}
+
+# Process a single terraform directory
+process_terraform_directory() {
+    local dir="$1"
+    local terraform_dir_existed=false
+
+    if [[ ! -d "$dir" ]]; then
+        log_error "Directory does not exist: $dir"
+        return 1
+    fi
+
+    pushd "$dir" > /dev/null || {
+        log_error "Failed to change to directory: $dir"
+        return 1
+    }
+
+    log_step "Processing terraform directory: $dir"
+
+    # Check if .terraform directory exists
+    if [[ -d ".terraform" ]]; then
+        log_info "Existing .terraform directory found"
+        terraform_dir_existed=true
+    fi
+
+    # Initialize terraform
+    if ! terraform_init "$(basename "$dir")"; then
+        popd > /dev/null
+        return 1
+    fi
+
+    # Get workspace count
+    local workspace_count
+    workspace_count=$(terraform workspace list 2>/dev/null | grep -c -v "^$" || echo "1")
+
+    # Process workspaces
+    if [[ $(pwd) =~ .*workspace$ ]] || [[ $workspace_count -gt 1 ]]; then
+        log_info "Multiple workspaces detected, processing each workspace"
+
+        while IFS= read -r workspace; do
+            if [[ -n "$workspace" && "$workspace" != "default" ]]; then
+                log_info "Switching to workspace: $workspace"
+                if terraform workspace select "$workspace" > /dev/null 2>&1; then
+                    terraform_init "$workspace"
+                    terraform_plan "$workspace"
+                else
+                    log_warn "Failed to switch to workspace: $workspace"
+                fi
+            fi
+        done < <(terraform workspace list 2>/dev/null | sed 's/^[* ]*//' | grep -v "^$")
+    else
+        terraform_plan "default"
+    fi
+
+    # Cleanup .terraform directory if we created it
+    if [[ "$terraform_dir_existed" == false ]]; then
+        log_info "Cleaning up .terraform directory"
+        rm -rf ".terraform"
+    fi
+
+    # Clean up plan files
+    find . -type f -name "*.tfplan" -print0 | xargs -0 -r rm -f
+
+    popd > /dev/null
+    return 0
+}
+
+# Export function for parallel processing
+export -f process_terraform_directory terraform_init terraform_plan log_info log_warn log_error
+
+# Main plan function
+execute_plan() {
+    local directories
+
+    check_dependencies
+    setup_temp_directory
+
+    # Get directories to process
+    directories=$(parse_terraform_directories)
+
+    if [[ -z "$directories" ]]; then
+        log_warn "No terraform directories found matching pattern: ${TF_FILTER}"
+        return 1
+    fi
+
+    log_step "Found terraform directories:"
+    echo "$directories" | sed 's/^/  /'
+
+    echo
+    if ! ask_confirm "${BOLD}Do you want to plan these terraform directories?${NORMAL}"; then
+        log_info "Plan cancelled by user"
+        return 0
+    fi
+
+    log_step "Executing terraform plan with ${DEFAULT_PARALLEL_JOBS} parallelism"
+
+    # Process directories in parallel
+    if echo "$directories" | parallel -j "${DEFAULT_PARALLEL_JOBS}" process_terraform_directory; then
+        log_info "Terraform plan completed successfully"
+    else
+        log_error "Some terraform plans failed"
+        return 1
+    fi
+}
+
+# Parse tfshow filename to extract environment and project
+parse_tfshow_filename() {
+    local filename="$1"
+    local environment project
+
+    environment=$(echo "$filename" | cut -d'-' -f1)
+    project=$(echo "$filename" | sed -E "s/^${environment}-//; s/.tfshow$//")
+
+    echo "${environment}:${project}"
+}
+
+# Apply terraform configurations
+execute_apply() {
+    local tfshow_files
+
+    check_dependencies
+
+    if [[ ! -d "${TEMP_DIR}" ]]; then
+        log_error "No plan files found. Run plan first."
+        return 1
+    fi
+
+    tfshow_files=$(find "${TEMP_DIR}" -name "*.tfshow" -type f)
+
+    if [[ -z "$tfshow_files" ]]; then
+        log_error "No terraform plans found. Run plan first."
+        return 1
+    fi
+
+    log_step "Applying terraform configurations"
+
+    while IFS= read -r tfshow_file; do
+        local filename parsed_info environment project
+        filename=$(basename "$tfshow_file")
+        parsed_info=$(parse_tfshow_filename "$filename")
+        environment=$(echo "$parsed_info" | cut -d':' -f1)
+        project=$(echo "$parsed_info" | cut -d':' -f2)
+
+        log_info "Applying configuration for project: $project, environment: $environment"
+
+        if [[ ! -d "$project" ]]; then
+            log_error "Project directory not found: $project"
+            continue
+        fi
+
+        # Initialize terraform
+        if ! terraform -chdir="$project" init -upgrade > /dev/null 2>&1; then
+            log_error "Failed to initialize terraform for project: $project"
+            continue
+        fi
+
+        # Apply based on environment
+        if [[ "$environment" == "default" ]]; then
+            terraform -chdir="$project" apply
+        else
+            pushd "$project" > /dev/null || continue
+            if terraform workspace select "$environment" > /dev/null 2>&1; then
+                terraform apply
+            else
+                log_error "Failed to select workspace: $environment"
+            fi
+            popd > /dev/null
+        fi
+    done <<< "$tfshow_files"
+}
+
+# Main option parsing
+main() {
+    if [[ $# -eq 0 ]]; then
+        usage
+        exit 0
+    fi
+
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -h|--help)
+                usage
+                exit 0
+                ;;
+            --path)
+                shift
+                TARGET_PATH="$1"
+                shift
+                ;;
+            -p|--plan)
+                if [[ -n "${2:-}" && ! "$2" =~ ^- ]]; then
+                    TF_FILTER="$2"
+                    shift
+                fi
+                execute_plan
+                exit $?
+                ;;
+            -a|--apply)
+                execute_apply
+                exit $?
+                ;;
+            *)
+                log_error "Invalid option: $1"
+                usage
+                exit 1
+                ;;
+        esac
+        shift
+    done
+}
+
+# Run main function
+main "$@"

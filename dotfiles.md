@@ -1,11 +1,19 @@
+---
+created: 2025-11-29T03
+modified: 2025-11-29T03
+---
 ```bash
 git clone git@github.com-marrangas:Marrangas/.dotfiles "$home/.dotfiles"
+
 ```
 
 ```bash
 parallel stow -D {} ::: $(ls -1d */)
 parallel stow -R {} ::: $(ls -1d */)
 ```
+
+local programs and private repos
+- https://github.com/und3fined/medium-unlocker/releases/tag/v0.1.4e
 
 - [ ] refactor nvim to be minimal
 - [ ] automae the installation of tmux
