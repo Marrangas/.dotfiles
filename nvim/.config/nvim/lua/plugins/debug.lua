@@ -6,6 +6,9 @@
 -- be extended to other languages as well. That's why it's called
 -- kickstart.nvim and not kitchen-sink.nvim ;)
 
+local BASH_DEBUG_ADAPTER_BIN = vim.fn.stdpath 'data' .. '/mason/bin/bash-debug-adapter'
+local BASHDB_DIR = vim.fn.stdpath 'data' .. '/mason/packages/bash-debug-adapter/extension/bashdb_dir'
+
 return {
   'mfussenegger/nvim-dap',
   dependencies = {
@@ -15,7 +18,74 @@ return {
     'jay-babu/mason-nvim-dap.nvim',
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
+    'rogalmic/vscode-bash-debug',
   },
+  keys = {
+    {
+      '<F5>',
+      function()
+        require('dap').continue()
+      end,
+      desc = 'Debug: Start/Continue',
+    },
+    {
+      '<F1>',
+      function()
+        require('dap').step_into()
+      end,
+      desc = 'Debug: Step Into',
+    },
+    {
+      '<F2>',
+      function()
+        require('dap').step_over()
+      end,
+      desc = 'Debug: Step Over',
+    },
+    {
+      '<F3>',
+      function()
+        require('dap').step_out()
+      end,
+      desc = 'Debug: Step Out',
+    },
+    {
+      '<F6>',
+      function()
+        require('dap').step_back()
+      end,
+      desc = 'Debug: Step Back',
+    },
+    {
+      '<leader>b',
+      function()
+        require('dap').toggle_breakpoint()
+      end,
+      desc = 'Debug: Toggle Breakpoint',
+    },
+    {
+      '<leader>B',
+      function()
+        require('dap').set_breakpoint(vim.fn.input 'Breakpoint condition: ')
+      end,
+      desc = 'Debug: Set Breakpoint',
+    },
+    {
+      '<F7>',
+      function()
+        require('dapui').toggle()
+      end,
+      desc = 'Debug: See last session result.',
+    },
+    {
+      '<leader>?',
+      function()
+        require('dapui').eval(nil, { enter = true })
+      end,
+      desc = 'Debug: See last session result.',
+    },
+  },
+
   config = function()
     local dap = require 'dap'
     local dapui = require 'dapui'
@@ -34,28 +104,9 @@ return {
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
         'delve',
-        'bash',
+        'bash-debug-adapter',
       },
     }
-
-    vim.keymap.set('n', '<space>gb', dap.run_to_cursor, { desc = '[G]o to de[B]ugging mode' })
-
-    -- Eval var under cursor
-    vim.keymap.set('n', '<space>?', function()
-      require('dapui').eval(nil, { enter = true })
-    end, { desc = 'Debug: Under cursor' })
-
-    -- Basic debugging keymaps, feel free to change to your liking!
-    vim.keymap.set('n', '<C-5>', dap.continue, { desc = 'Debug: Start/Continue' })
-    vim.keymap.set('n', '<C-1>', dap.step_into, { desc = 'Debug: Step Into' })
-    vim.keymap.set('n', '<C-2>', dap.step_over, { desc = 'Debug: Step Over' })
-    vim.keymap.set('n', '<C-3>', dap.step_out, { desc = 'Debug: Step Out' })
-    vim.keymap.set('n', '<C-4>', dap.step_out, { desc = 'Debug: Step Back' })
-    vim.keymap.set('n', '<C-0>', dap.restart, { desc = 'Debug: Restart' })
-    vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint, { desc = 'Debug: Toggle Breakpoint' })
-    vim.keymap.set('n', '<leader>B', function()
-      dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
-    end, { desc = 'Debug: Set Breakpoint' })
 
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
@@ -79,13 +130,41 @@ return {
       },
     }
 
-    -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
-    vim.keymap.set('n', '<C-7>', dapui.toggle, { desc = 'Debug: See last session result.' })
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
+    dap.adapters.sh = {
+      type = 'executable', -- Corrected spelling
+      command = BASH_DEBUG_ADAPTER_BIN,
+      name = 'bashdb',
+    }
+
+    -- DAP configuration
+    dap.configurations.sh = {
+      {
+        name = 'Launch Bash debugger',
+        type = 'sh',
+        request = 'launch',
+        program = '${file}',
+        cwd = '${fileDirname}',
+        pathBashdb = BASHDB_DIR .. '/bashdb',
+        pathBashdbLib = BASHDB_DIR,
+        pathBash = 'bash',
+        pathCat = 'cat',
+        pathMkfifo = 'mkfifo',
+        pathPkill = 'pkill',
+        env = {},
+        args = {},
+      },
+    }
     -- Install golang specific config
-    require('dap-go').setup()
+    require('dap-go').setup {
+      delve = {
+        -- On Windows delve must be run attached or it crashes.
+        -- See https://github.com/leoluz/nvim-dap-go/blob/main/README.md#configuring
+        detached = vim.fn.has 'win32' == 0,
+      },
+    }
   end,
 }

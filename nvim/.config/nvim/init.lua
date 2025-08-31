@@ -1,6 +1,8 @@
 -- : <leader> Must happen before plugins are loaded (otherwise wrong leader will be used)intintintintinitinit
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+-- delete initial Alt+e for inserting special characters in US-keyboard
+vim.g.tui_escape_term_ansicodes = true
 
 -- [[ Install`lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -13,14 +15,16 @@ vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup {
   'mbbill/undotree',
+  -- Formating
   'tpope/vim-sleuth',
+
+  -- Navegation or oil???
   'tpope/vim-vinegar',
-  -- 'pope/vim-markdown',
 
   -- documentation
   'vim-utils/vim-man',
+  -- 'pope/vim-markdown',
 
-  -- 'oil'
   { 'numToStr/Comment.nvim', opts = {} },
   {
     'folke/todo-comments.nvim',
@@ -37,7 +41,7 @@ require('lazy').setup {
   -- html
   {
     'barrett-ruth/live-server.nvim',
-    build = 'pnpm add -g live-server',
+    build = 'npm add -g live-server',
     cmd = { 'LiveServerStart', 'LiveServerStop' },
     config = true,
   },

@@ -139,7 +139,7 @@ fzf-gcloud-widget() {
 }
 # Bind the gcloud fzf helper to CTRL-I
 zle     -N   fzf-gcloud-widget
-bindkey '^k' fzf-gcloud-widget
+bindkey '^g' fzf-gcloud-widget
 
 } always {
   eval $__fzf_key_bindings_options

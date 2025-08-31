@@ -134,7 +134,7 @@ else
 fi
 export today=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-alias xana='cd ~/Documents/xanadu/ && nvim'
+alias xana="nvim $HOME/Documents/wiki/"
 alias rc="${EDITOR} ${HOME}/.zshrc && source ${HOME}/.zshrc"
 
 alias g='git'
@@ -301,7 +301,7 @@ source_if_exists "$HOME/.local/bin/google-cloud-sdk/completion.zsh.inc"
 
 # FZF and related plugins
 source_if_exists "${XDG_CONFIG_HOME:-$HOME/.config}/fzf/fzf.zsh"
-source_if_exists "${XDG_CONFIG_HOME:-$HOME/.config}/.local/.fzf-gcloud.plugin.zsh"
+source_if_exists "${XDG_CONFIG_HOME:-$HOME/.config}/.local/bin/.fzf-gcloud.plugin.zsh"
 
 # =============================================================================
 # PATH CONFIGURATION

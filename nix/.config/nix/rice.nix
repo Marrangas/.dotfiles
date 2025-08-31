@@ -4,6 +4,7 @@ with import <nixpkgs> {}; [
   eza
   tldr
   # starship
+  direnv
   zsh-powerlevel10k
   gh
   csvq

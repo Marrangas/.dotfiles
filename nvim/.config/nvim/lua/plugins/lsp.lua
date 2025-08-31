@@ -1,4 +1,4 @@
-return { -- LSP Configuration & Plugins
+return { -- LSP Configuration & Pluginslsp
   'neovim/nvim-lspconfig',
   dependencies = {
     -- Automatically install LSPs and related tools to stdpath for neovim
@@ -144,9 +144,9 @@ return { -- LSP Configuration & Plugins
             executionEnvironment = {
               enabled = false,
             },
-            python = {
-              interpreterPath = 'python',
-            },
+            -- python = {
+            --   interpreterPath = 'python',
+            -- },
             completion = {
               provideRedirectModules = true,
               provideModuleOptionAliases = true,
@@ -235,23 +235,19 @@ return { -- LSP Configuration & Plugins
           },
         },
       },
-      html = {
+      pylsp = {
         settings = {
-          html = {
-            mirrorCursorOnMatchingTag = true,
-            format = {
-              wrapLineLength = 80,
-              indentHandlebars = true,
-              wrapAttributesIndentSize = 2,
-              wrapAttributes = true,
-              templatig = true,
+          pylsp = {
+            plugins = {
+              pycodestyle = {
+                enabled = true,
+                ignore = { 'E501', 'E201' },
+                maxLineLength = 120,
+              },
             },
           },
         },
-        filetypes = { 'html' },
       },
-      prettierd = {},
-      pylsp = {},
     }
 
     -- Ensure the servers and tools above are installed
@@ -290,6 +286,7 @@ return { -- LSP Configuration & Plugins
       'eslint-lsp',
       'typescript-language-server',
       'tailwindcss-language-server',
+      'markdown-oxide',
     })
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 

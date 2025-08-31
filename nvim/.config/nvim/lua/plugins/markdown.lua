@@ -33,11 +33,11 @@ return {
     workspaces = {
       {
         name = 'personal',
-        path = '~/Documents/xanadu',
+        path = '~/Documents/wiki',
       },
     },
     daily_notes = {
-      folder = 'resources/diary',
+      folder = 'diary',
       date_format = '%Y-%m-%d',
       default_tags = { 'diario' },
       template = 'templates/daily.md',
@@ -80,7 +80,7 @@ return {
     -- Where to put new notes. Valid options are
     --  * "current_dir" - put new notes in same directory as the current buffer.
     --  * "notes_subdir" - put new notes in the default notes subdirectory.
-    -- new_notes_location = 'notes_subdir',
+    new_notes_location = 'notes_subdir',
 
     -- Optional, customize how note IDs are generated given an optional title.
     ---@param title string|?
