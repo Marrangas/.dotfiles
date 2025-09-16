@@ -11,7 +11,7 @@ return { -- Autoformatform
       bash = { 'shfmt' },
       terraform = { 'terraformls' },
       -- templ = { 'rustwind', 'templ', 'gopls' },
-      -- markdown = { 'markdownling' },
+      markdown = { 'prettierd' },
       html = { 'prettier' },
       typescript = { 'prettier' },
       typescripttpreacrt = { 'prettier' },

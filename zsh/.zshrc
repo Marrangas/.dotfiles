@@ -134,7 +134,6 @@ else
 fi
 export today=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-alias xana="nvim $HOME/Documents/wiki/"
 alias rc="${EDITOR} ${HOME}/.zshrc && source ${HOME}/.zshrc"
 
 alias g='git'
