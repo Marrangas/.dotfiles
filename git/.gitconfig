@@ -34,7 +34,7 @@
 	prompt = false
 
 [alias]
-	chof = "commit --amend --no-edit"
+	chof = "!git add . && git commit --amend --no-edit"
 	last = log -1 HEAD
 	unstage = reset HEAD --
 	parent = rev-parse --abbrev-ref --symbolic-full-name @{u}
