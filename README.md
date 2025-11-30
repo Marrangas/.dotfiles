@@ -1,3 +1,7 @@
+---
+created: 2025-11-29T03
+modified: 2025-11-29T03
+---
 ```bash
 git clone git@github.com-marrangas:Marrangas/.dotfiles "$home/.dotfiles"
 

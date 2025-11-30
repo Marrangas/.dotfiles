@@ -1,3 +1,7 @@
+---
+created: 2025-11-29T03
+modified: 2025-11-29T03
+---
 MIT License
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
