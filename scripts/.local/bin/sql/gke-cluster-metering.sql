@@ -12,10 +12,10 @@ WITH
     SUM(cost) AS cost,
     IFNULL(SAFE_DIVIDE(SUM(cost),SUM(usage.amount)),0) AS rate
   FROM
-    `dia-informefacturacion-prod.InformeFacturacion2.gcp_billing_export_v1_011ED2_0AB62F_7F10C2`
+    `YOUR_BILLING_PROJECT_ID.InformeFacturacion2.gcp_billing_export_v1_YOUR_BILLING_ACCOUNT_ID`
   WHERE
     usage_start_time >= TIMESTAMP("2021-12-01")
-    AND project.id = "dia-es-ecom-poc"
+    AND project.id = "YOUR_PROJECT_ID"
   GROUP BY
     project.id,
     sku.id,
@@ -37,7 +37,7 @@ WITH
     NULL as amount_with_untracked,
     billing_table.rate
   FROM
-    `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+    `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
   INNER JOIN
     billing_table
   ON
@@ -135,7 +135,7 @@ WITH
     FROM
       billing_table
     INNER JOIN
-      `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+    `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
     ON
       resource_usage.project.id = billing_table.project_id
       AND resource_usage.end_time <= billing_table.max_usage_end_time
@@ -233,7 +233,7 @@ WITH
           resource_usage.usage.amount AS amount,
           billing_table.rate
         FROM
-          `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
+          `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
         INNER JOIN
           billing_table
         ON
@@ -310,10 +310,10 @@ WITH
     SUM(cost) AS cost,
     IFNULL(SAFE_DIVIDE(SUM(cost),SUM(usage.amount)),0) AS rate
   FROM
-    `dia-informefacturacion-prod.InformeFacturacion2.gcp_billing_export_v1_011ED2_0AB62F_7F10C2`
+    `YOUR_BILLING_PROJECT_ID.InformeFacturacion2.gcp_billing_export_v1_YOUR_BILLING_ACCOUNT_ID`
   WHERE
     usage_start_time >= TIMESTAMP("2021-12-01")
-    AND project.id = "dia-es-ecom-poc"
+    AND project.id = "YOUR_PROJECT_ID"
   GROUP BY
     project.id,
     sku.id,
@@ -335,7 +335,7 @@ WITH
     NULL as amount_with_untracked,
     billing_table.rate
   FROM
-    `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+    `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
   INNER JOIN
     billing_table
   ON
@@ -433,7 +433,7 @@ WITH
     FROM
       billing_table
     INNER JOIN
-      `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+      `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
     ON
       resource_usage.project.id = billing_table.project_id
       AND resource_usage.end_time <= billing_table.max_usage_end_time
@@ -531,7 +531,7 @@ WITH
           resource_usage.usage.amount AS amount,
           billing_table.rate
         FROM
-          `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
+          `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
         INNER JOIN
           billing_table
         ON
@@ -608,10 +608,10 @@ WITH
     SUM(cost) AS cost,
     IFNULL(SAFE_DIVIDE(SUM(cost),SUM(usage.amount)),0) AS rate
   FROM
-    `dia-informefacturacion-prod.InformeFacturacion2.gcp_billing_export_v1_011ED2_0AB62F_7F10C2`
+    `YOUR_BILLING_PROJECT_ID.InformeFacturacion2.gcp_billing_export_v1_YOUR_BILLING_ACCOUNT_ID`
   WHERE
     usage_start_time >= TIMESTAMP("2021-12-01")
-    AND project.id = "dia-es-ecom-poc"
+    AND project.id = "YOUR_PROJECT_ID"
   GROUP BY
     project.id,
     sku.id,
@@ -633,7 +633,7 @@ WITH
     NULL as amount_with_untracked,
     billing_table.rate
   FROM
-    `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+    `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
   INNER JOIN
     billing_table
   ON
@@ -731,7 +731,7 @@ WITH
     FROM
       billing_table
     INNER JOIN
-      `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+      `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
     ON
       resource_usage.project.id = billing_table.project_id
       AND resource_usage.end_time <= billing_table.max_usage_end_time
@@ -829,7 +829,7 @@ WITH
           resource_usage.usage.amount AS amount,
           billing_table.rate
         FROM
-          `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
+          `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
         INNER JOIN
           billing_table
         ON
@@ -906,10 +906,10 @@ WITH
     SUM(cost) AS cost,
     IFNULL(SAFE_DIVIDE(SUM(cost),SUM(usage.amount)),0) AS rate
   FROM
-    `dia-informefacturacion-prod.InformeFacturacion2.gcp_billing_export_v1_011ED2_0AB62F_7F10C2`
+    `YOUR_BILLING_PROJECT_ID.InformeFacturacion2.gcp_billing_export_v1_YOUR_BILLING_ACCOUNT_ID`
   WHERE
     usage_start_time >= TIMESTAMP("2021-12-01")
-    AND project.id = "dia-es-ecom-poc"
+    AND project.id = "YOUR_PROJECT_ID"
   GROUP BY
     project.id,
     sku.id,
@@ -931,7 +931,7 @@ WITH
     NULL as amount_with_untracked,
     billing_table.rate
   FROM
-    `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+    `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
   INNER JOIN
     billing_table
   ON
@@ -1029,7 +1029,7 @@ WITH
     FROM
       billing_table
     INNER JOIN
-      `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+      `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
     ON
       resource_usage.project.id = billing_table.project_id
       AND resource_usage.end_time <= billing_table.max_usage_end_time
@@ -1127,7 +1127,7 @@ WITH
           resource_usage.usage.amount AS amount,
           billing_table.rate
         FROM
-          `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
+          `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
         INNER JOIN
           billing_table
         ON
@@ -1204,10 +1204,10 @@ WITH
     SUM(cost) AS cost,
     IFNULL(SAFE_DIVIDE(SUM(cost),SUM(usage.amount)),0) AS rate
   FROM
-    `dia-informefacturacion-prod.InformeFacturacion2.gcp_billing_export_v1_011ED2_0AB62F_7F10C2`
+    `YOUR_BILLING_PROJECT_ID.InformeFacturacion2.gcp_billing_export_v1_YOUR_BILLING_ACCOUNT_ID`
   WHERE
     usage_start_time >= TIMESTAMP("2021-12-01")
-    AND project.id = "dia-es-ecom-poc"
+    AND project.id = "YOUR_PROJECT_ID"
   GROUP BY
     project.id,
     sku.id,
@@ -1229,7 +1229,7 @@ WITH
     NULL as amount_with_untracked,
     billing_table.rate
   FROM
-    `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+    `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
   INNER JOIN
     billing_table
   ON
@@ -1327,7 +1327,7 @@ WITH
     FROM
       billing_table
     INNER JOIN
-      `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+      `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
     ON
       resource_usage.project.id = billing_table.project_id
       AND resource_usage.end_time <= billing_table.max_usage_end_time
@@ -1425,7 +1425,7 @@ WITH
           resource_usage.usage.amount AS amount,
           billing_table.rate
         FROM
-          `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
+          `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
         INNER JOIN
           billing_table
         ON
@@ -1502,10 +1502,10 @@ WITH
     SUM(cost) AS cost,
     IFNULL(SAFE_DIVIDE(SUM(cost),SUM(usage.amount)),0) AS rate
   FROM
-    `dia-informefacturacion-prod.InformeFacturacion2.gcp_billing_export_v1_011ED2_0AB62F_7F10C2`
+    `YOUR_BILLING_PROJECT_ID.InformeFacturacion2.gcp_billing_export_v1_YOUR_BILLING_ACCOUNT_ID`
   WHERE
     usage_start_time >= TIMESTAMP("2021-12-01")
-    AND project.id = "dia-es-ecom-poc"
+    AND project.id = "YOUR_PROJECT_ID"
   GROUP BY
     project.id,
     sku.id,
@@ -1527,7 +1527,7 @@ WITH
     NULL as amount_with_untracked,
     billing_table.rate
   FROM
-    `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+    `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
   INNER JOIN
     billing_table
   ON
@@ -1625,7 +1625,7 @@ WITH
     FROM
       billing_table
     INNER JOIN
-      `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+      `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
     ON
       resource_usage.project.id = billing_table.project_id
       AND resource_usage.end_time <= billing_table.max_usage_end_time
@@ -1723,7 +1723,7 @@ WITH
           resource_usage.usage.amount AS amount,
           billing_table.rate
         FROM
-          `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
+          `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
         INNER JOIN
           billing_table
         ON
@@ -1800,10 +1800,10 @@ WITH
     SUM(cost) AS cost,
     IFNULL(SAFE_DIVIDE(SUM(cost),SUM(usage.amount)),0) AS rate
   FROM
-    `dia-informefacturacion-prod.InformeFacturacion2.gcp_billing_export_v1_011ED2_0AB62F_7F10C2`
+    `YOUR_BILLING_PROJECT_ID.InformeFacturacion2.gcp_billing_export_v1_YOUR_BILLING_ACCOUNT_ID`
   WHERE
     usage_start_time >= TIMESTAMP("2021-12-01")
-    AND project.id = "dia-es-ecom-poc"
+    AND project.id = "YOUR_PROJECT_ID"
   GROUP BY
     project.id,
     sku.id,
@@ -1825,7 +1825,7 @@ WITH
     NULL as amount_with_untracked,
     billing_table.rate
   FROM
-    `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+    `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
   INNER JOIN
     billing_table
   ON
@@ -1923,7 +1923,7 @@ WITH
     FROM
       billing_table
     INNER JOIN
-      `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+      `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
     ON
       resource_usage.project.id = billing_table.project_id
       AND resource_usage.end_time <= billing_table.max_usage_end_time
@@ -2021,7 +2021,7 @@ WITH
           resource_usage.usage.amount AS amount,
           billing_table.rate
         FROM
-          `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
+          `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
         INNER JOIN
           billing_table
         ON
@@ -2098,10 +2098,10 @@ WITH
     SUM(cost) AS cost,
     IFNULL(SAFE_DIVIDE(SUM(cost),SUM(usage.amount)),0) AS rate
   FROM
-    `dia-informefacturacion-prod.InformeFacturacion2.gcp_billing_export_v1_011ED2_0AB62F_7F10C2`
+    `YOUR_BILLING_PROJECT_ID.InformeFacturacion2.gcp_billing_export_v1_YOUR_BILLING_ACCOUNT_ID`
   WHERE
     usage_start_time >= TIMESTAMP("2021-12-01")
-    AND project.id = "dia-es-ecom-poc"
+    AND project.id = "YOUR_PROJECT_ID"
   GROUP BY
     project.id,
     sku.id,
@@ -2123,7 +2123,7 @@ WITH
     NULL as amount_with_untracked,
     billing_table.rate
   FROM
-    `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+    `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
   INNER JOIN
     billing_table
   ON
@@ -2221,7 +2221,7 @@ WITH
     FROM
       billing_table
     INNER JOIN
-      `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+      `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
     ON
       resource_usage.project.id = billing_table.project_id
       AND resource_usage.end_time <= billing_table.max_usage_end_time
@@ -2319,7 +2319,7 @@ WITH
           resource_usage.usage.amount AS amount,
           billing_table.rate
         FROM
-          `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
+          `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
         INNER JOIN
           billing_table
         ON
@@ -2396,10 +2396,10 @@ WITH
     SUM(cost) AS cost,
     IFNULL(SAFE_DIVIDE(SUM(cost),SUM(usage.amount)),0) AS rate
   FROM
-    `dia-informefacturacion-prod.InformeFacturacion2.gcp_billing_export_v1_011ED2_0AB62F_7F10C2`
+    `YOUR_BILLING_PROJECT_ID.InformeFacturacion2.gcp_billing_export_v1_YOUR_BILLING_ACCOUNT_ID`
   WHERE
     usage_start_time >= TIMESTAMP("2021-12-01")
-    AND project.id = "dia-es-ecom-poc"
+    AND project.id = "YOUR_PROJECT_ID"
   GROUP BY
     project.id,
     sku.id,
@@ -2421,7 +2421,7 @@ WITH
     NULL as amount_with_untracked,
     billing_table.rate
   FROM
-    `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+    `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
   INNER JOIN
     billing_table
   ON
@@ -2519,7 +2519,7 @@ WITH
     FROM
       billing_table
     INNER JOIN
-      `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+      `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
     ON
       resource_usage.project.id = billing_table.project_id
       AND resource_usage.end_time <= billing_table.max_usage_end_time
@@ -2617,7 +2617,7 @@ WITH
           resource_usage.usage.amount AS amount,
           billing_table.rate
         FROM
-          `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
+          `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
         INNER JOIN
           billing_table
         ON
@@ -2694,10 +2694,10 @@ WITH
     SUM(cost) AS cost,
     IFNULL(SAFE_DIVIDE(SUM(cost),SUM(usage.amount)),0) AS rate
   FROM
-    `dia-informefacturacion-prod.InformeFacturacion2.gcp_billing_export_v1_011ED2_0AB62F_7F10C2`
+    `YOUR_BILLING_PROJECT_ID.InformeFacturacion2.gcp_billing_export_v1_YOUR_BILLING_ACCOUNT_ID`
   WHERE
     usage_start_time >= TIMESTAMP("2021-12-01")
-    AND project.id = "dia-es-ecom-poc"
+    AND project.id = "YOUR_PROJECT_ID"
   GROUP BY
     project.id,
     sku.id,
@@ -2719,7 +2719,7 @@ WITH
     NULL as amount_with_untracked,
     billing_table.rate
   FROM
-    `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+    `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
   INNER JOIN
     billing_table
   ON
@@ -2817,7 +2817,7 @@ WITH
     FROM
       billing_table
     INNER JOIN
-      `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+      `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
     ON
       resource_usage.project.id = billing_table.project_id
       AND resource_usage.end_time <= billing_table.max_usage_end_time
@@ -2915,7 +2915,7 @@ WITH
           resource_usage.usage.amount AS amount,
           billing_table.rate
         FROM
-          `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
+          `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
         INNER JOIN
           billing_table
         ON
@@ -2992,10 +2992,10 @@ WITH
     SUM(cost) AS cost,
     IFNULL(SAFE_DIVIDE(SUM(cost),SUM(usage.amount)),0) AS rate
   FROM
-    `dia-informefacturacion-prod.InformeFacturacion2.gcp_billing_export_v1_011ED2_0AB62F_7F10C2`
+    `YOUR_BILLING_PROJECT_ID.InformeFacturacion2.gcp_billing_export_v1_YOUR_BILLING_ACCOUNT_ID`
   WHERE
     usage_start_time >= TIMESTAMP("2021-12-01")
-    AND project.id = "dia-es-ecom-poc"
+    AND project.id = "YOUR_PROJECT_ID"
   GROUP BY
     project.id,
     sku.id,
@@ -3017,7 +3017,7 @@ WITH
     NULL as amount_with_untracked,
     billing_table.rate
   FROM
-    `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+    `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
   INNER JOIN
     billing_table
   ON
@@ -3115,7 +3115,7 @@ WITH
     FROM
       billing_table
     INNER JOIN
-      `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+      `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
     ON
       resource_usage.project.id = billing_table.project_id
       AND resource_usage.end_time <= billing_table.max_usage_end_time
@@ -3213,7 +3213,7 @@ WITH
           resource_usage.usage.amount AS amount,
           billing_table.rate
         FROM
-          `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
+          `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
         INNER JOIN
           billing_table
         ON
@@ -3290,10 +3290,10 @@ WITH
     SUM(cost) AS cost,
     IFNULL(SAFE_DIVIDE(SUM(cost),SUM(usage.amount)),0) AS rate
   FROM
-    `dia-informefacturacion-prod.InformeFacturacion2.gcp_billing_export_v1_011ED2_0AB62F_7F10C2`
+    `YOUR_BILLING_PROJECT_ID.InformeFacturacion2.gcp_billing_export_v1_YOUR_BILLING_ACCOUNT_ID`
   WHERE
     usage_start_time >= TIMESTAMP("2021-12-01")
-    AND project.id = "dia-es-ecom-poc"
+    AND project.id = "YOUR_PROJECT_ID"
   GROUP BY
     project.id,
     sku.id,
@@ -3315,7 +3315,7 @@ WITH
     NULL as amount_with_untracked,
     billing_table.rate
   FROM
-    `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+    `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
   INNER JOIN
     billing_table
   ON
@@ -3413,7 +3413,7 @@ WITH
     FROM
       billing_table
     INNER JOIN
-      `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
+      `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_usage` AS resource_usage
     ON
       resource_usage.project.id = billing_table.project_id
       AND resource_usage.end_time <= billing_table.max_usage_end_time
@@ -3511,7 +3511,7 @@ WITH
           resource_usage.usage.amount AS amount,
           billing_table.rate
         FROM
-          `dia-es-ecom-poc.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
+          `YOUR_PROJECT_ID.poc_o_cloud.gke_cluster_resource_consumption` AS resource_usage
         INNER JOIN
           billing_table
         ON
