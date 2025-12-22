@@ -1,4 +1,11 @@
-# kickstart.nvim
+---
+id: readme
+aliases: []
+tags: []
+created: 2025-12-06
+---
+
+## kickstart.nvim
 
 ## Introduction
 

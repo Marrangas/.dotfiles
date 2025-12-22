@@ -1,3 +1,10 @@
+---
+id: readme
+aliases: []
+tags: []
+created: 2025-12-06
+---
+
 ## bash or other automations
 
 - clockin.lua

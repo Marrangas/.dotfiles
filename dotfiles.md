@@ -1,7 +1,14 @@
 ---
-created: 2025-11-29T03
-modified: 2025-11-29T03
+id: dotfiles
+aliases: []
+tags: []
 ---
+
+- [ ] ***
+  created: 2025-11-29T03 modified: 2025-11-29T03 id: readme
+
+---
+
 ```bash
 git clone git@github.com-marrangas:Marrangas/.dotfiles "$home/.dotfiles"
 
@@ -13,12 +20,13 @@ parallel stow -R {} ::: $(ls -1d */)
 ```
 
 local programs and private repos
+
 - https://github.com/und3fined/medium-unlocker/releases/tag/v0.1.4e
 
 - [ ] refactor nvim to be minimal
-- [ ] automae the installation of tmux
-      git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-      tmux run the tmux...
+- [ ] automae the installation of tmux git clone
+      https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm tmux run the
+      tmux...
 - [ ] make this testing
 - [ ] work with one or more than one git submodules
 - [ ] nix workflow `nix-env --delete-generations old`
