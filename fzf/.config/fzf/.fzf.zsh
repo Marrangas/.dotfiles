@@ -1,7 +1,4 @@
-# Setup fzf
-# ---------
-if [[ ! "$PATH" == */Users/altostratus/fzf/.fzf/bin* ]]; then
-  PATH="${PATH:+${PATH}:}/Users/altostratus/fzf/.fzf/bin"
-fi
+# Source shared config
+source "${XDG_CONFIG_HOME:-$HOME/.config}/fzf/fzf-config.sh"
 
 eval "$(fzf --zsh)"

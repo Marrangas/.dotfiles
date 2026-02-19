@@ -22,7 +22,7 @@ return { -- You can easily change to a different colorscheme.
 --   lazy = false, -- make sure we load this during startup if it is your main colorscheme
 --   config = function()
 --     -- Load the colorscheme here
---     vim.cmd.colorscheme 'catppuccin-mocha'
+--     vim.cmd.colorscheme 'catppuccin-macchiato'
 --
 --     -- You can configure highlights by doing something like
 --     vim.cmd.hi 'Comment gui=none'

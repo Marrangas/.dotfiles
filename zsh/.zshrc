@@ -1,12 +1,63 @@
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+[[ -f "${XDG_CACHE_HOME:-$HOME/.cache}/starship-instant-prompt.zsh" ]] && \
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/starship-instant-prompt.zsh"
 
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+# Modular KUBECONFIG
+# Automatically merges all .yaml files in ~/.kube/configs into your environment
+if [[ -d "$HOME/.kube/configs" ]]; then
+  export KUBECONFIG="$HOME/.kube/config:$(find "$HOME/.kube/configs" -maxdepth 1 -type f \( -name "*.yaml" -o -name "*.yml" \) | tr '\n' ':')"
 fi
+export KUBE_EDITOR="nvim"
 
-POWERLEVEL9K_INSTANT_PROMPT=quiet
+# Use the custom vimrc only for standard vim, not nvim
+alias vim='vim -u "$HOME/.config/vim/vimrc"'
 
-BOTO_PATH="$HOME/.config"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_STATE_HOME="$HOME/.local/state"
+export BOTO_PATH="$XDG_CONFIG_HOME/boto"
+
+export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
+export SHELL=$(which zsh)
+export EDITOR='nvim'
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_CACHE_HOME" "$XDG_STATE_HOME"
+
+typeset -U path
+path=(
+  /opt/homebrew/bin
+  /usr/local/bin
+  /usr/bin
+  /bin
+  /usr/sbin
+  /sbin
+  /usr/local/go/bin
+  $HOME/.local/go/bin
+  $HOME/.local/bin
+  $HOME/.nix-profile/bin
+  /nix/var/nix/profiles/default/bin
+)
+
+
+
+if [[ "$(uname)" == "Darwin" ]]; then
+  export h1=$(date -u -v-1H +"%Y-%m-%dT%H:%M:%SZ")
+  export h3=$(date -u -v-3H +"%Y-%m-%dT%H:%M:%SZ")
+else
+  export h1=$(date -u --date="1 hour ago" +"%Y-%m-%dT%H:%M:%SZ")
+  export h3=$(date -u --date="3 hours ago" +"%Y-%m-%dT%H:%M:%SZ")
+fi
+export today=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+setopt CORRECT
+autoload -U compinit && compinit
+autoload -U +X bashcompinit && bashcompinit
+
+# Emacs style keys
+bindkey -e
+
 
 
 # To enable debug mode for zsh startup, run:
@@ -22,16 +73,10 @@ else
   }
 fi
 
-# =============================================================================
-# HELPER FUNCTIONS
-# =============================================================================
-
-# Helper to check if a command exists
 command_exists() {
   command -v "$1" &>/dev/null
 }
 
-# Helper to source a file if it is readable
 source_if_exists() {
   if [[ -r "$1" ]]; then
     zsh_log "Sourcing $1"
@@ -41,9 +86,7 @@ source_if_exists() {
   fi
 }
 
-# =============================================================================
 # COMPLETIONS
-# =============================================================================
 autoload -U compinit && compinit
 autoload -U +X bashcompinit && bashcompinit
 if [[ -d "$HOME/.config/zsh/nix-zsh-completions" ]]; then
@@ -112,46 +155,46 @@ export LANG=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
-# Date variables for scripts (macOS/BSD date syntax)
-if [[ "$(uname)" == "Darwin" ]]; then
-  # BSD/macOS date syntax
-  export m3=$(/bin/date -u -v-3m +"%Y-%m-%dT%H:%M:%SZ")
-  export m1=$(/bin/date -u -v-1m +"%Y-%m-%dT%H:%M:%SZ")
-  export w1=$(/bin/date -u -v-1w +"%Y-%m-%dT%H:%M:%SZ")
-  export d3=$(/bin/date -u -v-3d +"%Y-%m-%dT%H:%M:%SZ")
-  export d1=$(/bin/date -u -v-1d +"%Y-%m-%dT%H:%M:%SZ")
-  export h6=$(/bin/date -u -v-6H +"%Y-%m-%dT%H:%M:%SZ")
-  export h3=$(/bin/date -u -v-3H +"%Y-%m-%dT%H:%M:%SZ")
-  export h1=$(/bin/date -u -v-1H +"%Y-%m-%dT%H:%M:%SZ")
-else
-  # GNU/Linux date syntax
-  export m3=$(date -u --date="3 months ago" +"%Y-%m-%dT%H:%M:%SZ")
-  export m1=$(date -u --date="1 month ago" +"%Y-%m-%dT%H:%M:%SZ")
-  export w1=$(date -u --date="1 week ago" +"%Y-%m-%dT%H:%M:%SZ")
-  export d3=$(date -u --date="3 days ago" +"%Y-%m-%dT%H:%M:%SZ")
-  export d1=$(date -u --date="1 day ago" +"%Y-%m-%dT%H:%M:%SZ")
-  export h6=$(date -u --date="6 hours ago" +"%Y-%m-%dT%H:%M:%SZ")
-  export h3=$(date -u --date="3 hours ago" +"%Y-%m-%dT%H:%M:%SZ")
-  export h1=$(date -u --date="1 hour ago" +"%Y-%m-%dT%H:%M:%SZ")
-fi
-export today=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+# Catppuccin Macchiato for LESS
+# -R: color, --mouse: scroll, -i: ignore case, -g: highlight only current match, -j5: context lines above search
+export LESS="-R --mouse --wheel-lines=3 --ignore-case --long-prompt -g -j5"
+export LESS_TERMCAP_mb=$(tput setaf 212) # blink -> pink
+export LESS_TERMCAP_md=$(tput setaf 110) # bold -> blue (macchiato)
+export LESS_TERMCAP_me=$(tput sgr0)
+export LESS_TERMCAP_so=$(tput setaf 234; tput setab 215) # standout (Search) -> Black text on Vibrant Peach/Yellow background
+export LESS_TERMCAP_se=$(tput sgr0)
+export LESS_TERMCAP_us=$(tput setaf 121) # underline -> teal (macchiato)
+export LESS_TERMCAP_ue=$(tput sgr0)
+
+
 
 alias rc="${EDITOR} ${HOME}/.zshrc && source ${HOME}/.zshrc"
 
 alias g='git'
-alias cat='bat'
 alias vi='nvim'
 alias vim='nvim'
+alias cat='bat'
 
-alias l='lsd --group-dirs=first'
-alias ll='lsd -lh --group-dirs=first'
-alias la='lsd -a --group-dirs=first'
-alias lla='lsd -lha --group-dirs=first'
-alias ls='lsd --group-dirs=first'
+# If bat is installed, use it as the default pager for man pages
+if command -v bat &>/dev/null; then
+  export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+  export PAGER="bat"
+fi
 
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
+
+
+if command -v lsd &>/dev/null; then
+  alias ls='lsd --group-dirs=first'
+  alias l='lsd --group-dirs=first'
+  alias ll='lsd -lh --group-dirs=first'
+  alias la='lsd -a --group-dirs=first'
+fi
+
+
+alias k='kubectl'
 
 alias t='terraform'
 alias tv='terraform validate'
@@ -202,16 +245,55 @@ function tclean(){
   find . -type d -name '.terraform' | parallel 'rm -rf {}'
 }
 
+# function man() {
+#     env \
+#     LESS_TERMCAP_mb=$'\e[1;35m' \
+#     LESS_TERMCAP_md=$'\e[1;35m' \
+#     LESS_TERMCAP_me=$'\e[0m' \
+#     LESS_TERMCAP_se=$'\e[0m' \
+#     LESS_TERMCAP_so=$'\e[1;33;44m' \
+#     LESS_TERMCAP_ue=$'\e[0m' \
+#     LESS_TERMCAP_us=$'\e[1;36m' \
+#     man "$@"
+# }
+
+# Date variables for scripts (macOS/BSD date syntax)
+if [[ "$(uname)" == "Darwin" ]]; then
+  # BSD/macOS date syntax
+  export m3=$(/bin/date -u -v-3m +"%Y-%m-%dT%H:%M:%SZ")
+  export m1=$(/bin/date -u -v-1m +"%Y-%m-%dT%H:%M:%SZ")
+  export w1=$(/bin/date -u -v-1w +"%Y-%m-%dT%H:%M:%SZ")
+  export d3=$(/bin/date -u -v-3d +"%Y-%m-%dT%H:%M:%SZ")
+  export d1=$(/bin/date -u -v-1d +"%Y-%m-%dT%H:%M:%SZ")
+  export h6=$(/bin/date -u -v-6H +"%Y-%m-%dT%H:%M:%SZ")
+  export h3=$(/bin/date -u -v-3H +"%Y-%m-%dT%H:%M:%SZ")
+  export h1=$(/bin/date -u -v-1H +"%Y-%m-%dT%H:%M:%SZ")
+else
+  # GNU/Linux date syntax
+  export m3=$(date -u --date="3 months ago" +"%Y-%m-%dT%H:%M:%SZ")
+  export m1=$(date -u --date="1 month ago" +"%Y-%m-%dT%H:%M:%SZ")
+  export w1=$(date -u --date="1 week ago" +"%Y-%m-%dT%H:%M:%SZ")
+  export d3=$(date -u --date="3 days ago" +"%Y-%m-%dT%H:%M:%SZ")
+  export d1=$(date -u --date="1 day ago" +"%Y-%m-%dT%H:%M:%SZ")
+  export h6=$(date -u --date="6 hours ago" +"%Y-%m-%dT%H:%M:%SZ")
+  export h3=$(date -u --date="3 hours ago" +"%Y-%m-%dT%H:%M:%SZ")
+  export h1=$(date -u --date="1 hour ago" +"%Y-%m-%dT%H:%M:%SZ")
+fi
+export today=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+epoch() {
+	local num=${1:--1}
+	printf '%(%B %d, %Y %-I:%M:%S %p %Z)T\n' "$num"
+}
+
+
 alias k='kubectl'
 
 alias json2csv='jq -r '\''(.[0] | keys_unsorted) as $keys | $keys, map([.[ $keys[] ]])[] | @csv'\'''
 
-function mkt(){
-    mkdir {nmap,content,exploits,scripts}
-}
 
-function gtoken(){
-  curl -H "Authorization: Bearer $(gcloud auth print-access-token)" $@
+gtoken(){
+  curl -H "Authorization: Bearer $(gcloud auth print-access-token)" "$@"
 }
 
 function glog() {
@@ -252,6 +334,10 @@ function glog() {
     | nvim -c "set ft=json"
 }
 
+function mkt(){
+    mkdir {nmap,content,exploits,scripts}
+}
+
 function rmk(){
   if ! command_exists scrub; then
     echo "zsh: function rmk: command not found: scrub. On macOS, run: brew install secure-delete" >&2
@@ -265,54 +351,7 @@ function rmk(){
 	shred -zun 10 -v "$1"
 }
 
-# Blinking text -> Bold Magenta
-# Bold text -> Bold Magenta
-# End all modes (reset)
-# End standout mode
-# Standout mode -> Bold Yellow foreground on Blue background
-# Underline text -> Bold Cyan
-function man() {
-    env \
-    LESS_TERMCAP_mb=$'\e[1;35m' \
-    LESS_TERMCAP_md=$'\e[1;35m' \
-    LESS_TERMCAP_me=$'\e[0m' \
-    LESS_TERMCAP_se=$'\e[0m' \
-    LESS_TERMCAP_so=$'\e[1;33;44m' \
-    LESS_TERMCAP_ue=$'\e[0m' \
-    LESS_TERMCAP_us=$'\e[1;36m' \
-    man "$@"
-}
-
-# =============================================================================
-# PLUGINS & THEMES
-# =============================================================================
-
-# Powerlevel10k Theme
-source_if_exists "$HOME/.config/powerlevel10k/powerlevel10k.zsh-theme"
-source_if_exists "$HOME/.p10k.zsh"
-
-# Zsh plugins
-ZSH_PLUGINS_DIR="$HOME/.config/zsh"
-source_if_exists "$ZSH_PLUGINS_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
-source_if_exists "$ZSH_PLUGINS_DIR/zsh-highlighting/zsh-syntax-highlighting.zsh"
-source_if_exists "$ZSH_PLUGINS_DIR/nix-zsh-completions/nix-zsh-completions.plugin.zsh"
-
-# Google Cloud SDK completion
-source_if_exists "$HOME/.local/bin/google-cloud-sdk/completion.zsh.inc"
-
-# FZF and related plugins
-source_if_exists "${XDG_CONFIG_HOME:-$HOME/.config}/fzf/fzf.zsh"
-source_if_exists "${XDG_CONFIG_HOME:-$HOME/.config}/.local/bin/.fzf-gcloud.plugin.zsh"
-
-# =============================================================================
-# PATH CONFIGURATION
-# =============================================================================
-
-# Use `typeset -U path` to ensure the PATH array has unique elements.
-# zsh automatically keeps the `path` array and `PATH` string in sync.
 typeset -U path
-
-# Define helper functions to modify the path array.
 path_prepend() {
   if [[ -d "$1" ]]; then
     zsh_log "Prepending to path: $1"
@@ -331,7 +370,6 @@ path_append() {
   fi
 }
 
-# Start with system paths.
 path=(
   /usr/local/bin
   /usr/bin
@@ -340,7 +378,6 @@ path=(
   /sbin
 )
 
-# Homebrew on macOS
 if [[ "$(uname)" == "Darwin" ]]; then
   if command_exists brew; then
     zsh_log "Setting up Homebrew environment"
@@ -351,53 +388,44 @@ if [[ "$(uname)" == "Darwin" ]]; then
   fi
 fi
 
-# Nix
-path_prepend "$HOME/.nix-profile/bin"
-path_prepend "/nix/var/nix/profiles/default/bin"
+# =============================================================================
+# PLUGINS & HOOKS
+# =============================================================================
+ZSH_PLUGINS_DIR="$HOME/.config/zsh"
 
-# Go
-path_prepend "$HOME/.local/go/bin"
-path_prepend "/usr/local/go/bin"
-
-# User-installed binaries
-path_prepend "$HOME/.local/bin"
-
-# FZF
+# 1. Completions & Scripts
+source_if_exists "$ZSH_PLUGINS_DIR/nix-zsh-completions/nix-zsh-completions.plugin.zsh"
+source_if_exists "$HOME/.local/bin/google-cloud-sdk/path.zsh.inc"
+source_if_exists "$HOME/.local/bin/google-cloud-sdk/completion.zsh.inc"
+source_if_exists "$HOME/.local/bin/terraform-old/path.zsh.inc"
 path_append "$HOME/.local/bin/fzf/bin"
 
-# Google Cloud SDK
-source_if_exists "$HOME/.local/bin/google-cloud-sdk/path.zsh.inc"
+# 2. Key Plugins (Order matters: Autosuggestions then Highlighting last)
+source_if_exists "$ZSH_PLUGINS_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source_if_exists "$ZSH_PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
-# Old Terraform version
-source_if_exists "$HOME/.local/bin/terraform-old/path.zsh.inc"
+# 3. Prompt Features
+if command -v starship &>/dev/null; then
+  eval "$(starship init zsh)"
+fi
 
-# final with local scripts
-# bindkey -s ^e "sessionizer\n"
+# Transient Prompt (requires being sourced after theme init)
+if [[ -f "$ZSH_PLUGINS_DIR/zsh-transient-prompt/zsh-transient-prompt.zsh" ]]; then
+  source "$ZSH_PLUGINS_DIR/zsh-transient-prompt/zsh-transient-prompt.zsh"
+fi
 
-# =============================================================================
-# FINAL SETUP
-# =============================================================================
+# 4. Tool Hooks
+if command -v fzf &>/dev/null; then
+  eval "$(fzf --zsh)"
+fi
 
-# Direnv
 if command_exists direnv; then
   zsh_log "Setting up direnv hook"
   eval "$(direnv hook zsh)"
-
-  # This hook is to suppress direnv's output.
   _direnv_hook() {
     eval "$(direnv export zsh 2>&1 | \
       sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,3})*)?[mGK]//g" | \
       egrep -v -e '^direnv: (loading|export|unloading)' \
     )"
   }
-else
-  zsh_log "direnv not found, skipping hook setup"
-fi
-
-# FZF keybindings and fuzzy completion
-if command_exists fzf; then
-  zsh_log "Setting up fzf"
-  eval "$(fzf --zsh)"
-else
-  zsh_log "fzf not found, skipping setup"
 fi

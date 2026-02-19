@@ -1,5 +1,25 @@
-README.md
-LICENSE.md
-.DS_Store
-.git
-.gitignore
+# GNU Stow Ignore File
+# Each line is a Perl Regular Expression
+
+# Documentation and Repo files
+(^|/)README\.md$
+(^|/)LICENSE\.md$
+(^|/)Makefile$
+(^|/)SECURITY\.md$
+(^|/)backup\.md$
+(^|/)dotfiles\.md$
+
+# Management Folders
+(^|/)\.git/.*
+(^|/)\.githooks/.*
+(^|/)scripts/.*
+(^|/)TODO/.*
+
+# macOS junk
+(^|/)\.DS_Store$
+
+# Git/Secrets config
+(^|/)\.gitignore$
+(^|/)\.pre-commit-config\.yaml$
+(^|/)\.secrets\.baseline$
+(^|/)\.stow-local-ignore$

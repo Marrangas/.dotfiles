@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+if command -v gitleaks &> /dev/null; then
+    gitleaks protect --staged --verbose --no-banner
+    EXIT=$?
+    if [ $EXIT -ne 0 ]; then
+        echo "ERROR: Gitleaks detected sensitive information in your staged changes!"
+        exit $EXIT
+    fi
+else
+    echo "WARNING: gitleaks is not installed. Skipping secret scanning."
+fi
+
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+# 2. Detect Secrets
+if command -v detect-secrets &>/dev/null; then
+    BASELINE=".githooks/config/.secrets.baseline"
+    if [ -f "$BASELINE" ]; then
+        FILES_TO_SCAN=$(echo "$STAGED_FILES" | grep -v "package.lock.json" || true)
+        if [ -n "$FILES_TO_SCAN" ]; then
+            detect-secrets scan --baseline "$BASELINE" $FILES_TO_SCAN
+        fi
+    fi
+fi
+
+# 3. YAML Check
+YML_FILES=$(echo "$STAGED_FILES" | grep -E '\.(yaml|yml)$' || true)
+if [ -n "$YML_FILES" ] && command -v python3 &>/dev/null; then
+    for f in $YML_FILES; do
+        if [ -f "$f" ] && python3 -c "import yaml" &>/dev/null; then
+            python3 -c "import yaml; yaml.safe_load(open('$f'))" || { echo "ERROR: Invalid YAML in '$f'"; exit 1; }
+        fi
+    done
+fi
+
+exit 0

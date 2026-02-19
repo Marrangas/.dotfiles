@@ -1,12 +1,10 @@
 # Mac
 .DS_Store
 
-# Tmux install
-tmux/.config/tmux/plugins/**
-
 # Gcloud ...
 gcloud/.config/gcloud/logs
-
+# Tmux install
+tmux/.config/tmux/plugins/**
 **/AppSupport
 
 # lua and nvim
@@ -16,3 +14,9 @@ test.sh
 
 spell/
 lazy-lock.json
+
+# Python / Direnv
+.direnv/
+venv/
+.venv/
+pyvenv.cfg

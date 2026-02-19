@@ -1,0 +1,15 @@
+# bat configuration file
+# Managed by dotfiles
+
+# Set the theme to Catppuccin Macchiato (if installed)
+--theme="Catppuccin Macchiato"
+
+# Show only line numbers and git changes (cleaner look, no boxes)
+--style="numbers,changes"
+
+# Use 'less' as the pager
+--pager="less -FR"
+
+# Case-insensitive search
+--map-syntax "*.jenkinsfile:Groovy"
+--map-syntax "*.props:Java Properties"

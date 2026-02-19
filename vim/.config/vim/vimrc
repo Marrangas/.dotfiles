@@ -1,0 +1,64 @@
+" =============================================================================
+" Minimal Vim Configuration
+" Path: ~/.config/vim/vimrc
+" =============================================================================
+
+" --- General Settings ---
+set nocompatible         " Use Vim defaults instead of Vi
+set encoding=utf-8       " Standard encoding
+set number               " Show line numbers
+set relativenumber       " Relative line numbers for easier jumping
+set cursorline           " Highlight the cursor line
+set showmatch            " Show matching brackets
+set wrap                 " Wrap long lines
+set scrolloff=8          " Keep 8 lines above/below cursor when scrolling
+
+" --- Indentation ---
+set expandtab            " Use spaces instead of tabs
+set shiftwidth=4         " Number of spaces for auto-indent
+set tabstop=4            " Number of spaces per tab
+set softtabstop=4
+set smartindent          " Auto-indent new lines
+
+" --- Search ---
+set incsearch            " Search as you type
+set hlsearch             " Highlight search results
+set ignorecase           " Case-insensitive search...
+set smartcase            " ...unless capital letters are used
+
+" --- Performance & Files ---
+set hidden               " Allow background buffers
+set nobackup             " Don't create backup files
+set noswapfile           " Don't create swap files
+set undofile             " Persistent undo across sessions
+set updatetime=300       " Faster update time (better for Git/LSP)
+
+" --- UI & Colors ---
+if has('termguicolors')
+    set termguicolors    " Enable 24-bit RGB colors
+endif
+set background=dark
+syntax on
+
+" --- Clipboard ---
+" Sync with system clipboard (macOS/Linux)
+" if has('unnamedplus')
+"     set clipboard=unnamedplus
+" endif
+
+" --- Keybindings ---
+let mapleader = " "      " Use space as leader
+
+" Fast exit from insert mode
+" inoremap jj <Esc>
+
+" Clear search highlighting with <leader>h
+nnoremap <leader><Esc> :nohlsearch<CR>
+
+" Buffer navigation
+nnoremap <leader>n :bnext<CR>
+nnoremap <leader>p :bprevious<CR>
+
+nnoremap - :Ex<CR>
+set nu
+set rnu
