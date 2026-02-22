@@ -2,10 +2,10 @@
 # Managed by dotfiles
 
 # Set the theme to Catppuccin Macchiato (if installed)
---theme="Catppuccin Macchiato"
+--theme="Catppuccin Mocha"
 
 # Show only line numbers and git changes (cleaner look, no boxes)
---style="numbers,changes"
+--style="changes"
 
 # Use 'less' as the pager
 --pager="less -FR"

@@ -1,3 +1,43 @@
+- use ctags
+  - https://kulkarniamit.github.io/whatwhyhow/howto/use-vim-ctags.html
+
+- git 
+  - next change // next hunk
+  - stage por partes...
+  - blame ...
+- puede que el treesitter me ralentice el codigo... como es posible analizar el
+  performance y si me es util o no?
+- use
+- vim:
+  - quickfix vs location vs edit ...(interact with those in vanilla vim)
+    - https://www.youtube.com/watch?v=AuXZA-xCv04
+    - vimgrep /{gerp pattern} {files pattern}
+    - vim
+    - grep -r (usando el commando externo)
+    - vim unimpared (learn or discover...)
+  - fzf
+  - diagnostics
+  - cmp
+  - lsp
+
+
+- [ ] autocommands for my fucking wiki (cuando edito, o directamente sync con
+  obsidian?? para tener en hidden)
+- [ ] the autocommands could be usefull to automante a lot of stuff which is the
+  thin I do most of the time... use my routines to learn (this could also be
+  use to trigger my own ecosystem in wiki... can it be interchangeable?? --> )
+
+I do not know how to test: maybe this is what gets me to get interested in it: https://github.com/nvim-neotest/neotest
+
+make your tooling better inside the containers man
+https://github.com/mutagen-io/mutagen
+
+deploy and manage your dotfiles (separate them so you can create  a fucking dev container??)
+
+en luagar de tener una lualine, a lo mejor tiene sentido:
+nvim file data show lsp, size, filetype, file status, size, errors
+- hacer un buen setup con el fucking netrw... no esta mal, aunque sea muy feo
+
 - [ ] gsutil performance optimizations
 - [ ] fuse / fuse mount in linux (wrapper) -> See `helpers/.local/bin/cloud-mount`
 - [ ] htop -> Modernized in `htop/.config/htop/htoprc`
@@ -17,6 +57,13 @@ la capa que todos estamos pensando: arquitectura 3-2-1
   - github (my own repos)
   - one drive
   - google drive
+
+- install fd
+- install fzf
+- install python ecosystem (pyenv, pip, venv, etc) and understand it deeply
+
+seems rubi is a good thing to learn specially for fast dev on startup...
+basecamp was succesfull why not me (dsl languages are a bad start for the future but you can do stuff fast)
 
 ## 3 copias totales
 

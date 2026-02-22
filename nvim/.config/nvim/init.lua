@@ -1,65 +1,37 @@
--- : <leader> Must happen before plugins are loaded (otherwise wrong leader will be used)intintintintinitinit
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
--- delete initial Alt+e for inserting special characters in US-keyboard
-vim.g.tui_escape_term_ansicodes = true
+---@diagnostic disable-next-line: undefined-field
+local vim = vim
 
--- [[ Install`lazy.nvim` plugin manager ]]
---    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
-local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
-if not vim.loop.fs_stat(lazypath) then
-  local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-  vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
-end ---@diagnostic disable-next-line: undefined-field
-vim.opt.rtp:prepend(lazypath)
-
-require('lazy').setup {
-  'mbbill/undotree',
-  -- Formating
-  'tpope/vim-sleuth',
-
-  -- Navegation or oil???
-  'tpope/vim-vinegar',
-
-  -- documentation
-  'vim-utils/vim-man',
-  -- 'pope/vim-markdown',
-
-  { 'numToStr/Comment.nvim', opts = {} },
-  {
-    'folke/todo-comments.nvim',
-    event = 'VimEnter',
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    opts = { signs = false },
-  },
-
-  -- git
-  'tpope/vim-fugitive',
-  -- - [ ] https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-align.md
-  -- - [ ] https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-bracketed.md
-
-  -- html
-  {
-    'barrett-ruth/live-server.nvim',
-    build = 'npm add -g live-server',
-    cmd = { 'LiveServerStart', 'LiveServerStop' },
-    config = true,
-  },
-
-  -- ia + avante.
-  -- 'github/copilot.vim', -- run: Copilot setup || Copilot enable
-
-  -- terraform
-  'hashicorp/terraform-ls',
-  'terraform-linters/tflint',
-  'aquasecurity/vim-tfsec',
-  'yangzhixuan/bipandoc',
-
-  { import = 'plugins' },
+-- [[ Diagnostic Config & Keymaps ]] :help vim.diagnostic.Opts
+vim.diagnostic.config {
+    update_in_insert = false,
+    severity_sort = true,
+    float = { border = 'rounded', source = 'if_many' },
+    underline = { severity = vim.diagnostic.severity.ERROR },
+    virtual_text = true,
+    virtual_lines = false,
+    -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
+    jump = { float = true },
 }
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
-require 'marrangas.keymaps'
-require 'marrangas.options'
-require 'marrangas.autocmd'
+-- [[ Install `lazy.nvim` plugin manager ]] `:help lazy.nvim.txt`
+local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+    local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
+    local out = vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
+    if vim.v.shell_error ~= 0 then error('Error cloning lazy.nvim:\n' .. out) end
+end
 
--- thank you kikstart nvim
+local rtp = vim.opt.rtp
+rtp:prepend(lazypath)
+
+require 'config.autocmd'
+require 'config.options'
+require 'config.keymaps'
+
+-- [[ Configure and install plugins ]] :Lazy :Lazy update
+require('lazy').setup {
+    -- { import = 'experiments' },
+
+    { import = 'plugins' },
+}

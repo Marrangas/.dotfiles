@@ -61,7 +61,7 @@ return { -- Fuzzy Finder (files, lsp, etc)
         ['ui-select'] = {
           require('telescope.themes').get_dropdown(),
         },
-        ['mdeia-files'] = {
+        ['media-files'] = {
           filetypes = { 'png', 'webp', 'jpg', 'jpeg', 'pdf' },
           find_cmd = 'rg',
         },

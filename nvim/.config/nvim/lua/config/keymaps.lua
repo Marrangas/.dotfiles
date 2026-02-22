@@ -1,0 +1,161 @@
+-- [[ Essential ]]
+-- : <leader> Must happen before plugins are loaded
+-- (otherwise wrong leader will be used)intintintintinitinit
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+vim.keymap.set('n', '<leader>.e', ':Ex<CR>')
+
+-- Clear highlights
+--  See `:help hlsearch`
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+
+vim.keymap.set('n', '<C-z>', '<Nop>', { desc = 'Disable suspend' })
+
+-- the most repeated, with one less keypress
+-- who knows if I will still be doing it
+vim.keymap.set('n', '<leader>w', ':w<CR>', { desc = 'Classic :w improved'})
+
+-- write/save when the buffer has been modified.
+vim.keymap.set("i", "<C-s>", "<ESC>ma<ESC>:update <CR>`a", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-s>", "<ESC>ma<ESC>:update <CR>`a", { noremap = true, silent = true })
+
+-- Terminal remaps
+-- This won't work in all terminal emulators/tmux/etc. Try your own mapping
+-- or just use <C-\><C-n> to exit terminal mode
+vim.keymap.set("t", "<Esc>", "<c-\\><c-n>",
+{ noremap = true, silent = true , desc = 'Exit terminal mode' })
+
+-- delete a word backward in insert mode with Ctrl+Backspace
+vim.keymap.set({"c", "i"}, "<C-H>", "<C-w>", { desc = "Delete word backwards in command mode" })
+
+-- help cmdline-editing
+vim.keymap.set('c', '<C-a>', '<Home>', { desc = 'Emacs first column'})
+vim.keymap.set('c', '<C-e>', '<End>', { desc = 'Emacs first last column'})
+vim.keymap.set('c', '<C-b>', '<Left>', { desc = 'Emacs backward one char'})
+vim.keymap.set('c', '<C-f>', '<Right>', { desc = 'Emacs forward one char'})
+vim.keymap.set('c', '<M-b>', '<S-Left>', { desc = 'Emacs backward one word'})
+vim.keymap.set('c', '<M-f>', '<S-Right>', { desc = 'Emacs forward onw word'})
+vim.keymap.set('c', '<C-U>', '<C-E><C-U>', { desc = 'Emacs clean line'})
+
+-- search within visual selection
+vim.keymap.set("x", "/", "<Esc>/\\%V", { noremap = true })
+
+-- Page navegation
+vim.keymap.set('n', 'J', 'mzJ`z', {desc = 'Classic [J]oin improved'})
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Classeic Ctr-d improved' })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Classic Ctr-u improved' })
+vim.keymap.set('n', '<C-f>', '<C-f>zz', { desc = 'Classic Ctr-f improved' })
+vim.keymap.set('n', '<C-b>', '<C-b>zz', { desc = 'Classic Ctr-b improved' })
+vim.keymap.set('n', 'n', 'nzzzv', {desc = 'Classic [n]ext find improved'})
+vim.keymap.set('n', 'N', 'Nzzzv', {desc = 'Classic previouse find improved'})
+
+-- smart deletion, dd
+-- It solves the issue, where you want to delete empty line, but dd will override your last yank.
+-- Code below will check if u are deleting empty line, if so - use black hole register.
+-- [src: https://www.reddit.com/r/neovim/comments/w0jzzv/comment/igfjx5y/?utm_source=share&utm_medium=web2x&context=3]
+vim.keymap.set("n", "dd", function()
+	if vim.api.nvim_get_current_line():match("^%s*$") then
+		return '"_dd'
+	else
+		return "dd"
+	end
+end, { expr = true, desc = "Smart dd (ignore empty lines in register)" })
+
+-- paste without loosing clipboard
+vim.keymap.set('x', '<leader>p', [["_dP]], {desc = '[p]aste without replacing register'})
+
+-- copy to clypboard: asbjornHaland
+vim.keymap.set({ 'n', 'v' }, '<leader>y', [["+y]], {desc = '[y]ank to clipboard' })
+vim.keymap.set('n', '<leader>Y', [["+Y]], {desc = '[Y]ank line to clipboard'})
+vim.keymap.set({ 'n', 'v' }, '<leader>d', [["+d]], {desc = '[d]elete to clipboard'})
+
+-- Remap for dealing with word wrap
+vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", {
+    expr = true,
+    silent = true,
+    desc = 'Classic k improved for word wrap'
+})
+
+vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", {
+    silent = true,
+    expr = true,
+    desc = 'Classic j improved for word wrap'
+})
+
+-- easier moving of code blocks
+-- Try to go into visual mode (v), thenselect several lines of code
+-- here and then press ``>`` several times.
+vim.keymap.set("v", "<", "<gv", { noremap = true, silent = true })
+vim.keymap.set("v", ">", ">gv", { noremap = true, silent = true })
+
+-- Line move
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", {desc = 'pattertn j [move line down]'})
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", {desc = 'pattertn k [move line up]'})
+
+-- Quickfix
+vim.keymap.set('n', '<C-j>', '<cmd>cnext<CR>zz', {desc = 'pattern j (down) quickfix'})
+vim.keymap.set('n', '<C-k>', '<cmd>cprev<CR>zz', {desc = 'pattern k (up) quickfix'})
+
+-- Location list jumps
+-- vim.keymap.set('n', '<leader>k', '<cmd>lnext<CR>zz')
+-- vim.keymap.set('n', '<leader>j', '<cmd>lprev<CR>zz')
+
+-- File commands
+vim.keymap.set('n', '<leader>.f', vim.lsp.buf.format, { desc = '[.]file [F]ormat ' })
+vim.keymap.set('n', '<leader>.x', vim.lsp.buf.format, { desc = '[.]file e[x]ecute' })
+vim.keymap.set('n', '<leader>.s', vim.lsp.buf.format, { desc = '[.]file [s]ource' })
+
+vim.keymap.set('n', '<leader>..', function()
+  local path = vim.fn.expand '%:p'
+  vim.cmd('cd ' .. vim.fs.dirname(path))
+end, { desc = '[.]file as cwd' })
+
+
+-- Diagnostic keymaps (use an alternative quickfix?)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+
+-- [[ harpoon config ]]
+-- vim.keymap.set('n', '<leader>a', function()
+--   require('harpoon.mark').add_file()
+-- end, {desc = 'Harpoon [A]dd file'})
+-- vim.keymap.set('n', '<C-e>', function()
+--   require('harpoon.ui').toggle_quick_menu()
+-- end, {desc = 'Harpoon [A]dd file'})
+-- vim.keymap.set('n', '<leader>h', function()
+--   require('harpoon.ui').nav_file(1)
+-- end, {desc = 'Harpoon h=1 file'})
+-- vim.keymap.set('n', '<leader>j', function()
+--   require('harpoon.ui').nav_file(2)
+-- end, {desc = 'Harpoon j=2 file'})
+-- vim.keymap.set('n', '<leader>k', function()
+--   require('harpoon.ui').nav_file(3)
+-- end, {desc = 'Harpoon k=3 key file'})
+-- vim.keymap.set('n', '<leader>l', function()
+--   require('harpoon.ui').nav_file(4)
+-- end, {desc = 'Harpoon l=4 file'})
+--
+-- -- Obsidian Xanadu
+-- vim.keymap.set('n', '<leader>sx', function()
+--   require('telescope.builtin').find_files { cwd = '~/Documents/wiki/' }
+-- end, { desc = '[S]earch [X]anadu' })
+--
+-- vim.keymap.set('n', '<leader>xg', ':ObsidianSearch', { desc = '[X]anadu [G]rep' })
+-- vim.keymap.set('n', '<leader>x.', ':ObsidianOpen<CR>', { desc = '[X]anadu Open [.]' })
+-- vim.keymap.set('n', '<leader>x<', ':ObsidianBacklink<CR>', { desc = '[X]anadu [<]' })
+-- vim.keymap.set('n', '<leader>x>', ':ObsidianLinks<CR>', { desc = '[X]anadu [>]' })
+-- vim.keymap.set('n', '<leader>xt', ':ObsidianTOC<CR>', { desc = '[X]anadu [T]OC' })
+-- vim.keymap.set('n', '<leader>x#', ':ObsidianTag', { desc = '[X]anadu [#]tag' })
+-- vim.keymap.set('n', '<leader>xs', ':ObsidianQuickSwitch<CR>', { desc = '[X]anadu [S]earch' })
+-- vim.keymap.set('n', '<leader>xd', ':ObsidianToday<CR>', { desc = '[X]anadu [D]aily' })
+--
+--
+-- -- Telescope others
+-- vim.keymap.set('n', '<leader>st', ':TodoTelescope<CR>', { desc = '[S]earch [T]odo' })
+--
+-- -- Undotree
+-- vim.keymap.set('n', '<C-h>', '<cmd>colder<CR>zz', {desc = 'pattern h (down) quickfix'})
+-- vim.keymap.set('n', '<C-k>', '<cmd>cnewer<CR>zz', {desc = 'pattern l (up) quickfix'})
+-- vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)

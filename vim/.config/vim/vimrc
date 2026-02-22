@@ -12,6 +12,8 @@ set cursorline           " Highlight the cursor line
 set showmatch            " Show matching brackets
 set wrap                 " Wrap long lines
 set scrolloff=8          " Keep 8 lines above/below cursor when scrolling
+set path=,**             " Make globing for find as a fuzzy find
+let g:netrw_banner=0
 
 " --- Indentation ---
 set expandtab            " Use spaces instead of tabs
