@@ -1,6 +1,10 @@
 - use ctags
   - https://kulkarniamit.github.io/whatwhyhow/howto/use-vim-ctags.html
 
+- crear diccionarios o skills de cosas... manen tus datos limpitos y tus listas
+  bien agrupadas en la era de la ia (this is hacking setup by default... make
+your things as easy to your fingertips)
+- activar spelling en el idioma que toca... ins completion
 - git 
   - next change // next hunk
   - stage por partes...

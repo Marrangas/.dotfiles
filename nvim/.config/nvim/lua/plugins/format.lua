@@ -4,6 +4,7 @@ return {
         event = { 'BufWritePre' },
         cmd = { 'ConformInfo' },
         keys = {
+            -- Triggered on save so no need to add keymap
             {
                 '<leader>f',
                 function() require('conform').format { async = true, lsp_format = 'fallback' } end,
