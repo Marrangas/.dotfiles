@@ -3,9 +3,12 @@
 
 # Gcloud ...
 gcloud/.config/gcloud/logs
+
 # Tmux install
 tmux/.config/tmux/plugins/**
 **/AppSupport
+
+**/.secrets.baseline
 
 # lua and nvim
 tags
@@ -16,6 +19,6 @@ lazy-lock.json
 
 # Python / Direnv
 .direnv/
-venv/
 .venv/
+venv/
 pyvenv.cfg

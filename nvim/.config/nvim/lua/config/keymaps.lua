@@ -93,8 +93,10 @@ vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'pattertn j [move line dow
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'pattertn k [move line up]' })
 
 -- Quickfix
-vim.keymap.set('n', '<C-j>', '<cmd>cnext<CR>zz', { desc = 'pattern j (down) quickfix' })
-vim.keymap.set('n', '<C-k>', '<cmd>cprev<CR>zz', { desc = 'pattern k (up) quickfix' })
+vim.keymap.set('n', '<C-j>', '<cmd>cnext<CR>', { desc = 'pattern j (down) quickfix' })
+vim.keymap.set('n', '<C-k>', '<cmd>cprev<CR>', { desc = 'pattern k (up) quickfix' })
+vim.keymap.set('n', '<C-h>', '<cmd>colder<CR>zz', { desc = 'pattern h (down) quickfix' })
+vim.keymap.set('n', '<C-l>', '<cmd>cnewer<CR>zz', { desc = 'pattern l (up) quickfix' })
 
 -- Location list jumps
 -- vim.keymap.set('n', '<leader>k', '<cmd>lnext<CR>zz')
@@ -110,29 +112,9 @@ vim.keymap.set('n', '<leader>..', function()
     vim.cmd('cd ' .. vim.fs.dirname(path))
 end, { desc = '[.]file as cwd' })
 
--- Diagnostic keymaps (use an alternative quickfix?)
+-- -- Diagnostic keymaps (use an alternative quickfix?)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
 
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
-
--- -- Obsidian Xanadu
--- vim.keymap.set('n', '<leader>sx', function()
---   require('telescope.builtin').find_files { cwd = '~/Documents/wiki/' }
--- end, { desc = '[S]earch [X]anadu' })
--- vim.keymap.set('n', '<leader>xg', ':ObsidianSearch', { desc = '[X]anadu [G]rep' })
--- vim.keymap.set('n', '<leader>x.', ':ObsidianOpen<CR>', { desc = '[X]anadu Open [.]' })
--- vim.keymap.set('n', '<leader>x<', ':ObsidianBacklink<CR>', { desc = '[X]anadu [<]' })
--- vim.keymap.set('n', '<leader>x>', ':ObsidianLinks<CR>', { desc = '[X]anadu [>]' })
--- vim.keymap.set('n', '<leader>xt', ':ObsidianTOC<CR>', { desc = '[X]anadu [T]OC' })
--- vim.keymap.set('n', '<leader>x#', ':ObsidianTag', { desc = '[X]anadu [#]tag' })
--- vim.keymap.set('n', '<leader>xs', ':ObsidianQuickSwitch<CR>', { desc = '[X]anadu [S]earch' })
--- vim.keymap.set('n', '<leader>xd', ':ObsidianToday<CR>', { desc = '[X]anadu [D]aily' })
---
--- -- Telescope others
--- vim.keymap.set('n', '<leader>st', ':TodoTelescope<CR>', { desc = '[S]earch [T]odo' })
---
--- -- Undotree
--- vim.keymap.set('n', '<C-h>', '<cmd>colder<CR>zz', {desc = 'pattern h (down) quickfix'})
--- vim.keymap.set('n', '<C-k>', '<cmd>cnewer<CR>zz', {desc = 'pattern l (up) quickfix'})

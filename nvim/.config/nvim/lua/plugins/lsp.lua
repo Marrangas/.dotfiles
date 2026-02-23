@@ -39,7 +39,7 @@ return { -- LSP Configuration & Plugins
             --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
             --    function will be executed to configure the current buffer
             vim.api.nvim_create_autocmd('LspAttach', {
-                group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
+                group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
                 callback = function(event)
                     -- In this case, we create a function that lets us more easily define mappings specific
                     -- for LSP related items. It sets the mode, buffer and description for us each time.
@@ -55,20 +55,20 @@ return { -- LSP Configuration & Plugins
                     -- Jump to the definition of the word under your cursor.
                     --  This is where a variable was first declared, or where a function is defined, etc.
                     --  To jump back, press <C-T>.
-                    map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+                    map('gd', function() Snacks.picker.lsp_definitions() end, '[G]oto [D]efinition')
 
                     --  This is not Goto Definition, this is Goto Declaration.
                     --  For example, in C this would take you to the header
                     map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
                     -- Find references for the word under your cursor.
-                    map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+                    map('gr', function() Snacks.picker.lsp_references() end, '[G]oto [R]eferences')
 
                     -- Jump to the implementation of the word under your cursor.
                     --  Useful when your language has ways of declaring types without an actual implementation.
                     map(
                         'gI',
-                        require('telescope.builtin').lsp_implementations,
+                        function() Snacks.picker.lsp_implementations() end,
                         '[G]oto [I]mplementation'
                     )
 
@@ -77,7 +77,7 @@ return { -- LSP Configuration & Plugins
                     --  the definition of its *type*, not where it was *defined*.
                     map(
                         '<leader>D',
-                        require('telescope.builtin').lsp_type_definitions,
+                        function() Snacks.picker.lsp_type_definitions() end,
                         'Type [D]efinition'
                     )
 
@@ -85,7 +85,7 @@ return { -- LSP Configuration & Plugins
                     --  Symbols are things like variables, functions, types, etc.
                     map(
                         '<leader>ds',
-                        require('telescope.builtin').lsp_document_symbols,
+                        function() Snacks.picker.lsp_symbols() end,
                         '[D]ocument [S]ymbols'
                     )
 
@@ -93,7 +93,7 @@ return { -- LSP Configuration & Plugins
                     --  Similar to document symbols, except searches over your whole project.
                     map(
                         '<leader>ws',
-                        require('telescope.builtin').lsp_dynamic_workspace_symbols,
+                        function() Snacks.picker.lsp_workspace_symbols() end,
                         '[W]orkspace [S]ymbols'
                     )
 
@@ -166,7 +166,7 @@ return { -- LSP Configuration & Plugins
                         },
                     },
                     flags = {
-                        debounce_text_changes = 500, -- Don't send updates to the server too fast
+                        debounce_text_changes = 500,
                     },
                 },
 
@@ -193,19 +193,28 @@ return { -- LSP Configuration & Plugins
                         yaml = {
                             schemas = {
                                 kubernetes = '*.yaml',
-                                ['https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/v1.18.0-standalone-strict/all.json'] = '/*.k8s.yaml',
                                 ['http://json.schemastore.org/github-workflow'] = '.github/workflows/*',
                                 ['http://json.schemastore.org/github-action'] = '.github/action.{yml,yaml}',
                                 ['http://json.schemastore.org/ansible-stable-2.9'] = 'roles/tasks/*.{yml,yaml}',
-                                -- ['http://json.schemastore.org/prettierrc'] = '.prettierrc.{yml,yaml}',
+                                ['http://json.schemastore.org/prettierrc'] = '.prettierrc.{yml,yaml}',
                                 ['http://json.schemastore.org/kustomization'] = 'kustomization.{yml,yaml}',
                                 ['http://json.schemastore.org/ansible-playbook'] = '*play*.{yml,yaml}',
                                 ['http://json.schemastore.org/chart'] = 'Chart.{yml,yaml}',
                                 ['https://json.schemastore.org/dependabot-v2'] = '.github/dependabot.{yml,yaml}',
                                 ['https://json.schemastore.org/gitlab-ci'] = '*gitlab-ci*.{yml,yaml}',
-                                ['https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json'] = '*api*.{yml,yaml}',
-                                ['https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json'] = '*docker-compose*.{yml,yaml}',
-                                ['https://raw.githubusercontent.com/argoproj/argo-workflows/master/api/jsonschema/schema.json'] = '*flow*.{yml,yaml}',
+                                ['https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/v1.18.0-standalone-strict/all.json'] =
+                                '/*.k8s.yaml',
+                                ['https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json'] =
+                                '*api*.{yml,yaml}',
+                                ['https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json'] =
+                                '*docker-compose*.{yml,yaml}',
+                                ['https://raw.githubusercontent.com/argoproj/argo-workflows/master/api/jsonschema/schema.json'] =
+                                '*flow*.{yml,yaml}',
+
+                                -- Google Cloud Build (Community Schema)
+                                -- Note: Official Google schemas are often baked into the Cloud Code extension.
+                                -- You can find community versions at schemastore.org or via the URL below:
+                                ['https://json.schemastore.org/cloudbuild.json'] = 'cloudbuild.yaml',
                             },
                         },
                     },
@@ -267,13 +276,38 @@ return { -- LSP Configuration & Plugins
                         },
                     },
                 },
-                htmx = {
-                    filetypes = { 'html', 'templ' },
-                    -- :LspStart htx
-                },
+                -- htmx = {
+                --     filetypes = { 'html', 'templ', --[[ 'markdown'  ]]}, --
+                --     on_attach = function(client, bufnr)
+                --         if vim.bo[bufnr].filetype == 'markdown' then
+                --             local path = vim.api.nvim_buf_get_name(bufnr)
+                --             local home = vim.uv.os_homedir()
+                --
+                --             local is_allowed_path = path:match(home .. '/Documents/marrangas')
+                --                 or path:match 'marranwwwas'
+                --
+                --             if not is_allowed_path then
+                --                 client.stop()
+                --                 return
+                --             end
+                --
+                --             -- 2. Filtro por contenido (primeras 200 líneas)
+                --             local lines = vim.api.nvim_buf_get_lines(bufnr, 0, 200, false)
+                --             local has_htmx_attr = false
+                --             for _, line in ipairs(lines) do
+                --                 if line:match 'hx%-' then
+                --                     has_htmx_attr = true
+                --                     break
+                --                 end
+                --             end
+                --
+                --             if not has_htmx_attr then client.stop() end
+                --         end
+                --     end,
+                -- },
+
                 markdown_oxide = {
-                    -- Ensure that dynamicRegistration is enabled! This allows the LS to take into account actions like the
-                    -- Create Unresolved File code action, resolving completions for unindexed code blocks, ...
+                    filetypes = { 'markdown' },
                     capabilities = {
                         workspace = {
                             didChangeWatchedFiles = {
@@ -281,11 +315,24 @@ return { -- LSP Configuration & Plugins
                             },
                         },
                     },
-                    -- Force attachment to current directory if no obsidian/git root is found
-                    root_dir = function()
-                        return vim.fn.getcwd()
+                    root_dir = function(fname)
+                        local util = require 'lspconfig.util'
+                        return util.root_pattern('.git', '.obsidian')(fname)
+                            or util.path.dirname(fname)
                     end,
+                    flags = {
+                        debounce_text_changes = 500,
+                    },
                 },
+
+                -- obsidian = {
+                --     -- NOTE: This often overlaps with markdown-oxide.
+                --     -- Switch to this if you find oxide slow or missing specific Obsidian features.
+                --     filetypes = { 'markdown' },
+                --     root_dir = function(fname)
+                --         return require('lspconfig.util').root_pattern '.obsidian'(fname)
+                --     end,
+                -- },
             }
 
             -- Ensure the servers and tools above are installed
@@ -300,60 +347,66 @@ return { -- LSP Configuration & Plugins
             -- for you, so that they are available from within Neovim.
             local ensure_installed = vim.tbl_keys(servers or {})
             vim.list_extend(ensure_installed, {
-                'stylua', -- Used to format lua code
+                'markdown-oxide', -- Explicitly use the hyphenated package name for Mason
+                -- 'obsidian', -- Obsidian LSP
+                -- 'stylua', -- Used to format lua code
                 'shfmt',
                 'shellharden',
                 'shellcheck',
                 'tflint',
                 'tfsec',
+                -- 'markdownlint', -- Added for Markdown syntax and frontmatter validation
                 'html-lsp',
-                'templ',
-                'prettierd',
-                'cssls',
+                -- 'templ',
+                -- 'prettierd',
+                -- 'cssls',
             })
             require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
-            for name, server in pairs(servers) do
-                server.capabilities =
-                    vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-                vim.lsp.config(name, server)
-                vim.lsp.enable(name)
-            end
+            require('mason-lspconfig').setup {
+                handlers = {
+                    function(server_name)
+                        local server = servers[server_name] or {}
+                        server.capabilities = vim.tbl_deep_extend(
+                            'force',
+                            {},
+                            capabilities,
+                            server.capabilities or {}
+                        )
 
-            vim.lsp.config('lua_ls', {
-                on_init = function(client)
-                    if client.workspace_folders then
-                        local path = client.workspace_folders[1].name
-                        if
-                            path ~= vim.fn.stdpath 'config'
-                            and (
-                                vim.uv.fs_stat(path .. '/.luarc.json')
-                                or vim.uv.fs_stat(path .. '/.luarc.jsonc')
-                            )
-                        then
-                            return
+                        -- Special handling for lua_ls
+                        if server_name == 'lua_ls' then
+                            server.on_init = function(client)
+                                if client.workspace_folders then
+                                    local path = client.workspace_folders[1].name
+                                    if
+                                        path ~= vim.fn.stdpath 'config'
+                                        and (
+                                            vim.uv.fs_stat(path .. '/.luarc.json')
+                                            or vim.uv.fs_stat(path .. '/.luarc.jsonc')
+                                        )
+                                    then
+                                        return
+                                    end
+                                end
+                                client.config.settings.Lua =
+                                    vim.tbl_deep_extend('force', client.config.settings.Lua, {
+                                        runtime = {
+                                            version = 'LuaJIT',
+                                            path = { 'lua/?.lua', 'lua/?/init.lua' },
+                                        },
+                                        workspace = {
+                                            checkThirdParty = false,
+                                            library = vim.api.nvim_get_runtime_file('', true),
+                                        },
+                                    })
+                            end
                         end
-                    end
 
-                    client.config.settings.Lua =
-                        vim.tbl_deep_extend('force', client.config.settings.Lua, {
-                            runtime = {
-                                version = 'LuaJIT',
-                                path = { 'lua/?.lua', 'lua/?/init.lua' },
-                            },
-                            workspace = {
-                                checkThirdParty = false,
-                                -- NOTE: this is a lot slower and will cause issues when working on your own configuration.
-                                --  See https://github.com/neovim/nvim-lspconfig/issues/3189
-                                library = vim.api.nvim_get_runtime_file('', true),
-                            },
-                        })
-                end,
-                settings = {
-                    Lua = {},
+                        require('lspconfig')[server_name].setup(server)
+                    end,
                 },
-            })
-            vim.lsp.enable 'lua_ls'
+            }
         end,
     },
     {

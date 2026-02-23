@@ -59,31 +59,21 @@ return {
             },
 
             completion = {
-                -- By default, you may press `<c-space>` to show the documentation.
-                -- Optionally, set `auto_show = true` to show the documentation after a delay.
-                documentation = { auto_show = false, auto_show_delay_ms = 500 },
-                -- 'prefix' will fuzzy match on the text before the cursor
-                -- 'full' will fuzzy match on the text before _and_ after the cursor
-                keyword = { range = 'full' },
+                documentation = { auto_show = false },
                 menu = { scrolloff = 2 },
+                trigger = {
+                    show_on_keyword = true,
+                },
             },
-
             sources = {
-                default = { 'lsp', 'path', 'snippets' },
+                default = { 'lsp', 'path', 'snippets'},
             },
-
             snippets = { preset = 'luasnip' },
 
             -- Blink.cmp includes an optional, recommended rust fuzzy matcher,
             -- which automatically downloads a prebuilt binary when enabled.
-            --
-            -- By default, we use the Lua implementation instead, but you may enable
-            -- the rust implementation via `'prefer_rust_with_warning'`
-            --
             -- See :h blink-cmp-config-fuzzy for more information
-            fuzzy = { implementation = 'lua' },
-
-            -- Shows a signature help window while you type arguments for a function
+            fuzzy = { implementation = 'prefer_rust' },
             signature = { enabled = true },
         },
     },

@@ -40,6 +40,7 @@
 	parent = rev-parse --abbrev-ref --symbolic-full-name @{u}
 	tree = log --graph --date=format:'%y-%m-%d %H:%M' --pretty='format:%C(auto)%h %C(red)%d%C(reset)%n%C(yellow)%an -> %ae%n%C(green)%ad%C(reset) %s%n' --all
 	authors = shortlog --summary --numbered
+	contrib = "!f() { git log --author=\"$(git config user.name)\" --pretty=tformat: --numstat \"$@\" | gawk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf \"added lines: %s removed lines: %s total lines: %s\\n\", add, subs, loc }' -; }; f"
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f

@@ -1,3 +1,32 @@
+- lsp
+      'stylua', -- Used to format lua code
+
+      'bashls',
+      'shellharden',
+      'shellcheck',
+
+      'gopls',
+      'pylsp',
+
+      'terraform-ls',
+      'tflint',
+      'tfsec',
+
+      'ansible-language-server',
+      -- 'yalls',
+
+      'htmx-lsp',
+      'html-lsp',
+      'templ',
+      'prettierd',
+      'cssls',
+      'eslint-lsp',
+      'typescript-language-server',
+      'tailwindcss-language-server',
+      'markdown-oxide',
+- install it step by step 
+  - brew install ghostscript (or inventariar)
+  - brew install tree-sitter
 - use ctags
   - https://kulkarniamit.github.io/whatwhyhow/howto/use-vim-ctags.html
 
