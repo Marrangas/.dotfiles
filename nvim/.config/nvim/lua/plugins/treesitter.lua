@@ -1,9 +1,7 @@
 return {
     'nvim-treesitter/nvim-treesitter',
-    branch = 'master',
-    build = ':TSUpdate',
-    opts = {
-        ensure_installed = {
+    config = function()
+        local filetypes = {
             'http',
             'bash',
             'make',
@@ -28,21 +26,20 @@ return {
             'diff',
             'vim',
             'vimdoc',
-        },
-        auto_install = true,
-        highlight = { enable = true },
-        indent = { enable = true },
-        incremental_selection = {
-            enable = true,
-            keymaps = {
-                init_selection = '<CR>',
-                node_incremental = '<CR>',
-                scope_incremental = '<Tab>',
-                node_decremental = '<BS>',
+        }
+        require('nvim-treesitter').install(filetypes)
+        require('nvim-treesitter.config').setup({
+            ensure_installed = filetypes,
+            highlight = { enable = true },
+            incremental_selection = {
+                enable = true,
+                keymaps = {
+                    init_selection = "<Enter>",
+                    node_incremental = "<Enter>",
+                    scope_incremental = "<Tab>",
+                    node_decremental = "<BS>",
+                },
             },
-        },
-    },
-    config = function(_, opts)
-        require('nvim-treesitter').setup(opts)
+        })
     end,
 }

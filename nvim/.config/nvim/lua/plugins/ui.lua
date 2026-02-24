@@ -9,19 +9,15 @@ return {
                 flavour = 'mocha',
                 integrations = {
                     treesitter = true,
+                    markdown = true,
                     native_lsp = {
                         enabled = true,
                         semantic_tokens = true,
                     },
                     obsidian = true,
                 },
-                custom_highlights = function(colors)
-                    return {
-                        ["@markup.italic"] = { fg = colors.pink, italic = true },
-                        ["@markup.strong"] = { fg = colors.red, bold = true },
-                    }
-                end,
             }
+
             vim.cmd.colorscheme 'catppuccin-mocha'
             vim.cmd.hi 'Comment gui=none'
         end,
@@ -40,24 +36,26 @@ return {
         'folke/todo-comments.nvim',
         dependencies = { 'nvim-lua/plenary.nvim' },
         opts = {
-            -- vim.keymap.set('n', '<leader>st', ':TodoTelescope<CR>', { desc = '[S]earch [T]odo' }),
             keywords = {
-                TASK = {
-                    icon = '❑ ',
-                    color = 'info',
-                    alt = { '[- [ ]' },
-                },
-                PENDING = {
-                    icon = ' ',
-                    color = 'warning',
-                    alt = { '[- [~]' },
-                },
-                DONE = {
-                    icon = '✔ ',
-                    color = 'hint',
-                    alt = { '[- [x]' },
-                },
+                TASK = { icon = '󰄱 ', color = 'info', alt = { '[- [ ]' }, },
+                PENDING = { icon = ' ', color = 'warning', alt = { '[- [~]' } },
+                DONE = { icon = '✔ ', color = 'hint', alt = { '[- [x]' } },
             },
         },
     },
+    -- {
+    --     'MeanderingProgrammer/render-markdown.nvim',
+    --     dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' }, -- if you use the mini.nvim suite
+    --     -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' },        -- if you use standalone mini plugins
+    --     -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+    --     ---@module 'render-markdown'
+    --     ---@type render.md.UserConfig
+    --     opts = {
+    --         bullet = { enabled = false },
+    --         yaml = {
+    --             enabled = true,
+    --             render_modes = true,
+    --         },
+    --     },
+    -- },
 }
