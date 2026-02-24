@@ -25,7 +25,7 @@ return {
     --     ---@type obsidian.config
     --     opts = {
     --         log_level = vim.log.levels.ERROR, -- Silencia los avisos de conceallevel
-    --         ui = { enable = false }, -- Let render-markdown handle this (faster)
+    --         ui = { enable = false },          -- Let render-markdown handle this (faster)
     --         -- Optional, set to true if you use the Obsidian Advanced URI plugin.
     --         -- https://github.com/Vinzent03/obsidian-advanced-uri
     --         legacy_commands = false,

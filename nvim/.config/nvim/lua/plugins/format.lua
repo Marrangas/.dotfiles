@@ -35,7 +35,7 @@ return {
                 -- go = { 'gofmt' },
                 -- python = { 'black' },
                 html = { 'prettier' },
-                markdown = { 'cbfmt' },
+                markdown = { 'prettier' },
                 javascript = { 'prettier' },
                 typescript = { 'prettier' },
                 -- Conform can also run multiple formatters sequentially

@@ -54,7 +54,7 @@ return {
     --         bullet = { enabled = false },
     --         yaml = {
     --             enabled = true,
-    --             render_modes = true,
+    --             -- render_modes = true,
     --         },
     --     },
     -- },

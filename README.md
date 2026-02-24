@@ -1,98 +1,199 @@
-- other plugins
-    -- Formating
-    "tpope/vim-sleuth",
-
-    -- documentation make it better (vim or not vim..)
-    -- 'pope/vim-markdown',
-    "vim-utils/vim-man",
-
-    -- utils
-    "mbbill/undotree",
-
-    { "numToStr/Comment.nvim", opts = {} },
-
-    {
-        "folke/todo-comments.nvim",
-        event = "VimEnter",
-        dependencies = { "nvim-lua/plenary.nvim" },
-        opts = { signs = false },
-    },
-
-    -- git
-    -- - [ ] https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-align.md
-    -- - [ ] https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-bracketed.md
-
-    -- html
-    {
-        "barrett-ruth/live-server.nvim",
-        build = "npm add -g live-server",
-        cmd = { "LiveServerStart", "LiveServerStop" },
-        config = true,
-    },
-
-    -- ia + avante.
-    -- 'github/copilot.vim', -- run: Copilot setup || Copilot enable
-
-    -- terraform
-    "hashicorp/terraform-ls",
-    "terraform-linters/tflint",
-    "aquasecurity/vim-tfsec",
-    "yangzhixuan/bipandoc",
-- lsp
-      'stylua', -- Used to format lua code
-
-      'bashls',
-      'shellharden',
-      'shellcheck',
-
-      'gopls',
-      'pylsp',
-
-      'terraform-ls',
-      'tflint',
-      'tfsec',
-
-      'ansible-language-server',
-      -- 'yalls',
-
-      'htmx-lsp',
-      'html-lsp',
-      'templ',
-      'prettierd',
-      'cssls',
-      'eslint-lsp',
-      'typescript-language-server',
-      'tailwindcss-language-server',
-      'markdown-oxide',
-
-- install it step by step 
-  - brew install ghostscript (or inventariar)
-  - brew install tree-sitter
-- use ctags
+- [ ] vim tutor part 2 has some things that are interesting
+- [ ] how does the fucking syntax work
+- [ ] understand and make lua plugin
+    - https://learnxinyminutes.com/docs/lua/
+    - :help lua-guide
+    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
+- [ ] always learn how to read further apart form the llm
+      MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
+      which is very useful when you're not exactly sure of what you're looking for.
+- [ ] use ctags
   - https://kulkarniamit.github.io/whatwhyhow/howto/use-vim-ctags.html
-
-- crear diccionarios o skills de cosas... manen tus datos limpitos y tus listas
-  bien agrupadas en la era de la ia (this is hacking setup by default... make
-your things as easy to your fingertips)
-- activar spelling en el idioma que toca... ins completion
-- git 
-  - next change // next hunk
-  - stage por partes...
-  - blame ...
-- puede que el treesitter me ralentice el codigo... como es posible analizar el
-  performance y si me es util o no?
-- use
-- vim:
-  - quickfix vs location vs edit ...(interact with those in vanilla vim)
+- [ ] quickfix vs location vs edit ...(interact with those in vanilla vim)
     - https://www.youtube.com/watch?v=AuXZA-xCv04
     - vimgrep /{gerp pattern} {files pattern}
     - vim
     - grep -r (usando el commando externo)
     - vim unimpared (learn or discover...)
-  - fzf
-  - diagnostics
-  - cmp
-  - lsp
+- [ ] crear diccionarios o skills de cosas... manen tus datos limpitos y tus listas
+  bien agrupadas en la era de la ia (this is hacking setup by default... make
+your things as easy to your fingertips)
+- [ ] activar spelling en el idioma que toca... ins completion
+- git 
+  - next change // next hunk
+  - stage por partes...
+  - blame ...
+- [ ] seems rubi is a good thing to learn specially for fast dev on startup...
+basecamp was succesfull why not me (dsl languages are a bad start for the future but you can do stuff fast)
+
+
+## leader
+-- See `:help mapleader` -- NOTE: Must happen before
+-- plugins are loaded (otherwise wrong leader will be used) } require('lazy').setup { --
+
+## lsp
+'bashls',
+'shellharden',
+'shellcheck',
+
+'gopls',
+'pylsp',
+
+'terraform-ls',
+'tflint',
+'tfsec',
+
+'ansible-language-server',
+-- 'yalls',
+
+'htmx-lsp',
+'html-lsp',
+'templ',
+'prettierd',
+'cssls',
+'eslint-lsp',
+'typescript-language-server',
+'tailwindcss-language-server',
+'markdown-oxide',
+
+## repos and my own explanation
+-- 'mbbill/undotree',
+-- 'vim-utils/vim-man',
+-- 'numToStr/Comment.nvim'
+-- 'tpope/vim-sleuth',
+-- 'tpope/vim-markdown',
+
+-- markwown
+-- 'yangzhixuan/bipandoc',
+
+-- ia + avante. 
+-- 'github/copilot.vim'
+-- run: Copilot setup || Copilot enable
+
+-- html live server without the shit { 'barrett-ruth/live-server.nvim', build = 'npm add -g live-server', cmd = {
+'LiveServerStart', 'LiveServerStop' }, config = true, },
+-- terraform
+-- 'hashicorp/terraform-ls'
+-- 'terraform-linters/tflint',
+-- 'aquasecurity/vim-tfsec'
+
+## color formating
+['@markup.heading.1.markdown'] = { fg = cp.red, style = { 'bold' } },
+['@markup.heading.2.markdown'] = { fg = cp.peach, style = { 'bold' } },
+['@markup.heading.3.markdown'] = { fg = cp.green, style = { 'bold' } },
+['@markup.heading.4.markdown'] = { fg = cp.sapphire, style = { 'bold' } },
+['@markup.heading.5.markdown'] = { fg = cp.lavender, style = { 'bold' } },
+['@markup.heading.6.markdown'] = { fg = cp.mauve, style = { 'bold' } },
+
+-- Frontmatter (YAML Metadata) - Separación Robusta
+['@markup.metadata.markdown'] = { fg = cp.overlay1 },             -- Los marcadores ---
+['@punctuation.delimiter.markdown'] = { fg = cp.overlay1 },       -- Alternativa para ---
+['@property.yaml'] = { fg = cp.blue, style = { 'bold' } },        -- Claves
+['@variable.member.yaml'] = { fg = cp.blue, style = { 'bold' } }, -- Claves (alternativa)
+['@punctuation.delimiter.yaml'] = { fg = cp.rosewater },          -- El colon :
+['@string.yaml'] = { fg = cp.green },                             -- Valores de texto
+['@string.unquoted.yaml'] = { fg = cp.green },                    -- Valores sin comillas
+['@number.yaml'] = { fg = cp.peach },                             -- Valores numéricos
+['@boolean.yaml'] = { fg = cp.peach },                            -- Valores booleanos
+['@type.yaml'] = { fg = cp.yellow },
+['@label.yaml'] = { fg = cp.blue },
+
+-- Elementos Inline con más contraste
+['@markup.raw.markdown_inline'] = { fg = cp.teal },                 -- Código `inline` en Teal (Cian)
+['@markup.list.markdown'] = { fg = cp.yellow, style = { 'bold' } }, -- Balas en Amarillo
+['@markup.strong.markdown_inline'] = { fg = cp.maroon, style = { 'bold' } },
+['@markup.italic.markdown_inline'] = { fg = cp.sky, style = { 'italic' } },
+
+-- UI de Obsidian y Enlaces
+ObsidianTag = { fg = cp.pink, style = { 'bold' } },
+ObsidianCheckbox = { fg = cp.blue },
+ObsidianRefText = { fg = cp.mauve, style = { 'bold' } },
+['@markup.link.label.markdown_inline'] = { fg = cp.blue, style = { 'bold' } },
+['@markup.link.url.markdown_inline'] = { fg = cp.rosewater, style = { 'italic' } },
+
+-- Tablas
+['@markup.table.header.markdown'] = { fg = cp.sky, style = { 'bold' } },
+['@punctuation.special.markdown_inline'] = { fg = cp.lavender }, -- Los pipes |
+
+
+
+
+errides = {
+function(cp)
+rn {
+-- Headers: Variedad cromática para distinguir niveles
+['@markup.heading.1.markdown'] = { fg = cp.red, style = { 'bold' } },
+['@markup.heading.2.markdown'] = { fg = cp.peach, style = { 'bold' } },
+['@markup.heading.3.markdown'] = { fg = cp.green, style = { 'bold' } },
+['@markup.heading.4.markdown'] = { fg = cp.sapphire, style = { 'bold' } },
+['@markup.heading.5.markdown'] = { fg = cp.lavender, style = { 'bold' } },
+['@markup.heading.6.markdown'] = { fg = cp.mauve, style = { 'bold' } },
+
+-- Frontmatter (YAML Metadata) - Separación Robusta
+['@markup.metadata.markdown'] = { fg = cp.overlay1 },             -- Los marcadores ---
+['@punctuation.delimiter.markdown'] = { fg = cp.overlay1 },       -- Alternativa para ---
+['@property.yaml'] = { fg = cp.blue, style = { 'bold' } },        -- Claves
+['@variable.member.yaml'] = { fg = cp.blue, style = { 'bold' } }, -- Claves (alternativa)
+['@punctuation.delimiter.yaml'] = { fg = cp.rosewater },          -- El colon :
+['@string.yaml'] = { fg = cp.green },                             -- Valores de texto
+['@string.unquoted.yaml'] = { fg = cp.green },                    -- Valores sin comillas
+['@number.yaml'] = { fg = cp.peach },                             -- Valores numéricos
+['@boolean.yaml'] = { fg = cp.peach },                            -- Valores booleanos
+['@type.yaml'] = { fg = cp.yellow },
+['@label.yaml'] = { fg = cp.blue },
+
+-- Elementos Inline con más contraste
+['@markup.raw.markdown_inline'] = { fg = cp.teal },                 -- Código `inline` en Teal (Cian)
+['@markup.list.markdown'] = { fg = cp.yellow, style = { 'bold' } }, -- Balas en Amarillo
+['@markup.strong.markdown_inline'] = { fg = cp.maroon, style = { 'bold' } },
+['@markup.italic.markdown_inline'] = { fg = cp.sky, style = { 'italic' } },
+
+-- UI de Obsidian y Enlaces
+ObsidianTag = { fg = cp.pink, style = { 'bold' } },
+ObsidianCheckbox = { fg = cp.blue },
+ObsidianRefText = { fg = cp.mauve, style = { 'bold' } },
+['@markup.link.label.markdown_inline'] = { fg = cp.blue, style = { 'bold' } },
+['@markup.link.url.markdown_inline'] = { fg = cp.rosewater, style = { 'italic' } },
+
+-- Tablas
+['@markup.table.header.markdown'] = { fg = cp.sky, style = { 'bold' } },
+['@punctuation.special.markdown_inline'] = { fg = cp.lavender }, -- Los pipes |
+
+
+
+## docs
+
+## packages
+- brew install ghostscript (or inventariar)
+- brew install tree-sitter
+
+- fzf
+- diagnostics
+- cmp
+- lsp
+- git subtree add --prefix helpers/.local/bin
+- git@github.com:Marrangas/bash-mrgs-lib.git master --squash
+- brew install starship bash-completion@2
+- python
+- golang
+- zsh
+- lsd bat eza tldr
+- starship
+- brew tap FelixKratz/formulae
+- brew install borders
+- gitleaks
+- trufflehog
+-  xz git zsh bash curl cmake coreutils gettext lua luarocks ansible
+-  postgresql sqlite redis
+
+- hcl2json terraform terraform-docs driftctl tfsec tofu docker ansible infracost
+  pulumi act kubectl
+-  mtr nmap nginx rclone ipcalc openssh openssl
+-  pyenv perl
+-  direnv zsh-powerlevel10k gh csvq jq
+-  pandoc imagemagick ffmpeg chafa catimg
+-  neovim p7zip git-lfs tmux fzf ripgrep parallel sed direnv ssh stow
+
 
 
 - [ ] autocommands for my fucking wiki (cuando edito, o directamente sync con
@@ -125,6 +226,12 @@ nvim file data show lsp, size, filetype, file status, size, errors
 - [ ] rclone -> Systemd automation in `rclone/.config/systemd/user/`
 - [x] vim -> Minimal config in `vim/.config/vim/vimrc`
 - [ ] ansible
+- install fd
+- install fzf
+- install python ecosystem (pyenv, pip, venv, etc) and understand it deeply
+
+## backup
+
 la capa que todos estamos pensando: arquitectura 3-2-1
 
 - origenes:
@@ -132,113 +239,52 @@ la capa que todos estamos pensando: arquitectura 3-2-1
   - one drive
   - google drive
 
-- install fd
-- install fzf
-- install python ecosystem (pyenv, pip, venv, etc) and understand it deeply
-
-seems rubi is a good thing to learn specially for fast dev on startup...
-basecamp was succesfull why not me (dsl languages are a bad start for the future but you can do stuff fast)
-
-## 3 copias totales
-
 1. local...
 2. aws
 3. fisico en mi disco NAS // el fucking cluster desatendido (automatizarlo)
 4. fragmentaria en cada elemento que debería de estar en los orignes que toca...
 
-## 2 soportes
-
 - disco duro local (el fucking cluster) (en discos con formato interoperativo)
 - s3
-
-## 1 en el exterior
-
 - aws no está en mi casa pero mi disco sí (no dependo de internet donde esté mi casa)
-- **low power cluster is needed** [low power](??)
 
 
-mkdir -p helpers/.local
+## elements of the repo
+- makefile
+- githooks and github flow
+  -  gitleaks
 
-git subtree add --prefix helpers/.local/bin
-git@github.com:Marrangas/bash-mrgs-lib.git master --squash
+## telescope shit
+ local client = vim.lsp.get_client_by_id(event.data.client_id)
+          if client and client:supports_method('textDocument/documentHighlight', event.buf) then
+            local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
+            vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+              buffer = event.buf,
+              group = highlight_augroup,
+              callback = vim.lsp.buf.document_highlight,
+            })
 
-brew install starship bash-completion@2
+            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+              buffer = event.buf,
+              group = highlight_augroup,
+              callback = vim.lsp.buf.clear_references,
+            })
 
-con esto puedo hacerme una lista de lo que quiero aprender y de lo que ahora mismo no
-se instalations:
+            vim.api.nvim_create_autocmd('LspDetach', {
+              group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
+              callback = function(event2)
+                vim.lsp.buf.clear_references()
+                vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
+              end,
+            })
+          end
 
-- brew tap FelixKratz/formulae
-- brew install borders
-- gitleaks
-- trufflehog
-
-  xz git zsh bash curl cmake coreutils gettext lua luarocks ansible
-
-  postgresql sqlite redis
-
-  hcl2json terraform terraform-docs driftctl tfsec tofu docker ansible infracost
-  pulumi act kubectl
-
-  mtr nmap nginx rclone ipcalc openssh openssl
-
-  pyenv perl
-
-  # python
-
-  # golang
-
-  # zsh
-
-  lsd bat eza tldr
-
-  # starship
-
-  direnv zsh-powerlevel10k gh csvq jq
-
-  pandoc imagemagick ffmpeg chafa catimg
-
-  neovim p7zip git-lfs tmux fzf ripgrep parallel sed direnv ssh stow
-
-# JMT Dotfiles
-
-Personal configuration files (dotfiles) managed with **GNU Stow**.
-
-## 🚀 Quick Start
-
-1. **Clone**:
-   ```bash
-   git clone git@github.com-marrangas:Marrangas/.dotfiles.git ~/.dotfiles
-   ```
-2. **Setup**: Configures the git hooks and other local environment settings.
-   ```bash
-   make config
-   ```
-3. **Deploy**: Use GNU Stow to symlink configurations to your `$HOME`.
-   ```bash
-   make link
-   ```
-
-## 🏗 Architecture
-
-This repository is structured for **GNU Stow**:
-
-- Each directory (e.g., `nvim/`, `zsh/`) represents a "package".
-- Running `make link` symlinks the contents of these packages to your home directory.
-- `Makefile` automates the inclusion/exclusion of directories.
-
-## 🛠 Makefile Commands
-
-- `make link`: Symlink all enabled packages to your `$HOME`.
-- `make clean`: Remove symlinks for all packages.
-- `make config`: Set up local git hooks and configuration.
-- `make scan`: Run a security audit on the entire repository history using
-  `gitleaks`.
-
-## 🛡 Security
-
-This repository includes a `gitleaks` pre-commit hook (via `make config`) to ensure
-no sensitive tokens or keys are accidentally committed to the dotfiles.
-
----
-
-_Created: 2025-11-29 | Refined: 2026-02-19_
+          -- The following code creates a keymap to toggle inlay hints in your
+          -- code, if the language server you are using supports them
+          --
+          -- This may be unwanted, since they displace some of your code
+          if client and client:supports_method('textDocument/inlayHint', event.buf) then
+            map('<leader>th', function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf }) end, '[T]oggle Inlay [H]ints')
+          end
+        end,
+      })

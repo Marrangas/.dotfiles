@@ -1,113 +1,255 @@
--- The line beneath this is called `modeline`. See `:help modeline` -- vim:
-ts=2concealconceal sts=2 sw=2 et -- --[[
-
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-===================================================================== ========
-.-----. ======== ======== .----------------------. | === | ======== ========
-|.-""""""""""""""""""-.| |-----| ======== ======== || || | === | ======== ======== ||
-KICKSTART.NVIM || |-----| ======== ======== || || | === | ======== ======== || ||
-|-----| ======== ======== ||:Tutor || |:::::| ======== ========
-|'-..................-'| |\_**\_o| ======== ======== `"")----------------(""`
-\*\***\_**\*\*** ======== ======== /::::::::::| |::::::::::\ \ no mouse \ ========
-======== /:::========| |==hjkl==:::\ \ required \ ======== ======== '""""""""""""'
-'""""""""""""' '""""""""""' ======== ======== ========
-=====================================================================
-=====================================================================
-
-What is Kickstart?
-
-Kickstart.nvim is _not_ a distribution.
-
-Kickstart.nvim is a starting point for your own configuration. The goal is that you
-can read every line of code, top-to-bottom, understand what your configuration is
-doing, and modify it to suit your needs.
-
-    Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
-
-    If you don't know anything about Lua, I recommend taking some time to read through
-    a guide. One possible example which will only take 10-15 minutes:
-      - https://learnxinyminutes.com/docs/lua/
-
-    After understanding a bit more about Lua, you can use `:help lua-guide` as a
-    reference for how Neovim integrates Lua.
+- [ ] vim tutor part 2 has some things that are interesting
+- [ ] how does the fucking syntax work
+- [ ] understand and make lua plugin
+    - https://learnxinyminutes.com/docs/lua/
     - :help lua-guide
     - (or HTML version): https://neovim.io/doc/user/lua-guide.html
+- [ ] always learn how to read further apart form the llm
+      MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
+      which is very useful when you're not exactly sure of what you're looking for.
+- [ ] use ctags
+  - https://kulkarniamit.github.io/whatwhyhow/howto/use-vim-ctags.html
+- [ ] quickfix vs location vs edit ...(interact with those in vanilla vim)
+    - https://www.youtube.com/watch?v=AuXZA-xCv04
+    - vimgrep /{gerp pattern} {files pattern}
+    - vim
+    - grep -r (usando el commando externo)
+    - vim unimpared (learn or discover...)
+- [ ] crear diccionarios o skills de cosas... manen tus datos limpitos y tus listas
+  bien agrupadas en la era de la ia (this is hacking setup by default... make
+your things as easy to your fingertips)
+- [ ] activar spelling en el idioma que toca... ins completion
+- git 
+  - next change // next hunk
+  - stage por partes...
+  - blame ...
+- [ ] seems rubi is a good thing to learn specially for fast dev on startup...
+basecamp was succesfull why not me (dsl languages are a bad start for the future but you can do stuff fast)
 
-Kickstart Guide:
 
-TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
+## leader
+-- See `:help mapleader` -- NOTE: Must happen before
+-- plugins are loaded (otherwise wrong leader will be used) } require('lazy').setup { --
 
-    If you don't know what this means, type the following:
-      - <escape key>
-      - :
-      - Tutor
-      - <enter key>
+## lsp
+'bashls',
+'shellharden',
+'shellcheck',
 
-    (If you already know the Neovim basics, you can skip this step.)
+'gopls',
+'pylsp',
 
-Once you've completed that, you can continue working through **AND READING** the rest
-of the kickstart init.lua.
+'terraform-ls',
+'tflint',
+'tfsec',
 
-Next, run AND READ `:help`. This will open up a help window with some basic
-information about reading, navigating and searching the builtin help documentation.
+'ansible-language-server',
+-- 'yalls',
 
-    This should be the first place you go to look when you're stuck or confused
-    with something. It's one of my favorite Neovim features.
+'htmx-lsp',
+'html-lsp',
+'templ',
+'prettierd',
+'cssls',
+'eslint-lsp',
+'typescript-language-server',
+'tailwindcss-language-server',
+'markdown-oxide',
 
-    MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
-    which is very useful when you're not exactly sure of what you're looking for.
+## repos and my own explanation
+-- 'mbbill/undotree',
+-- 'vim-utils/vim-man',
+-- 'numToStr/Comment.nvim'
+-- 'tpope/vim-sleuth',
+-- 'tpope/vim-markdown',
 
-I have left several `:help X` comments throughout the init.lua These are hints about
-where to find more information about the relevant settings, plugins or Neovim
-features used in Kickstart.
+-- markwown
+-- 'yangzhixuan/bipandoc',
 
-NOTE: Look for lines like this
+-- ia + avante. 
+-- 'github/copilot.vim'
+-- run: Copilot setup || Copilot enable
 
-    Throughout the file. These are for you, the reader, to help you understand what is happening.
-    Feel free to delete them once you know what you're doing, but they should serve as a guide
-    for when you are first encountering a few different constructs in your Neovim config.
-
-If you experience any errors while trying to install kickstart, run `:checkhealth`
-for more info.
-
-I hope you enjoy your Neovim journey,
-
-- TJ
-
-P.S. You can delete this when you're done too. It's your config now! :) --]]
-
--- Set <space> as the leader key -- See `:help mapleader` -- NOTE: Must happen before
-plugins are loaded (otherwise wrong leader will be used) } require('lazy').setup { --
-Formating 'tpope/vim-sleuth',
-
--- documentation make it better (vim or not vim..) -- 'pope/vim-markdown',
-'vim-utils/vim-man',
-
--- utils 'mbbill/undotree',
-
-{ 'numToStr/Comment.nvim', opts = {} },
-
-{ 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = {
-'nvim-lua/plenary.nvim' }, opts = { signs = false }, },
-
--- git -- - [ ]
-https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-align.md -- - [ ]
-https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-bracketed.md
-
--- html { 'barrett-ruth/live-server.nvim', build = 'npm add -g live-server', cmd = {
+-- html live server without the shit { 'barrett-ruth/live-server.nvim', build = 'npm add -g live-server', cmd = {
 'LiveServerStart', 'LiveServerStop' }, config = true, },
+-- terraform
+-- 'hashicorp/terraform-ls'
+-- 'terraform-linters/tflint',
+-- 'aquasecurity/vim-tfsec'
 
--- ia + avante. -- 'github/copilot.vim', -- run: Copilot setup || Copilot enable
+## color formating
+['@markup.heading.1.markdown'] = { fg = cp.red, style = { 'bold' } },
+['@markup.heading.2.markdown'] = { fg = cp.peach, style = { 'bold' } },
+['@markup.heading.3.markdown'] = { fg = cp.green, style = { 'bold' } },
+['@markup.heading.4.markdown'] = { fg = cp.sapphire, style = { 'bold' } },
+['@markup.heading.5.markdown'] = { fg = cp.lavender, style = { 'bold' } },
+['@markup.heading.6.markdown'] = { fg = cp.mauve, style = { 'bold' } },
 
--- terraform 'hashicorp/terraform-ls', 'terraform-linters/tflint',
-'aquasecurity/vim-tfsec', 'yangzhixuan/bipandoc',
+-- Frontmatter (YAML Metadata) - Separación Robusta
+['@markup.metadata.markdown'] = { fg = cp.overlay1 },             -- Los marcadores ---
+['@punctuation.delimiter.markdown'] = { fg = cp.overlay1 },       -- Alternativa para ---
+['@property.yaml'] = { fg = cp.blue, style = { 'bold' } },        -- Claves
+['@variable.member.yaml'] = { fg = cp.blue, style = { 'bold' } }, -- Claves (alternativa)
+['@punctuation.delimiter.yaml'] = { fg = cp.rosewater },          -- El colon :
+['@string.yaml'] = { fg = cp.green },                             -- Valores de texto
+['@string.unquoted.yaml'] = { fg = cp.green },                    -- Valores sin comillas
+['@number.yaml'] = { fg = cp.peach },                             -- Valores numéricos
+['@boolean.yaml'] = { fg = cp.peach },                            -- Valores booleanos
+['@type.yaml'] = { fg = cp.yellow },
+['@label.yaml'] = { fg = cp.blue },
 
-{ import = 'plugins' }, { import = 'marrangas' }, { import = 'vimpractice' }, {
-import = 'lab' }, }
+-- Elementos Inline con más contraste
+['@markup.raw.markdown_inline'] = { fg = cp.teal },                 -- Código `inline` en Teal (Cian)
+['@markup.list.markdown'] = { fg = cp.yellow, style = { 'bold' } }, -- Balas en Amarillo
+['@markup.strong.markdown_inline'] = { fg = cp.maroon, style = { 'bold' } },
+['@markup.italic.markdown_inline'] = { fg = cp.sky, style = { 'italic' } },
 
-require 'marrangas.keymaps' require 'marrangas.options' require 'marrangas.autocmd'
+-- UI de Obsidian y Enlaces
+ObsidianTag = { fg = cp.pink, style = { 'bold' } },
+ObsidianCheckbox = { fg = cp.blue },
+ObsidianRefText = { fg = cp.mauve, style = { 'bold' } },
+['@markup.link.label.markdown_inline'] = { fg = cp.blue, style = { 'bold' } },
+['@markup.link.url.markdown_inline'] = { fg = cp.rosewater, style = { 'italic' } },
 
--- thank you kikstart nvim
+-- Tablas
+['@markup.table.header.markdown'] = { fg = cp.sky, style = { 'bold' } },
+['@punctuation.special.markdown_inline'] = { fg = cp.lavender }, -- Los pipes |
+
+
+
+
+errides = {
+function(cp)
+rn {
+-- Headers: Variedad cromática para distinguir niveles
+['@markup.heading.1.markdown'] = { fg = cp.red, style = { 'bold' } },
+['@markup.heading.2.markdown'] = { fg = cp.peach, style = { 'bold' } },
+['@markup.heading.3.markdown'] = { fg = cp.green, style = { 'bold' } },
+['@markup.heading.4.markdown'] = { fg = cp.sapphire, style = { 'bold' } },
+['@markup.heading.5.markdown'] = { fg = cp.lavender, style = { 'bold' } },
+['@markup.heading.6.markdown'] = { fg = cp.mauve, style = { 'bold' } },
+
+-- Frontmatter (YAML Metadata) - Separación Robusta
+['@markup.metadata.markdown'] = { fg = cp.overlay1 },             -- Los marcadores ---
+['@punctuation.delimiter.markdown'] = { fg = cp.overlay1 },       -- Alternativa para ---
+['@property.yaml'] = { fg = cp.blue, style = { 'bold' } },        -- Claves
+['@variable.member.yaml'] = { fg = cp.blue, style = { 'bold' } }, -- Claves (alternativa)
+['@punctuation.delimiter.yaml'] = { fg = cp.rosewater },          -- El colon :
+['@string.yaml'] = { fg = cp.green },                             -- Valores de texto
+['@string.unquoted.yaml'] = { fg = cp.green },                    -- Valores sin comillas
+['@number.yaml'] = { fg = cp.peach },                             -- Valores numéricos
+['@boolean.yaml'] = { fg = cp.peach },                            -- Valores booleanos
+['@type.yaml'] = { fg = cp.yellow },
+['@label.yaml'] = { fg = cp.blue },
+
+-- Elementos Inline con más contraste
+['@markup.raw.markdown_inline'] = { fg = cp.teal },                 -- Código `inline` en Teal (Cian)
+['@markup.list.markdown'] = { fg = cp.yellow, style = { 'bold' } }, -- Balas en Amarillo
+['@markup.strong.markdown_inline'] = { fg = cp.maroon, style = { 'bold' } },
+['@markup.italic.markdown_inline'] = { fg = cp.sky, style = { 'italic' } },
+
+-- UI de Obsidian y Enlaces
+ObsidianTag = { fg = cp.pink, style = { 'bold' } },
+ObsidianCheckbox = { fg = cp.blue },
+ObsidianRefText = { fg = cp.mauve, style = { 'bold' } },
+['@markup.link.label.markdown_inline'] = { fg = cp.blue, style = { 'bold' } },
+['@markup.link.url.markdown_inline'] = { fg = cp.rosewater, style = { 'italic' } },
+
+-- Tablas
+['@markup.table.header.markdown'] = { fg = cp.sky, style = { 'bold' } },
+['@punctuation.special.markdown_inline'] = { fg = cp.lavender }, -- Los pipes |
+
+
+
+## docs
+
+## packages
+- brew install ghostscript (or inventariar)
+- brew install tree-sitter
+
+- fzf
+- diagnostics
+- cmp
+- lsp
+- git subtree add --prefix helpers/.local/bin
+- git@github.com:Marrangas/bash-mrgs-lib.git master --squash
+- brew install starship bash-completion@2
+- python
+- golang
+- zsh
+- lsd bat eza tldr
+- starship
+- brew tap FelixKratz/formulae
+- brew install borders
+- gitleaks
+- trufflehog
+-  xz git zsh bash curl cmake coreutils gettext lua luarocks ansible
+-  postgresql sqlite redis
+
+- hcl2json terraform terraform-docs driftctl tfsec tofu docker ansible infracost
+  pulumi act kubectl
+-  mtr nmap nginx rclone ipcalc openssh openssl
+-  pyenv perl
+-  direnv zsh-powerlevel10k gh csvq jq
+-  pandoc imagemagick ffmpeg chafa catimg
+-  neovim p7zip git-lfs tmux fzf ripgrep parallel sed direnv ssh stow
+
+
+
+- [ ] autocommands for my fucking wiki (cuando edito, o directamente sync con
+  obsidian?? para tener en hidden)
+- [ ] the autocommands could be usefull to automante a lot of stuff which is the
+  thin I do most of the time... use my routines to learn (this could also be
+  use to trigger my own ecosystem in wiki... can it be interchangeable?? --> )
+
+I do not know how to test: maybe this is what gets me to get interested in it: https://github.com/nvim-neotest/neotest
+
+make your tooling better inside the containers man
+https://github.com/mutagen-io/mutagen
+
+deploy and manage your dotfiles (separate them so you can create  a fucking dev container??)
+
+en luagar de tener una lualine, a lo mejor tiene sentido:
+nvim file data show lsp, size, filetype, file status, size, errors
+- hacer un buen setup con el fucking netrw... no esta mal, aunque sea muy feo
+
+- [ ] gsutil performance optimizations
+- [ ] fuse / fuse mount in linux (wrapper) -> See `helpers/.local/bin/cloud-mount`
+- [ ] htop -> Modernized in `htop/.config/htop/htoprc`
+- [ ] Kube kubernetes config -> Modular pattern in `kube/.kube/configs/`
+- [x] bat -> Cleaner config in `bat/.config/bat/config`
+- [ ] packer
+- [ ] pgadmin
+- [ ] prettierd
+- [ ] pulumi
+- [ ] pyenv
+- [ ] rclone -> Systemd automation in `rclone/.config/systemd/user/`
+- [x] vim -> Minimal config in `vim/.config/vim/vimrc`
+- [ ] ansible
+- install fd
+- install fzf
+- install python ecosystem (pyenv, pip, venv, etc) and understand it deeply
+
+## backup
+
+la capa que todos estamos pensando: arquitectura 3-2-1
+
+- origenes:
+  - github (my own repos)
+  - one drive
+  - google drive
+
+1. local...
+2. aws
+3. fisico en mi disco NAS // el fucking cluster desatendido (automatizarlo)
+4. fragmentaria en cada elemento que debería de estar en los orignes que toca...
+
+- disco duro local (el fucking cluster) (en discos con formato interoperativo)
+- s3
+- aws no está en mi casa pero mi disco sí (no dependo de internet donde esté mi casa)
+
+
+## elements of the repo
+- makefile
+- githooks and github flow
+  -  gitleaks
