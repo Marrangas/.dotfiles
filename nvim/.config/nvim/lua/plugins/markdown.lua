@@ -10,7 +10,7 @@ return {
                 pattern = "markdown",
                 callback = function()
                     vim.opt_local.conceallevel = 0
-                    pcall(vim.treesitter.start) -- Guarantee TS highlighting is active
+                    pcall(vim.treesitter.start)
                 end,
             })
         end,
@@ -24,7 +24,8 @@ return {
         ---@module 'obsidian'
         ---@type obsidian.config
         opts = {
-            ui = { enable = false },
+            log_level = vim.log.levels.ERROR, -- Silencia los avisos de conceallevel
+            ui = { enable = true },
             -- Optional, set to true if you use the Obsidian Advanced URI plugin.
             -- https://github.com/Vinzent03/obsidian-advanced-uri
             legacy_commands = false,

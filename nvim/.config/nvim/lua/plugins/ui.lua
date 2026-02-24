@@ -5,6 +5,23 @@ return {
         lazy = false,
         priority = 1000,
         config = function()
+            require('catppuccin').setup {
+                flavour = 'mocha',
+                integrations = {
+                    treesitter = true,
+                    native_lsp = {
+                        enabled = true,
+                        semantic_tokens = true,
+                    },
+                    obsidian = true,
+                },
+                custom_highlights = function(colors)
+                    return {
+                        ["@markup.italic"] = { fg = colors.pink, italic = true },
+                        ["@markup.strong"] = { fg = colors.red, bold = true },
+                    }
+                end,
+            }
             vim.cmd.colorscheme 'catppuccin-mocha'
             vim.cmd.hi 'Comment gui=none'
         end,
@@ -23,7 +40,7 @@ return {
         'folke/todo-comments.nvim',
         dependencies = { 'nvim-lua/plenary.nvim' },
         opts = {
-            vim.keymap.set('n', '<leader>st', ':TodoTelescope<CR>', { desc = '[S]earch [T]odo' }),
+            -- vim.keymap.set('n', '<leader>st', ':TodoTelescope<CR>', { desc = '[S]earch [T]odo' }),
             keywords = {
                 TASK = {
                     icon = '❑ ',
@@ -31,9 +48,9 @@ return {
                     alt = { '[- [ ]' },
                 },
                 PENDING = {
-                    icon = ' ', -- A clock icon
+                    icon = ' ',
                     color = 'warning',
-                    alt = { '[- [~]' }, -- Matches the pending task syntax
+                    alt = { '[- [~]' },
                 },
                 DONE = {
                     icon = '✔ ',
