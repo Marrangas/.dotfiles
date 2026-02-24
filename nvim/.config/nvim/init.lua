@@ -28,15 +28,15 @@ require('config.options')
 require('config.keymaps')
 
 -- Thanks to Pavol Z. Kutaj
-package.loaded["obsidian.lsp"] = nil
-package.preload["obsidian.lsp"] = function()
-    return {
-        start = function()
-            -- Silently block LSP from starting
-            return nil
-        end
-    }
-end
+-- package.loaded["obsidian.lsp"] = nil
+-- package.preload["obsidian.lsp"] = function()
+--     return {
+--         start = function()
+--             vim.opt_local.conceallevel = 0
+--             pcall(vim.treesitter.start) -- Guarantee TS highlighting is active
+--         end
+--     }
+-- end
 
 require('lazy').setup({
     -- { import = 'experiments' },

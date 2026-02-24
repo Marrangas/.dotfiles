@@ -1,3 +1,43 @@
+- other plugins
+    -- Formating
+    "tpope/vim-sleuth",
+
+    -- documentation make it better (vim or not vim..)
+    -- 'pope/vim-markdown',
+    "vim-utils/vim-man",
+
+    -- utils
+    "mbbill/undotree",
+
+    { "numToStr/Comment.nvim", opts = {} },
+
+    {
+        "folke/todo-comments.nvim",
+        event = "VimEnter",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        opts = { signs = false },
+    },
+
+    -- git
+    -- - [ ] https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-align.md
+    -- - [ ] https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-bracketed.md
+
+    -- html
+    {
+        "barrett-ruth/live-server.nvim",
+        build = "npm add -g live-server",
+        cmd = { "LiveServerStart", "LiveServerStop" },
+        config = true,
+    },
+
+    -- ia + avante.
+    -- 'github/copilot.vim', -- run: Copilot setup || Copilot enable
+
+    -- terraform
+    "hashicorp/terraform-ls",
+    "terraform-linters/tflint",
+    "aquasecurity/vim-tfsec",
+    "yangzhixuan/bipandoc",
 - lsp
       'stylua', -- Used to format lua code
 
@@ -24,6 +64,7 @@
       'typescript-language-server',
       'tailwindcss-language-server',
       'markdown-oxide',
+
 - install it step by step 
   - brew install ghostscript (or inventariar)
   - brew install tree-sitter

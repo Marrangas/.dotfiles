@@ -2,14 +2,14 @@ return {
     {
         "obsidian-nvim/obsidian.nvim",
         version = "*",
-        lazy = true,
+        lazy = false,
         ft = "markdown",
         init = function()
             vim.api.nvim_create_autocmd("FileType", {
                 desc = "Markdown Enhancements",
                 pattern = "markdown",
                 callback = function()
-                    vim.opt_local.conceallevel = 1
+                    vim.opt_local.conceallevel = 0
                     pcall(vim.treesitter.start) -- Guarantee TS highlighting is active
                 end,
             })
@@ -36,15 +36,15 @@ return {
             },
             -- https://github.com/obsidian-nvim/obsidian.nvim/wiki/Commands
 
-            callbacks = {
-                enter_note = function(note)
-                    vim.keymap.del('n', '<CR>', { buffer = true })
-                    vim.keymap.set('n', '<leader>xx', '<cmd>Obsidian toggle_checkbox<cr>', {
-                        buffer = true,
-                        desc = 'Toggle checkbox',
-                    })
-                end,
-            },
+            -- callbacks = {
+            --     enter_note = function(note)
+            --         vim.keymap.del('n', '<CR>', { buffer = true })
+            --         vim.keymap.set('n', '<leader>xx', '<cmd>Obsidian toggle_checkbox<cr>', {
+            --             buffer = true,
+            --             desc = 'Toggle checkbox',
+            --         })
+            --     end,
+            -- },
 
             ---@field sort? string[] | (fun(a: any, b: any): boolean) | vim.NIL | boolean
             frontmatter = {
