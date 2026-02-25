@@ -1,0 +1,18 @@
+How to use the Built-in Spell Checker
+To see the "spell" folder in action, you first need to enable the feature in your init.lua:
+
+Lua
+vim.opt.spell = true
+vim.opt.spelllang = { 'en_us' }
+-- Point to your custom additions file
+vim.opt.spellfile = vim.fn.expand('~/.config/nvim/spell/en.utf-8.add')
+The "Magic" Keybindings
+You don't usually edit the spell/*.add files manually; you do it while you code:
+
+zg (Spell Good): Adds the word under the cursor to your spellfile. It immediately disappears as an error and gets saved to that folder.
+
+zw (Spell Wrong): Opposite of zg. If Neovim thinks a word is fine but you hate it, this flags it as an error.
+
+z=: Shows a list of suggestions for the misspelled word.
+
+]s / [s: Jump to the next or previous misspelled word.

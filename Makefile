@@ -28,11 +28,11 @@ all: config link
 
 link:
 	@echo "Stowing packages: $(PACKAGES)"
-	stow --target $(STOW_TARGET) --verbose $(VERBOSITY) $(STOW_SRC)
+	stow --target $(STOW_TARGET) --dotfiles --verbose $(VERBOSITY) $(STOW_SRC)
 
 clean:
 	@echo "Unstowing packages: $(PACKAGES)"
-	stow -D --target $(STOW_TARGET) --verbose $(VERBOSITY) $(STOW_SRC)
+	stow -D --target $(STOW_TARGET) --dotfiles --verbose $(VERBOSITY) $(STOW_SRC)
 
 	@rm -rf $(HOME)/.config/tmux
 	@rm -rf $(HOME)/.config/zsh

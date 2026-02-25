@@ -1,6 +1,10 @@
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
+vim.cmd([[
+  iabbrev lenght length
+]])
+
 -- Highlight when yanking (copying) text
 --  See `:help vim.highlight.on_yank()`
 vim.api.nvim_create_autocmd('TextYankPost', {

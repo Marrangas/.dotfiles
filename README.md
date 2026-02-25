@@ -1,3 +1,34 @@
+reload a plugin Lazy reload render-markdown.nvim
+
+1. terminar el formateo en markdown
+  - 
+2. lsp setup del resto de los lenguajes
+  - terraform
+  - ansibleo
+  - yaml
+  - html, con htmx y javascript
+  - css, con tailwind
+  - python
+  - go
+  - bash
+  - lua
+  - markdown
+3. quickfix vs location vs the fucking pickers...
+4. diagnostics and bash
+5. ia gemini and others
+
+1. el super backup
+
+
+- use mcp's and try to configure them to be usefull para analizar qué hago y como escribo
+- about spellfile and zw and zg to add words to the dictionary
+- about folding
+  - :mkview to save folds and such when you close a file - but you have to use :loadview 
+  - zj and zk
+- como debuguear comandos de lua
+  - como comprobar si un plugin funciona
+  - como ver si el archivo se esta cargando
+  - como ...
 - [ ] vim tutor part 2 has some things that are interesting
 - [ ] how does the fucking syntax work
 - [ ] understand and make lua plugin

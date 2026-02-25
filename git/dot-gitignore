@@ -3,6 +3,13 @@
 **/.direnv
 **/.envrc
 
+**/.textlint.json
+**/.textlintrc
+**/.textlintrc.js
+**/.textlintrc.json
+**/.textlintrc.yml
+**/.textlintrc.yaml
+
 # OS generated files #
 ######################
 .DS_Store

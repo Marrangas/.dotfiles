@@ -1,7 +1,0 @@
-WRN 2026-02-24T12:19:35.592 ?.17868    vim_mktempdir:3325: tempdir create failed: operation not permitted: /var/folders/xw/jg9qtlz17s3d34z_jc3dvwbr0000gn/T/nvim.altostratus/XXXXXX
-WRN 2026-02-24T12:20:18.452 ?.21824    vim_mktempdir:3325: tempdir create failed: operation not permitted: /var/folders/xw/jg9qtlz17s3d34z_jc3dvwbr0000gn/T/nvim.altostratus/XXXXXX
-WRN 2026-02-24T12:20:25.544 ?.22630    vim_mktempdir:3325: tempdir create failed: operation not permitted: /var/folders/xw/jg9qtlz17s3d34z_jc3dvwbr0000gn/T/nvim.altostratus/XXXXXX
-WRN 2026-02-24T12:20:30.714 ?.23318    vim_mktempdir:3325: tempdir create failed: operation not permitted: /var/folders/xw/jg9qtlz17s3d34z_jc3dvwbr0000gn/T/nvim.altostratus/XXXXXX
-WRN 2026-02-24T12:20:47.403 ?.25263    vim_mktempdir:3325: tempdir create failed: operation not permitted: /var/folders/xw/jg9qtlz17s3d34z_jc3dvwbr0000gn/T/nvim.altostratus/XXXXXX
-WRN 2026-02-24T12:21:11.990 ?.28084    vim_mktempdir:3325: tempdir create failed: operation not permitted: /var/folders/xw/jg9qtlz17s3d34z_jc3dvwbr0000gn/T/nvim.altostratus/XXXXXX
-WRN 2026-02-24T12:21:56.888 ?.32081    vim_mktempdir:3325: tempdir create failed: operation not permitted: /var/folders/xw/jg9qtlz17s3d34z_jc3dvwbr0000gn/T/nvim.altostratus/XXXXXX

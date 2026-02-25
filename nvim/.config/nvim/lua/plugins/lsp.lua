@@ -277,6 +277,7 @@ return { -- LSP Configuration & Plugins
                         },
                     },
                 },
+
                 -- htmx = {
                 --     filetypes = { 'html', 'templ', --[[ 'markdown'  ]]}, --
                 --     on_attach = function(client, bufnr)
@@ -326,14 +327,6 @@ return { -- LSP Configuration & Plugins
                     },
                 },
 
-                -- obsidian = {
-                --     -- NOTE: This often overlaps with markdown-oxide.
-                --     -- Switch to this if you find oxide slow or missing specific Obsidian features.
-                --     filetypes = { 'markdown' },
-                --     root_dir = function(fname)
-                --         return require('lspconfig.util').root_pattern '.obsidian'(fname)
-                --     end,
-                -- },
             }
 
             -- Ensure the servers and tools above are installed
@@ -348,19 +341,17 @@ return { -- LSP Configuration & Plugins
             -- for you, so that they are available from within Neovim.
             local ensure_installed = vim.tbl_keys(servers or {})
             vim.list_extend(ensure_installed, {
-                'markdown-oxide', -- Explicitly use the hyphenated package name for Mason
-                -- 'obsidian', -- Obsidian LSP
-                -- 'stylua', -- Used to format lua code
+                'markdown-oxide',
+                'prettier',
+                'prettierd',
                 'shfmt',
                 'shellharden',
                 'shellcheck',
                 'tflint',
                 'tfsec',
-                -- 'markdownlint', -- Added for Markdown syntax and frontmatter validation
                 'html-lsp',
-                -- 'templ',
-                -- 'prettierd',
-                -- 'cssls',
+                'codespell',
+                'misspell',
             })
             require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -416,41 +407,20 @@ return { -- LSP Configuration & Plugins
         dependencies = { 'nvim-lua/plenary.nvim' },
         opts = { signs = false },
     },
-    --   -- Highlight todo, notes, etc in comments
-    { -- Linting
-        'mfussenegger/nvim-lint',
-        event = { 'BufReadPre', 'BufNewFile' },
-        config = function()
-            local lint = require 'lint'
-            lint.linters_by_ft = {
-                markdown = { nil }, -- alex
-                clojure = { nil },
-                dockerfile = { "hadolint" },
-                inko = { nil },
-                janet = { nil },
-                json = { nil },
-                rst = { nil },
-                ruby = { nil },
-                terraform = {
-                    "tflint",
-                    "tfsec"
-                },
-                text = { nil }
-            }
-
-
-            -- Create autocommand which carries out the actual linting
-            -- on the specified events.
-            local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
-            vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
-                group = lint_augroup,
-                callback = function()
-                    -- Only run the linter in buffers that you can modify in order to
-                    -- avoid superfluous noise, notably within the handy LSP pop-ups that
-                    -- describe the hovered symbol using Markdown.
-                    if vim.bo.modifiable then lint.try_lint() end
-                end,
-            })
-        end,
-    },
 }
+
+-- obsidian = {
+--     on_attach = function(client, bufnr)
+--         client.server_capabilities.definitionProvider = false
+--         client.server_capabilities.referencesProvider = false
+--         client.server_capabilities.renameProvider = false
+--         client.server_capabilities.hoverProvider = false
+--
+--         -- Only use it for colors, no diagnostics clutter
+--         vim.diagnostic.enable(false, { bufnr = bufnr })
+--     end,
+--     filetypes = { 'markdown' },
+--     root_dir = function(fname)
+--         return require('lspconfig.util').root_pattern '.obsidian' (fname)
+--     end,
+-- },

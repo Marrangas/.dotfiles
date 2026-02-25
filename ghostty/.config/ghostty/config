@@ -2,9 +2,19 @@ window-decoration = none
 macos-option-as-alt = left
 macos-titlebar-style = hidden
 macos-non-native-fullscreen = true
-theme = catppuccin-mocha
-font-family = Hack Nerd Font
-font-size = 14
 cursor-style-blink = true
 mouse-hide-while-typing = true
 clipboard-paste-protection = false
+
+theme = Catppuccin Macchiato
+
+font-family = "JetBrainsMono Nerd Font"
+font-size = 16
+font-feature = "calt"
+font-feature = "liga"
+font-feature = "zero" # Slashed zero for better variability
+# font-thicken = true # Remove this, it makes everything look too bold
+font-style = "Regular"
+font-style-bold = "Bold"
+font-style-italic = "Italic"
+font-style-bold-italic = "Bold Italic"

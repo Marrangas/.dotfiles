@@ -12,14 +12,12 @@
 # Management Folders
 (^|/)\.git/.*
 (^|/)\.githooks/.*
-(^|/)scripts/.*
 (^|/)TODO/.*
 
 # macOS junk
 (^|/)\.DS_Store$
 
 # Git/Secrets config
-(^|/)\.gitignore$
 (^|/)\.pre-commit-config\.yaml$
 (^|/)\.secrets\.baseline$
 (^|/)\.stow-local-ignore$
