@@ -1,32 +1,22 @@
 -- debug.lua
---
 -- Shows how to use the DAP plugin to debug your code.
---
 -- Primarily focused on configuring the debugger for Go, but can
 -- be extended to other languages as well. That's why it's called
 -- kickstart.nvim and not kitchen-sink.nvim ;)
 
 return {
-    --also include diagnostics...
-    -- NOTE: Yes, you can install new plugins here!
     'mfussenegger/nvim-dap',
-    -- NOTE: And you can specify dependencies as well
     dependencies = {
-        -- Creates a beautiful debugger UI
         'rcarriga/nvim-dap-ui',
-
-        -- Required dependency for nvim-dap-ui
         'nvim-neotest/nvim-nio',
-
-        -- Installs the debug adapters for you
         'mason-org/mason.nvim',
         'jay-babu/mason-nvim-dap.nvim',
 
-        -- Add your own debuggers here
+        -- my beloved debuggers
         'leoluz/nvim-dap-go',
+        'rogalmic/vscode-bash-debug',
     },
     keys = {
-        -- Basic debugging keymaps, feel free to change to your liking!
         {
             '<F5>',
             function() require('dap').continue() end,
@@ -129,6 +119,35 @@ return {
                 -- On Windows delve must be run attached or it crashes.
                 -- See https://github.com/leoluz/nvim-dap-go/blob/main/README.md#configuring
                 detached = vim.fn.has 'win32' == 0,
+            },
+        }
+        -- Bash configuration
+        local mason_path = vim.fn.stdpath "data" .. "/mason/packages/bash-debug-adapter"
+        local adapter_path = mason_path .. "/extension/adapter/main.js"
+        dap.adapters.sh = {
+            type = 'executable',
+            command = 'node',
+            args = { adapter_path },
+        }
+        dap.configurations.sh = {
+            {
+                type = 'sh',
+                request = 'launch',
+                name = 'Launch file',
+                showDebugOutput = true,
+                pathBashdb = mason_path .. "/extension/bashdb_dir/bashdb",
+                pathBashdbLib = mason_path .. "/extension/bashdb_dir",
+                trace = true,
+                file = "${file}",
+                program = "${file}",
+                cwd = "${cwd}",
+                pathCat = "cat",
+                pathBash = "/bin/bash",
+                pathMkfifo = "mkfifo",
+                pathPkill = "pkill",
+                args = {},
+                env = {},
+                terminalKind = 'integrated',
             },
         }
     end,

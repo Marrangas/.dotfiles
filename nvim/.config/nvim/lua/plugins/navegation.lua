@@ -44,216 +44,6 @@ vim.keymap.set('n', '<leader>sn', function() builtin.find_files { cwd = vim.fn.s
 --]]
 
 return {
-    {
-        'folke/snacks.nvim',
-        priority = 1000,
-        lazy = false,
-        ---@type snacks.Config
-        opts = {
-            picker = {
-                enabled = true,
-                ui_select = true,
-            },
-            bigfile = { enabled = true },
-            image = { enabled = true },
-            terminal = { enabled = true },
-            explorer = { enabled = false },
-            dashboard = { enabled = false },
-            notifier = { enabled = false },
-            input = { enabled = false },
-        },
-        keys = {
-            -- High performance replacements for Telescope
-            { '<leader>sf', function() Snacks.picker.files() end,                                   desc = 'Search [F]iles' },
-
-            { '<leader>sg', function() Snacks.picker.grep() end,                                    desc = 'Search [G]rep' },
-            { '<leader>sb', function() Snacks.picker.buffers() end,                                 desc = 'Search [B]uffers' },
-            { '<leader>sh', function() Snacks.picker.help() end,                                    desc = 'Search [H]elp' },
-            { '<leader>sk', function() Snacks.picker.keymaps() end,                                 desc = 'Search [K]eymaps' },
-            { '<leader>sq', function() Snacks.picker.qflist() end,                                  desc = 'Search [Q]uickfix List' },
-            { '<leader>ss', function() Snacks.picker.pickers() end,                                 desc = 'Search [S]elect Picker' },
-            { '<leader>sw', function() Snacks.picker.grep_word() end,                               desc = 'Search current [W]ord' },
-            { '<leader>sd', function() Snacks.picker.diagnostics() end,                             desc = 'Search [D]iagnostics' },
-            { '<leader>s.', function() Snacks.picker.resume() end,                                  desc = 'Search [R]esume' },
-            { '<leader>sc', function() Snacks.picker.commands() end,                                desc = 'Search [C]ommands' },
-            { '<leader>sn', function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end, desc = 'Search [N]eovim files' },
-            { '<leader>/',  function() Snacks.picker.lines() end,                                   desc = 'Search [/] in Buffer' },
-            { '<leader>s/', function() Snacks.picker.grep_buffers() end,                            desc = 'Search [/] in Open Files' },
-
-            -- Xanadu (Obsidian) Keymaps
-            {
-                '<leader>xf',
-                function()
-                    Snacks.picker.files({
-                        cwd = vim.fn.expand("~/Documents/wiki"),
-                        win = {
-                            input = {
-                                keys = {
-                                    ['<C-l>'] = { 'insert_link', mode = { 'n', 'i' } },
-                                },
-                            },
-                        },
-                        actions = {
-                            insert_link = function(picker, item)
-                                picker:close()
-                                local name = vim.fn.fnamemodify(item.file, ':t:r')
-                                vim.api.nvim_put({ '[[' .. name .. ']]' }, 'c', true, true)
-                            end,
-                        },
-                        transform = function(item)
-                            if item.file:match("%.pdf$") or item.file:match("%.png$") or item.file:match("%.jpg$") or item.file:match("%.jpeg$") then
-                                item.score_add = (item.score_add or 0) - 100
-                            end
-                            return item
-                        end,
-                    })
-                end,
-                desc = '[X]anadu [F]iles',
-            },
-            {
-                '<leader>xg',
-                function()
-                    Snacks.picker.grep({
-                        cwd = vim.fn.expand("~/Documents/wiki"),
-                        win = {
-                            input = {
-                                keys = {
-                                    ['<C-l>'] = { 'insert_link', mode = { 'n', 'i' } },
-                                },
-                            },
-                        },
-                        actions = {
-                            insert_link = function(picker, item)
-                                picker:close()
-                                local name = vim.fn.fnamemodify(item.file, ':t:r')
-                                vim.api.nvim_put({ '[[' .. name .. ']]' }, 'c', true, true)
-                            end,
-                        },
-                    })
-                end,
-                desc = '[X]anadu [G]rep',
-            },
-            {
-                '<leader>xt',
-                function()
-                    Snacks.picker.lsp_symbols({
-                        filter = { default = { 'Interface', 'String' } },
-                        layout = {
-                            layout = {
-                                box = "vertical",
-                                width = 0.8,
-                                height = 0.9,
-                                { win = "preview", title = "{preview}", border = "rounded" },
-                                {
-                                    box = "vertical",
-                                    border = "rounded",
-                                    height = 15,
-                                    title = "{title} {live} {flags}",
-                                    { win = "input", height = 1, border = "bottom" },
-                                    { win = "list" },
-                                },
-                            },
-                        },
-                    })
-                end,
-                desc = '[X]anadu [T]OC',
-            },
-            {
-                '<leader>x,',
-                function()
-                    Snacks.picker.lsp_references({
-                        title = "Backlinks (LSP)",
-                        layout = {
-                            layout = {
-                                box = "vertical",
-                                width = 0.8,
-                                height = 0.9,
-                                { win = "preview", title = "{preview}", border = "rounded" },
-                                {
-                                    box = "vertical",
-                                    border = "rounded",
-                                    height = 15,
-                                    title = "{title} {live} {flags}",
-                                    { win = "input", height = 1, border = "bottom" },
-                                    { win = "list" },
-                                },
-                            },
-                        },
-                    })
-                end,
-                desc = '[X]anadu Backlinks (LSP)',
-            },
-            {
-                '<leader>xi',
-                function()
-                    Snacks.picker.files({
-                        cwd = vim.fn.expand("~/Documents/wiki/templates"),
-                        confirm = function(picker, item)
-                            picker:close()
-                            if item then
-                                local path = (item.dir or picker:dir()) .. "/" .. item.file
-                                local content = vim.fn.readfile(path)
-                                vim.api.nvim_put(content, "l", true, true)
-                            end
-                        end,
-                    })
-                end,
-                desc = '[X]anadu [I]nsert template',
-            },
-            { '<leader>bd', function() Snacks.bufdelete() end,                       desc = 'Delete Buffer' },
-            { '<C-/>',      function() Snacks.terminal.toggle() end,                 desc = 'Toggle Terminal' },
-
-            -- LSP Keymaps
-            { 'grr',        function() Snacks.picker.lsp_references() end,           desc = '[G]oto [R]eferences' },
-            { 'gri',        function() Snacks.picker.lsp_implementations() end,      desc = '[G]oto [I]mplementation' },
-            { 'grd',        function() Snacks.picker.lsp_definitions() end,          desc = '[G]oto [D]efinition' },
-            { 'grt',        function() Snacks.picker.lsp_type_definitions() end,     desc = '[G]oto [T]ype Definition' },
-            { 'gO',         function() Snacks.picker.lsp_symbols() end,              desc = 'Document Symbols' },
-            { 'gW',         function() Snacks.picker.lsp_workspace_symbols() end,    desc = 'Workspace Symbols' },
-            { 'gai',        function() Snacks.picker.lsp_incoming_calls() end,       desc = 'C[a]lls Incoming' },
-            { 'gao',        function() Snacks.picker.lsp_outgoing_calls() end,       desc = 'C[a]lls Outgoing' },
-
-            -- GitHub Keymaps
-            { '<leader>gi', function() Snacks.picker.gh_issue() end,                 desc = 'GitHub Issues (open)' },
-            { '<leader>gI', function() Snacks.picker.gh_issue { state = 'all' } end, desc = 'GitHub Issues (all)' },
-            { '<leader>gp', function() Snacks.picker.gh_pr() end,                    desc = 'GitHub Pull Requests (open)' },
-            { '<leader>gP', function() Snacks.picker.gh_pr { state = 'all' } end,    desc = 'GitHub Pull Requests (all)' },
-
-            -- THE COMPROMISE: "Discovery Mode"
-            -- This ignores your 'file_ignore_patterns' so you can find media/hidden files in Obsidian
-            {
-                '<leader>sA',
-                function()
-                    Snacks.picker.files {
-                        ignored = true,
-                        hidden = true,
-                        follow = true,
-                        cmd = 'fd', -- Force fd for speed in large vaults
-                    }
-                end,
-                desc = 'Search All (Inc. Media/Ignored)',
-            },
-        },
-    },
-    {
-        'echasnovski/mini.nvim',
-        config = function()
-            -- Better Around/Inside textobjects
-            --
-            -- Examples:
-            --  - va)  - [V]isually select [A]round [)]paren
-            --  - yinq - [Y]ank [I]nside [N]ext [']quote
-            --  - ci'  - [C]hange [I]nside [']quote
-            require('mini.ai').setup { n_lines = 500 }
-
-            -- Add/delete/replace surroundings (brackets, quotes, etc.)
-            --
-            -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-            -- - sd'   - [S]urround [D]elete [']quotes
-            -- - sr)'  - [S]urround [R]eplace [)] [']
-            require('mini.surround').setup()
-        end,
-    },
     -- { 'ggandor/leap.nvim', },
     {
         'ThePrimeagen/harpoon',
@@ -298,6 +88,29 @@ return {
             vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)
         end,
     },
+    -- load a location list                 :cfile quickfix.txt
+    -- (edit it by hand)                    :set modifiable
+    -- (update the qfix list on the buffer) :cgetbuffer
+    -- how to populate from external commands (terraform  logs, compiler...) terraform...
+    -- diferences in quickfixlist vs location ()
+
+    --:cexpr system('git grep -n "pattern"').
+    --:vim /pattern/gj (d do not jump) **/*
+
+    -- {
+    --     "stevearc/quicker.nvim",
+    --     opts = {
+    --         opts = {
+    --             number = true,
+    --             relativenumber = true,
+    --             wrap = false,
+    --         },
+    --     },
+    --     keys = {
+    --         { ">", function() require("quicker").expand({ before = 2, after = 2, add_to_existing = true }) end, desc = "Expand quickfix context", },
+    --         { "<", function() require("quicker").collapse() end,                                                desc = "Collapse quickfix context", },
+    --     },
+    -- }
     -- vim quickfix
     -- vim unimpared
 }

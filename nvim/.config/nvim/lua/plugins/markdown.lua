@@ -1,5 +1,4 @@
 return {
-    {
         "obsidian-nvim/obsidian.nvim",
         version = "*",
         lazy = false,
@@ -19,6 +18,7 @@ return {
             { "<leader>xl", ":Obsidian tags ",       desc = "[X]anadu [l]labels" },
             { "<leader>xd", ":Obsidian dailies<CR>", desc = "[X]anadu [D]ailies" },
             { "<leader>xo", ":Obsidian open<CR>",    desc = "[X]anadu [O]pen" },
+            { "<leader>xn", ":Obsidian new<CR>",     desc = "[X]anadu [N]ew" },
         },
         ---@module 'obsidian'
         ---@type obsidian.config
@@ -32,16 +32,13 @@ return {
                 func = vim.ui.open,
                 schemes = { "https", "http", "file", "mailto" },
             },
-            -- Optional, set to true if you use the Obsidian Advanced URI plugin.
-            -- https://github.com/Vinzent03/obsidian-advanced-uri
-            -- https://github.com/obsidian-nvim/obsidian.nvim/wiki/Commands
 
-            -- callbacks = {
-            --     enter_note = function()
-            --         -- vim.keymap.del('n', '<CR>', { buffer = true })
-            --         vim.keymap.set("n", "<CR>", require("obsidian.api").smart_action, { buffer = true })
-            --     end,
-            -- },
+            callbacks = {
+                enter_note = function()
+                    -- vim.keymap.del('n', '<CR>', { buffer = true })
+                    -- vim.keymap.set("n", "<leader>x<CR>", require("obsidian.api").smart_action, { buffer = true })
+                end,
+            },
 
             ---@field sort? string[] | (fun(a: any, b: any): boolean) | vim.NIL | boolean
             frontmatter = {
@@ -58,8 +55,16 @@ return {
             },
 
             follow_strategy = 'open',
-            new_notes_location = 'notes_subdir',
-            notes_subdir = 'notes',
+            new_notes_location = 'vault_root',
+            ---@param title string|?
+            ---@return string
+            note_id_func = function(title)
+                if title ~= nil then
+                    return title
+                end
+                return tostring(os.time())
+            end,
+
             workspaces = {
                 {
                     name = "personal",
@@ -68,9 +73,6 @@ return {
             },
             attachments = {
                 folder = "media",
-                -- img_name_func = function()
-                --     return os.date("image_%Y%m%d_%H%M%S")
-                -- end,
                 confirm_img_paste = true,
             },
             daily_notes = {
@@ -103,5 +105,4 @@ return {
                 },
             },
         },
-    },
 }

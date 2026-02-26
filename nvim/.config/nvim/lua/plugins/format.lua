@@ -37,7 +37,8 @@ return {
             formatters_by_ft = {
                 lua = { 'stylua' },
                 c = { 'clang-format' },
-                bash = { 'shfmt' },
+                bash = { 'shellharden'  },
+                sh = { 'shellharden'  },
                 -- go = { 'goimports', 'gofmt' },
                 python = function(bufnr)
                     if require("conform").get_formatter_info("ruff_format", bufnr).available then
@@ -51,7 +52,7 @@ return {
                 -- Use the "_" filetype to run formatters on filetypes that don't
                 -- have other formatters configured.
                 -- ["_"] = { "trim_whitespace"
-            --  },
+                --  },
                 html = { 'prettierd', 'prettier', stop_after_first = true },
                 markdown = { 'prettierd', 'prettier', stop_after_first = true },
                 javascript = { 'prettierd', 'prettier', stop_after_first = true },
@@ -64,6 +65,12 @@ return {
                 formatters = {
                     ['clang-format'] = {
                         prepend_args = { '-style=file', '-fallback-style=LLVM' },
+                    },
+                    shellharden = {
+                        prepend_args = { '--indentwidth', '0' }, -- 0 usually means use tabs in shellharden
+                    },
+                    shfmt = {
+                        prepend_args = { '-i', '0' }, -- 0 means use tabs in shfmt
                     },
                 },
             },

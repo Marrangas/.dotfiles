@@ -317,6 +317,9 @@ return { -- LSP Configuration & Plugins
                             },
                         },
                     },
+                    settings = {
+                        new_file_folder_path = "notes",
+                    },
                     root_dir = function(fname)
                         local util = require 'lspconfig.util'
                         return util.root_pattern('.git', '.obsidian')(fname)
@@ -326,7 +329,6 @@ return { -- LSP Configuration & Plugins
                         debounce_text_changes = 500,
                     },
                 },
-
             }
 
             -- Ensure the servers and tools above are installed
@@ -344,14 +346,8 @@ return { -- LSP Configuration & Plugins
                 'markdown-oxide',
                 'prettier',
                 'prettierd',
-                'shfmt',
                 'shellharden',
-                'shellcheck',
-                'tflint',
-                'tfsec',
                 'html-lsp',
-                'codespell',
-                'misspell',
             })
             require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -401,26 +397,4 @@ return { -- LSP Configuration & Plugins
             }
         end,
     },
-    {
-        'folke/todo-comments.nvim',
-        event = 'VimEnter',
-        dependencies = { 'nvim-lua/plenary.nvim' },
-        opts = { signs = false },
-    },
 }
-
--- obsidian = {
---     on_attach = function(client, bufnr)
---         client.server_capabilities.definitionProvider = false
---         client.server_capabilities.referencesProvider = false
---         client.server_capabilities.renameProvider = false
---         client.server_capabilities.hoverProvider = false
---
---         -- Only use it for colors, no diagnostics clutter
---         vim.diagnostic.enable(false, { bufnr = bufnr })
---     end,
---     filetypes = { 'markdown' },
---     root_dir = function(fname)
---         return require('lspconfig.util').root_pattern '.obsidian' (fname)
---     end,
--- },

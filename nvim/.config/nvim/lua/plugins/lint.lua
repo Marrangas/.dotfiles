@@ -5,10 +5,6 @@ return {
         config = function()
             local lint = require 'lint'
             lint.linters_by_ft = {
-                ["*"] = {
-                    "codespell",
-                    "misspell",
-                },
                 clojure = { nil },
                 dockerfile = { "hadolint" },
                 inko = { nil },
@@ -16,10 +12,9 @@ return {
                 json = { nil },
                 rst = { nil },
                 ruby = { nil },
-                terraform = {
-                    "tflint",
-                    "tfsec"
-                },
+                bash = { 'shellharden' },
+                -- markdown = { -- 'vale', -- Handled by vale_ls },
+                -- terraform = { "tflint", },
                 text = { nil }
             }
 
@@ -33,8 +28,6 @@ return {
 
             -- Configuration for textlint (usually needs a .textlintrc in project root)
             -- If you find it too noisy, we can specifically ignore certain rules here or in .textlintrc
-
-
             -- Create autocommand which carries out the actual linting
             -- on the specified events.
             local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
