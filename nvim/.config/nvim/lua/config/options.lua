@@ -5,7 +5,11 @@ vim.g.loaded_ruby_provider = 0
 vim.g.loaded_node_provider = 0
 
 vim.opt.path:append("**")
-vim.g.netrw_banner = 0
+vim.g.netrw_banner = 0 -- no banner
+-- vim.g.netrw_liststyle = 3      -- Tree view
+-- vim.g.netrw_browse_split = 4   -- Open in previous window
+vim.g.netrw_preview = 1 -- Vertically split preview window
+-- vim.g.netrw_winsize = 25 -- Window size 25%
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`

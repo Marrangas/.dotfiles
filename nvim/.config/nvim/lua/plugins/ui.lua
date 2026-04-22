@@ -1,5 +1,9 @@
 return {
     {
+        -- "nyoom-engineering/oxocarbon.nvim",
+        -- "zootedb0t/citruszest.nvim"
+        -- "https://github.com/miikanissi/modus-themes.nvim?tab=readme-ov-file
+        -- [WCAG21](https://www.w3.org/WAI/WCAG21/Understanding/contrast-enhanced.html)
         "folke/tokyonight.nvim",
         lazy = false,
         priority = 1000,

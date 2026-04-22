@@ -189,6 +189,7 @@ return { -- LSP Configuration & Plugins
                     },
                 },
 
+                -- todo use schemastore pluggin https://github.com/b0o/SchemaStore.nvim
                 yamlls = {
                     settings = {
                         yaml = {

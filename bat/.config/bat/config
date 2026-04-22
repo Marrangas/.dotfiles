@@ -7,9 +7,6 @@
 # Show only line numbers and git changes (cleaner look, no boxes)
 --style="changes"
 
-# Use 'less' as the pager
---pager="less -FR"
-
 # Case-insensitive search
 --map-syntax "*.jenkinsfile:Groovy"
 --map-syntax "*.props:Java Properties"

@@ -5,13 +5,18 @@
 [core]
 	excludesFile = ~/.gitignore
 	editor = nvim
+    pager = "command -v moor >/dev/null && moor || less"
+
+[pager]
+    log = "f() { if command -v moor >/dev/null; then moor --style=catppuccin-macchiato --quit-if-one-screen --no-clear-on-exit; else less -FRX; fi; }; f"
+    diff = "f() { if command -v moor >/dev/null; then moor --style=catppuccin-macchiato --quit-if-one-screen --no-clear-on-exit; else less -FRX; fi; }; f"
 
 [init]
 	defaultBranch = master
 
 [color]
-	ui = auto
-	diff = auto
+	ui = always
+	diff = always
 	status = auto
 	branch = auto
 
@@ -34,12 +39,14 @@
 	prompt = false
 
 [alias]
-	chof = "!git add . && git commit --amend --no-edit"
+	chof = "!git add $1 && git commit --amend --no-edit"
 	last = log -1 HEAD
 	unstage = reset HEAD --
 	parent = rev-parse --abbrev-ref --symbolic-full-name @{u}
 	tree = log --graph --date=format:'%y-%m-%d %H:%M' --pretty='format:%C(auto)%h %C(red)%d%C(reset)%n%C(yellow)%an -> %ae%n%C(green)%ad%C(reset) %s%n' --all
 	authors = shortlog --summary --numbered
+    usage = "!git log --format=format: --name-only --since='1 year ago' | sort | uniq -c | sort -nr | head -50"
+    months = "!git log --format='%ad' --date=format:'%Y-%m' | sort | uniq -c"
 	contrib = "!f() { git log --author=\"$(git config user.name)\" --pretty=tformat: --numstat \"$@\" | gawk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf \"added lines: %s removed lines: %s total lines: %s\\n\", add, subs, loc }' -; }; f"
 
 [filter "lfs"]

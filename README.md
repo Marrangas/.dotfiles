@@ -1,321 +1,156 @@
-reload a plugin Lazy reload render-markdown.nvim
+dotdotdot ... or with the gliph ...
 
-1. terminar el formateo en markdown
-  - 
-2. lsp setup del resto de los lenguajes
-  - terraform
-  - ansibleo
-  - yaml
-  - html, con htmx y javascript
-  - css, con tailwind
-  - python
-  - go
-  - bash
-  - lua
-  - markdown
-3. quickfix vs location vs the fucking pickers...
-4. diagnostics and bash
-5. ia gemini and others
+- [ ] firebox config
+      https://github.com/sobolevn/dotfiles/blob/master/firefox/user-overrides.js
+- [ ] global configurations
+- [ ] ansible deployment
+- [ ] ## nvim
+- [ ] local scripts
+- [ ] better secrets handling with cli
 
-1. el super backup
+- que:: gestion y documentacion de mis configuraciones
+- por-que:: [[backup]]
+  - razon:: (induccion|deduccion|abduccion = empirismo)
+  - autoridad:: tener las herramientas afiladas y conocerlas suele ayudar
+  - pragmatismo:: poder implementarlos, comprenderlos y editralos (consecuencias)
+  - axiologia:: saber que puedo exponerlos y tener ideas propias (valores)
+  - experiencias:: se me han ido rompiendo y no tengo un registro en guit de lo que
+    he hecho (hacer un bisect o al menos tenerlos limpios)
+  - emociones:: me gusta sentirme a gusto y pensar que puedo mejorarjb
+- 5 porque:
+  - porque quiero hacer un backup
+  - porque no me funciona el markdown
+  - porque no conoxco bien mis herramientas ni lo he inventariado ni testeado
+  - porque solo he cortapegado o he redactado un video
+  - porque quiero intentar tener criterio
 
+- para-que:: (motivo) para que hago este proyecto no para que existen, el motivo
+- para explorar las nuevas herramientas y ver como poder trabajar con ellas
+- para comprender lo que ya tengo una capa mas profunda
+- para inventariar y revisar lo que sigo sin comprender o lo que se me ha olvidado
+- me ayuda a filosofar sobre los principios
+- quien:: (responable) se puede crear una comunidad, lo podria llegar a utilizar para
+  alguna otra persona?
+- como::(accion)
 
-- use mcp's and try to configure them to be usefull para analizar qué hago y como escribo
-- about spellfile and zw and zg to add words to the dictionary
-- about folding
-  - :mkview to save folds and such when you close a file - but you have to use :loadview 
-  - zj and zk
-- como debuguear comandos de lua
-  - como comprobar si un plugin funciona
-  - como ver si el archivo se esta cargando
-  - como ...
-- [ ] vim tutor part 2 has some things that are interesting
-- [ ] how does the fucking syntax work
-- [ ] understand and make lua plugin
-    - https://learnxinyminutes.com/docs/lua/
-    - :help lua-guide
-    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
-- [ ] always learn how to read further apart form the llm
-      MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
-      which is very useful when you're not exactly sure of what you're looking for.
-- [ ] use ctags
-  - https://kulkarniamit.github.io/whatwhyhow/howto/use-vim-ctags.html
-- [ ] quickfix vs location vs edit ...(interact with those in vanilla vim)
-    - https://www.youtube.com/watch?v=AuXZA-xCv04
-    - vimgrep /{gerp pattern} {files pattern}
-    - vim
-    - grep -r (usando el commando externo)
-    - vim unimpared (learn or discover...)
-- [ ] crear diccionarios o skills de cosas... manen tus datos limpitos y tus listas
-  bien agrupadas en la era de la ia (this is hacking setup by default... make
-your things as easy to your fingertips)
-- [ ] activar spelling en el idioma que toca... ins completion
-- git 
-  - next change // next hunk
-  - stage por partes...
-  - blame ...
-- [ ] seems rubi is a good thing to learn specially for fast dev on startup...
-basecamp was succesfull why not me (dsl languages are a bad start for the future but you can do stuff fast)
+```quote
+verbosity vs great defauls
+```
 
+- safe load some configs depending on the variables
+  - [ ] edit it as if it were my own mac if it is a computer mac and it is intended
+        as a workstation
 
-## leader
--- See `:help mapleader` -- NOTE: Must happen before
--- plugins are loaded (otherwise wrong leader will be used) } require('lazy').setup { --
+## basic tools
 
-## lsp
-'bashls',
-'shellharden',
-'shellcheck',
+- [[shell]] todo el mundo habla de tener esta shell o la otra shell o la shell de al
+  lado, a la hora de la verdad obviamos el fundamento de un ordenador en el sentido
+  en el que podemos operar con el de formas muy prácticas con comandos sencillos. La
+  llegada de la IA, estupidifica a las personas hasta el punto en el que no somos
+  capaces de tener en cuenta las variables que nosotros mismos buscamos, tal que no
+  podemos evaluar la competitud o calidad del trabajo que estamos exigiendo... Hay
+  que saber hacer buenas preguntas y valorar si las respuestas que te están dando son
+  las correctas o te las están intentando liar: Hablar con una ia como forma de
+  evaluar tu capacidad de liderazgo y de expresión oral a la vista queda que la gran
+  mayoría del trabajo está en poder ser preciso y dar el suficiente contexto para
+  tener el resultado que el emisor quiere dar
 
-'gopls',
-'pylsp',
+- [[window-manager]] & [[multiplexer]] iconos al alcance de todo todos? de todas
+  formas conocer en una pantalla en negro todas y cada una de las herramientas será
+  mucho más facil en el caso de un multiplexor, lo que permite es tener un espacio
+  con una organzación virutal tal y como cada uno desee: herramientas y estructuras
+  de datos para la vida diaria (3 niveles tope):
+  - session (contenedor) n
+  - tab 2-5 aprox
+  - split 3
 
-'terraform-ls',
-'tflint',
-'tfsec',
+- [[editor]] emacs vs vim... I am fan of using native aps for what I do. There is
+  this thing of trying the perfect workflow, the perfect set of unified tools. In my
+  experience you need to know that there are some things that are unreconcileable,
+  just use something self suficient that does not add aditional overhead for your
+  personal use case example:
+  - using vim for something that needs a ui (I just want a simple and fast client)
+  - using terraform to automate dynamic eleents instead of the api
+  - templates in obsidian vs snippets in vim...
 
-'ansible-language-server',
--- 'yalls',
+- [[personal-defaults]] know your variables and what exactly you want to achieve
 
-'htmx-lsp',
-'html-lsp',
-'templ',
-'prettierd',
-'cssls',
-'eslint-lsp',
-'typescript-language-server',
-'tailwindcss-language-server',
-'markdown-oxide',
+- [[syntax-highlighters]]
 
-## repos and my own explanation
--- 'mbbill/undotree',
--- 'vim-utils/vim-man',
--- 'numToStr/Comment.nvim'
--- 'tpope/vim-sleuth',
--- 'tpope/vim-markdown',
+- [[experiments]]
+- [[archives]]
+- [[automations]]
 
--- markwown
--- 'yangzhixuan/bipandoc',
+- manage what do I need and what is my context
+  - el estilo en general de la instancia me dice si el entorno es dev, test, pro....
 
--- ia + avante. 
--- 'github/copilot.vim'
--- run: Copilot setup || Copilot enable
+- functional syntax tree sitter (parser and lsp)
+  - mixed documentations and linking with the power of multilsp
+  - manage all the things with a database
+  - style inside with the help of the sintax
+  - linting
+  - formatting
 
--- html live server without the shit { 'barrett-ruth/live-server.nvim', build = 'npm add -g live-server', cmd = {
-'LiveServerStart', 'LiveServerStop' }, config = true, },
--- terraform
--- 'hashicorp/terraform-ls'
--- 'terraform-linters/tflint',
--- 'aquasecurity/vim-tfsec'
+- navegation and code actions
+  - netrw & find command
+  - picker fuzzy finder with actions
+  - actions
 
-## color formating
-['@markup.heading.1.markdown'] = { fg = cp.red, style = { 'bold' } },
-['@markup.heading.2.markdown'] = { fg = cp.peach, style = { 'bold' } },
-['@markup.heading.3.markdown'] = { fg = cp.green, style = { 'bold' } },
-['@markup.heading.4.markdown'] = { fg = cp.sapphire, style = { 'bold' } },
-['@markup.heading.5.markdown'] = { fg = cp.lavender, style = { 'bold' } },
-['@markup.heading.6.markdown'] = { fg = cp.mauve, style = { 'bold' } },
+- documentation
 
--- Frontmatter (YAML Metadata) - Separación Robusta
-['@markup.metadata.markdown'] = { fg = cp.overlay1 },             -- Los marcadores ---
-['@punctuation.delimiter.markdown'] = { fg = cp.overlay1 },       -- Alternativa para ---
-['@property.yaml'] = { fg = cp.blue, style = { 'bold' } },        -- Claves
-['@variable.member.yaml'] = { fg = cp.blue, style = { 'bold' } }, -- Claves (alternativa)
-['@punctuation.delimiter.yaml'] = { fg = cp.rosewater },          -- El colon :
-['@string.yaml'] = { fg = cp.green },                             -- Valores de texto
-['@string.unquoted.yaml'] = { fg = cp.green },                    -- Valores sin comillas
-['@number.yaml'] = { fg = cp.peach },                             -- Valores numéricos
-['@boolean.yaml'] = { fg = cp.peach },                            -- Valores booleanos
-['@type.yaml'] = { fg = cp.yellow },
-['@label.yaml'] = { fg = cp.blue },
+- diagnostics and debugging
+  - dap
+  - diagnostics
 
--- Elementos Inline con más contraste
-['@markup.raw.markdown_inline'] = { fg = cp.teal },                 -- Código `inline` en Teal (Cian)
-['@markup.list.markdown'] = { fg = cp.yellow, style = { 'bold' } }, -- Balas en Amarillo
-['@markup.strong.markdown_inline'] = { fg = cp.maroon, style = { 'bold' } },
-['@markup.italic.markdown_inline'] = { fg = cp.sky, style = { 'italic' } },
+- new tools: ia...
+  - quickfix vs location vs the fucking pickers...
+  - diagnostics and bash
+  - ia gemini and others
 
--- UI de Obsidian y Enlaces
-ObsidianTag = { fg = cp.pink, style = { 'bold' } },
-ObsidianCheckbox = { fg = cp.blue },
-ObsidianRefText = { fg = cp.mauve, style = { 'bold' } },
-['@markup.link.label.markdown_inline'] = { fg = cp.blue, style = { 'bold' } },
-['@markup.link.url.markdown_inline'] = { fg = cp.rosewater, style = { 'italic' } },
+6. terminar el formateo en markdown
+7. lsp setup del resto de los lenguajes
 
--- Tablas
-['@markup.table.header.markdown'] = { fg = cp.sky, style = { 'bold' } },
-['@punctuation.special.markdown_inline'] = { fg = cp.lavender }, -- Los pipes |
-
-
-
-
-errides = {
-function(cp)
-rn {
--- Headers: Variedad cromática para distinguir niveles
-['@markup.heading.1.markdown'] = { fg = cp.red, style = { 'bold' } },
-['@markup.heading.2.markdown'] = { fg = cp.peach, style = { 'bold' } },
-['@markup.heading.3.markdown'] = { fg = cp.green, style = { 'bold' } },
-['@markup.heading.4.markdown'] = { fg = cp.sapphire, style = { 'bold' } },
-['@markup.heading.5.markdown'] = { fg = cp.lavender, style = { 'bold' } },
-['@markup.heading.6.markdown'] = { fg = cp.mauve, style = { 'bold' } },
-
--- Frontmatter (YAML Metadata) - Separación Robusta
-['@markup.metadata.markdown'] = { fg = cp.overlay1 },             -- Los marcadores ---
-['@punctuation.delimiter.markdown'] = { fg = cp.overlay1 },       -- Alternativa para ---
-['@property.yaml'] = { fg = cp.blue, style = { 'bold' } },        -- Claves
-['@variable.member.yaml'] = { fg = cp.blue, style = { 'bold' } }, -- Claves (alternativa)
-['@punctuation.delimiter.yaml'] = { fg = cp.rosewater },          -- El colon :
-['@string.yaml'] = { fg = cp.green },                             -- Valores de texto
-['@string.unquoted.yaml'] = { fg = cp.green },                    -- Valores sin comillas
-['@number.yaml'] = { fg = cp.peach },                             -- Valores numéricos
-['@boolean.yaml'] = { fg = cp.peach },                            -- Valores booleanos
-['@type.yaml'] = { fg = cp.yellow },
-['@label.yaml'] = { fg = cp.blue },
-
--- Elementos Inline con más contraste
-['@markup.raw.markdown_inline'] = { fg = cp.teal },                 -- Código `inline` en Teal (Cian)
-['@markup.list.markdown'] = { fg = cp.yellow, style = { 'bold' } }, -- Balas en Amarillo
-['@markup.strong.markdown_inline'] = { fg = cp.maroon, style = { 'bold' } },
-['@markup.italic.markdown_inline'] = { fg = cp.sky, style = { 'italic' } },
-
--- UI de Obsidian y Enlaces
-ObsidianTag = { fg = cp.pink, style = { 'bold' } },
-ObsidianCheckbox = { fg = cp.blue },
-ObsidianRefText = { fg = cp.mauve, style = { 'bold' } },
-['@markup.link.label.markdown_inline'] = { fg = cp.blue, style = { 'bold' } },
-['@markup.link.url.markdown_inline'] = { fg = cp.rosewater, style = { 'italic' } },
-
--- Tablas
-['@markup.table.header.markdown'] = { fg = cp.sky, style = { 'bold' } },
-['@punctuation.special.markdown_inline'] = { fg = cp.lavender }, -- Los pipes |
-
-
-
-## docs
-
-## packages
-- brew install ghostscript (or inventariar)
-- brew install tree-sitter
-
-- fzf
-- diagnostics
-- cmp
-- lsp
-- git subtree add --prefix helpers/.local/bin
-- git@github.com:Marrangas/bash-mrgs-lib.git master --squash
-- brew install starship bash-completion@2
+- terraform
+- ansible
+- yaml
+- html, con htmx y javascript
+- css, con tailwind
 - python
-- golang
-- zsh
-- lsd bat eza tldr
-- starship
-- brew tap FelixKratz/formulae
-- brew install borders
-- gitleaks
-- trufflehog
--  xz git zsh bash curl cmake coreutils gettext lua luarocks ansible
--  postgresql sqlite redis
+- go
+- bash
+- lua
+- markdown
 
-- hcl2json terraform terraform-docs driftctl tfsec tofu docker ansible infracost
-  pulumi act kubectl
--  mtr nmap nginx rclone ipcalc openssh openssl
--  pyenv perl
--  direnv zsh-powerlevel10k gh csvq jq
--  pandoc imagemagick ffmpeg chafa catimg
--  neovim p7zip git-lfs tmux fzf ripgrep parallel sed direnv ssh stow
+## style
 
+- parece una tonteria pero preocuparse por la accesibilidad suele ser señal de que te
+  importan otras coasas, de tener ua expectativa más alta de lo que deberia esta
+  hechho
+  - sin estilo se perciben las cosas por lo que son... no tengas demasiado estilo
+  - saber como funciona algo (lsp) o como se construye hace valorar lo que vemos
+  - el estilo permite una estructura informal para los humanos, de la misma forma que
+    lo lee un ordenador, grouping [[gestalt]]
+  - poder distinguir el entorno
+  - TODO: depende de la variable del entorno... debe de ser de un color de fondo...
+    (shell, cat, vim)
+- lsp
+- linters
+- formaters
+- debug
+- diccionarios (hacking y otras listas que no son para llm sino brute force...)
 
+## futures
 
-- [ ] autocommands for my fucking wiki (cuando edito, o directamente sync con
-  obsidian?? para tener en hidden)
-- [ ] the autocommands could be usefull to automante a lot of stuff which is the
-  thin I do most of the time... use my routines to learn (this could also be
-  use to trigger my own ecosystem in wiki... can it be interchangeable?? --> )
+- managing and exposign the dotfiles [[ansible-dotfiles]]
+  - encapsulation of dotfiles
+  - management for each resource
+  - bidirectional sing or (central repository with my own permissions) (distributed
+    management and async configurations with locking)
 
-I do not know how to test: maybe this is what gets me to get interested in it: https://github.com/nvim-neotest/neotest
+- [[2022]] some of this config was born, i versioned it bu, always hapens somethin
+- [[2026]] 1st rewrite this time trying not to copy and paste
 
-make your tooling better inside the containers man
-https://github.com/mutagen-io/mutagen
-
-deploy and manage your dotfiles (separate them so you can create  a fucking dev container??)
-
-en luagar de tener una lualine, a lo mejor tiene sentido:
-nvim file data show lsp, size, filetype, file status, size, errors
-- hacer un buen setup con el fucking netrw... no esta mal, aunque sea muy feo
-
-- [ ] gsutil performance optimizations
-- [ ] fuse / fuse mount in linux (wrapper) -> See `helpers/.local/bin/cloud-mount`
-- [ ] htop -> Modernized in `htop/.config/htop/htoprc`
-- [ ] Kube kubernetes config -> Modular pattern in `kube/.kube/configs/`
-- [x] bat -> Cleaner config in `bat/.config/bat/config`
-- [ ] packer
-- [ ] pgadmin
-- [ ] prettierd
-- [ ] pulumi
-- [ ] pyenv
-- [ ] rclone -> Systemd automation in `rclone/.config/systemd/user/`
-- [x] vim -> Minimal config in `vim/.config/vim/vimrc`
-- [ ] ansible
-- install fd
-- install fzf
-- install python ecosystem (pyenv, pip, venv, etc) and understand it deeply
-
-## backup
-
-la capa que todos estamos pensando: arquitectura 3-2-1
-
-- origenes:
-  - github (my own repos)
-  - one drive
-  - google drive
-
-1. local...
-2. aws
-3. fisico en mi disco NAS // el fucking cluster desatendido (automatizarlo)
-4. fragmentaria en cada elemento que debería de estar en los orignes que toca...
-
-- disco duro local (el fucking cluster) (en discos con formato interoperativo)
-- s3
-- aws no está en mi casa pero mi disco sí (no dependo de internet donde esté mi casa)
-
-
-## elements of the repo
-- makefile
-- githooks and github flow
-  -  gitleaks
-
-## telescope shit
- local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client:supports_method('textDocument/documentHighlight', event.buf) then
-            local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
-            vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-              buffer = event.buf,
-              group = highlight_augroup,
-              callback = vim.lsp.buf.document_highlight,
-            })
-
-            vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-              buffer = event.buf,
-              group = highlight_augroup,
-              callback = vim.lsp.buf.clear_references,
-            })
-
-            vim.api.nvim_create_autocmd('LspDetach', {
-              group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
-              callback = function(event2)
-                vim.lsp.buf.clear_references()
-                vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
-              end,
-            })
-          end
-
-          -- The following code creates a keymap to toggle inlay hints in your
-          -- code, if the language server you are using supports them
-          --
-          -- This may be unwanted, since they displace some of your code
-          if client and client:supports_method('textDocument/inlayHint', event.buf) then
-            map('<leader>th', function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf }) end, '[T]oggle Inlay [H]ints')
-          end
-        end,
-      })
+- restaurar las ideas antiguas para tener el registro y la evolucion (how to
+  autodocument? diagramming adn inventories... maybe they are json) or that is..
+  exposing the veriables to a graph database with objects... (markdowns) => { the
+  same pattern as the mongo is being repeated for my one and only personal system }

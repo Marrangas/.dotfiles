@@ -4,12 +4,23 @@
 -- (otherwise wrong leader will be used)intintintintinitinit
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-vim.keymap.set('n', '<leader>.e', ':Ex<CR>')
+vim.keymap.set("i", "<C-c>", "<Esc>")
+vim.keymap.set('n', '<C-_>', ':Ex<CR>')
 
+vim.keymap.set('i', '<M-e>', '<C-k>\'', { noremap = true, desc = 'digraphs remap (conflicts with blink)' })
+vim.keymap.set('i', '<M-n>', '<C-k>~', { noremap = true, desc = 'digraphs remap (conflicts with blink)' })
+vim.keymap.set('i', '<M-u>', '<C-k>Z', { noremap = true, desc = 'digraphs remap (conflicts with blink)' })
 -- Clear highlights
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>', { desc = 'Clear selection' })
 vim.keymap.set('n', '<leader>/', '<Esc>/\\%V', { desc = 'Search previous selection' })
+vim.keymap.set('v', '<leader>ra', [[:<C-u>lua WrapLines()<CR>]], { silent = true })
+function WrapLines()
+    local char = vim.fn.input("wrapper string: ")
+    if char == "" then return end
+    vim.cmd(string.format([['<,'>s/^\(\s*\)\(.*\)/\1%s\2%s/]], char, char))
+    vim.cmd('noh')
+end
 
 vim.keymap.set('n', '<C-z>', '<Nop>', { desc = 'Disable suspend' })
 
@@ -18,8 +29,7 @@ vim.keymap.set('n', '<C-z>', '<Nop>', { desc = 'Disable suspend' })
 vim.keymap.set('n', '<leader>w', ':w<CR>', { desc = 'Classic :w improved' })
 
 -- write/save when the buffer has been modified.
-vim.keymap.set('i', '<C-s>', '<ESC>ma<ESC>:update <CR>`a', { noremap = true, silent = true })
-vim.keymap.set('n', '<C-s>', '<ESC>ma<ESC>:update <CR>`a', { noremap = true, silent = true })
+vim.keymap.set({ 'i', 'n' }, '<C-s>', '<ESC>ma<ESC>:update <CR>`a', { noremap = true, silent = true })
 
 -- Terminal remaps
 -- This won't work in all terminal emulators/tmux/etc. Try your own mapping
@@ -94,10 +104,12 @@ vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'pattertn j [move line dow
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'pattertn k [move line up]' })
 
 -- Quickfix
-vim.keymap.set('n', '<C-j>', '<cmd>cnext<CR>', { desc = 'pattern j (down) quickfix' })
-vim.keymap.set('n', '<C-k>', '<cmd>cprev<CR>', { desc = 'pattern k (up) quickfix' })
-vim.keymap.set('n', '<C-h>', '<cmd>colder<CR>zz', { desc = 'pattern h (down) quickfix' })
-vim.keymap.set('n', '<C-l>', '<cmd>cnewer<CR>zz', { desc = 'pattern l (up) quickfix' })
+vim.keymap.set('n', '<C-j>', '<cmd>cnext<CR>zz', { desc = 'pattern j (down) quickfix' })
+vim.keymap.set('n', '<C-k>', '<cmd>cprev<CR>zz', { desc = 'pattern k (up) quickfix' })
+vim.keymap.set('n', '<C-h>', '<cmd>colder<CR>', { desc = 'pattern h (down) quickfix' })
+vim.keymap.set('n', '<C-l>', '<cmd>cnewer<CR>', { desc = 'pattern l (up) quickfix' })
+vim.keymap.set('n', '<C-n>', '<cmd>lnext<CR>zz', { desc = 'pattern n (down) location-list' })
+vim.keymap.set('n', '<C-p>', '<cmd>lprev<CR>zz', { desc = 'pattern p (down) location-list' })
 
 -- Location list jumps
 -- vim.keymap.set('n', '<leader>k', '<cmd>lnext<CR>zz')
@@ -105,13 +117,13 @@ vim.keymap.set('n', '<C-l>', '<cmd>cnewer<CR>zz', { desc = 'pattern l (up) quick
 
 -- File commands
 vim.keymap.set('n', '<leader>.f', vim.lsp.buf.format, { desc = '[.]file [F]ormat ' })
-vim.keymap.set('n', '<leader>.x', vim.lsp.buf.format, { desc = '[.]file e[x]ecute' })
-vim.keymap.set('n', '<leader>.s', vim.lsp.buf.format, { desc = '[.]file [s]ource' })
+vim.keymap.set('n', '<leader>.x', ':!chmod +x %', { desc = '[.]file e[x]ecute' })
+vim.keymap.set('n', '<leader>.s', ':source %<CR>', { desc = '[.]file [s]ource' })
 
 vim.keymap.set('n', '<leader>..', function()
     local path = vim.fn.expand '%:p'
     vim.cmd('cd ' .. vim.fs.dirname(path))
-end, { desc = '[.]file as cwd' })
+end, { desc = '[.] file as cwd' })
 
 -- -- Diagnostic keymaps (use an alternative quickfix?)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
@@ -120,7 +132,7 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagn
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
--- -- Diagnostic keymaps (use an alternative quickfix?)
+-- Diagnostic keymaps (use an alternative quickfix?)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
 
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })

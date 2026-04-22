@@ -18,8 +18,8 @@ right_format = ""
 [directory]
 style = "bold lavender"
 # style = "bg:lavender fg:surface0"
-truncation_length = 4
-truncation_symbol = "~/../"
+truncation_length = 0
+truncate_to_repo = false
 format = "[ $path ]($style) "
 
 [fill]

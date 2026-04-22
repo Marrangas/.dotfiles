@@ -2,6 +2,48 @@
   source "${XDG_CACHE_HOME:-$HOME/.cache}/starship-instant-prompt.zsh"
 
 # =============================================================================
+# DEBUGGING & ERROR HANDLING
+# =============================================================================
+# Enable debugging by setting DEBUG_ZSH=1 before sourcing
+export DEBUG_ZSH="${DEBUG_ZSH:-0}"
+
+# Debug logging function
+debug_log() {
+  [[ "$DEBUG_ZSH" -eq 1 ]] && echo "DEBUG: $*" >&2
+}
+
+# Safe source function with error handling
+safe_source() {
+  local file="$1"
+  if [[ -r "$file" ]]; then
+    debug_log "Sourcing: $file"
+    if ! source "$file" 2>&1; then
+      echo "WARNING: Failed to source $file" >&2
+      return 1
+    fi
+  else
+    debug_log "File not readable or missing: $file"
+    return 1
+  fi
+}
+
+# Safe eval function with error handling
+safe_eval() {
+  local cmd="$1"
+  debug_log "Evaluating: $cmd"
+  if ! eval "$cmd" 2>&1; then
+    echo "WARNING: Failed to evaluate: $cmd" >&2
+    return 1
+  fi
+}
+
+# Trap for unhandled errors (optional, can be enabled with DEBUG_ZSH=2)
+if [[ "$DEBUG_ZSH" -eq 2 ]]; then
+  set -e
+  trap 'echo "ERROR: Command failed at line $LINENO: $BASH_COMMAND" >&2' ERR
+fi
+
+# =============================================================================
 # ENVIRONMENT & PATH
 # =============================================================================
 
@@ -37,9 +79,10 @@ path=(
   $path
 )
 
+
 # Source tool-specific path injections
-[[ -f "$HOME/.local/bin/google-cloud-sdk/path.zsh.inc" ]] && source "$HOME/.local/bin/google-cloud-sdk/path.zsh.inc"
-[[ -f "$HOME/.local/bin/terraform-old/path.zsh.inc" ]] && source "$HOME/.local/bin/terraform-old/path.zsh.inc"
+safe_source "$HOME/.local/bin/google-cloud-sdk/path.zsh.inc"
+safe_source "$HOME/.local/bin/terraform-old/path.zsh.inc"
 [[ -d "$HOME/.local/bin/fzf/bin" ]] && path+=("$HOME/.local/bin/fzf/bin")
 
 export PATH
@@ -48,7 +91,7 @@ export PATH
 # Logic: We already have Homebrew in PATH via the array above.
 # brew shellenv is kept for internal variables but we ensure it doesn't mess with our path ordering.
 if [[ "$(uname)" == "Darwin" ]] && command -v brew &>/dev/null; then
-  eval "$(brew shellenv)"
+  safe_eval "$(brew shellenv)"
 fi
 
 # Modular KUBECONFIG
@@ -60,7 +103,6 @@ export KUBE_EDITOR="nvim"
 # =============================================================================
 # ZSH OPTIONS & COMPLETIONS
 # =============================================================================
-setopt CORRECT
 setopt histignorealldups sharehistory
 HISTSIZE=50000
 SAVEHIST=50000
@@ -93,31 +135,32 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 # ALIASES & MODERN TOOLS (with Fallbacks)
 # =============================================================================
 alias rc="${EDITOR} ${HOME}/.zshrc && source ${HOME}/.zshrc"
-alias g='git'
 alias vi='nvim'
 alias vim='nvim'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 
-# Pager & Cat
 if command -v bat &>/dev/null; then
-  alias cat='bat --style=plain'
-  export PAGER="bat"
-  export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-else
-  # No cat alias = standard cat
-  export PAGER="less"
+  alias cat=bat
+  export MANPAGER="nvim +Man!"
 fi
 
-# LS / LSD
+if command -v nvim &>/dev/null;then
+  export MANPAGER="nvim +Man!"
+fi
+
+if command -v moor &>/dev/null; then
+  export PAGER=moor
+  export MOOR='--style=catppuccin-macchiato'
+fi
+
 if command -v lsd &>/dev/null; then
   alias ls='lsd --group-dirs=first'
   alias l='lsd --group-dirs=first'
   alias ll='lsd -lh --group-dirs=first'
   alias la='lsd -a --group-dirs=first'
 else
-  # Fallback to LS colors
   if [[ "$(uname)" == "Darwin" ]]; then
     alias ls='ls -G'
   else
@@ -126,26 +169,6 @@ else
   alias ll='ls -lh'
   alias la='ls -A'
 fi
-
-# Terraform & Kubernetes
-alias k='kubectl'
-alias t='terraform'
-alias tv='terraform validate'
-alias ti='terraform init'
-alias tc='terraform console'
-alias tu="terraform force-unlock"
-alias tp='terraform plan'
-alias tpq='terraform plan -refresh=false -lock=false'
-alias ts='terraform plan -lock=false -no-color | grep "will be"'
-alias tsq='terraform plan -refresh=false -lock=false -no-color | grep "will be"'
-alias ta='terraform apply'
-alias taq='terraform apply -refresh=false'
-alias taa='terraform apply -auto-approve'
-alias taaq='terraform apply -auto-approve -refresh=false'
-alias tw='terraform workspace'
-alias twl='terraform workspace list'
-alias tws='terraform workspace select'
-alias twn='terraform workspace new'
 
 # Date variables (Portable)
 if [[ "$(uname)" == "Darwin" ]]; then
@@ -169,6 +192,142 @@ else
 fi
 export today=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
+
+
+if command -v git &>/dev/null; then
+    function wiki(){
+        git --git-dir="$HOME/Documents/marrangas/xanadu/.git" --work-tree="$HOME/Documents/wiki" $@
+    }
+    alias g='git'
+fi
+
+if command -v jq &>/dev/null; then
+    alias json2csv='jq -r '\''(.[0] | keys_unsorted) as $keys | $keys, map([.[ $keys[] ]])[] | @csv'\'''
+fi
+
+if command -v kubectl &>/dev/null; then
+    alias k='kubectl'
+fi
+
+if command -v terraform &>/dev/null; then
+    alias t='terraform'
+    alias tv='terraform validate'
+    alias ti='terraform init'
+    alias tc='terraform console'
+    alias tu="terraform force-unlock"
+    alias tp='terraform plan'
+    alias tpq='terraform plan -refresh=false -lock=false'
+    alias ts='terraform plan -lock=false -no-color | grep "will be"'
+    alias tsq='terraform plan -refresh=false -lock=false -no-color | grep "will be"'
+    alias ta='terraform apply'
+    alias taq='terraform apply -refresh=false'
+    alias taa='terraform apply -auto-approve'
+    alias taaq='terraform apply -auto-approve -refresh=false'
+    alias tw='terraform workspace'
+    alias twl='terraform workspace list'
+    alias tws='terraform workspace select'
+    alias twn='terraform workspace new'
+
+    function tsrmq(){
+      for cmd in terraform xargs; do
+        if ! command -v "$cmd" &> /dev/null; then
+          echo "zsh: function tsrmq: command not found: $cmd" >&2
+          return 1
+        fi
+      done
+      terraform plan -refresh="false" -lock="false" -no-color | \
+          grep "will be destroyed" | \
+          sed 's|.*# \(.*\) will be destroyed|\1|' | \
+          xargs -I {} -P 1 -n 1 sh -c "terraform state rm {}; sleep 1"
+    }
+
+    function tsrm(){
+      for cmd in terraform xargs; do
+        if ! command -v "$cmd" &> /dev/null ; then
+          echo "zsh: function tsrm: command not found: $cmd" >&2
+          return 1
+        fi
+      done
+      terraform plan -lock="false" -no-color | \
+          grep "will be destroyed" | \
+          sed 's|.*# \(.*\) will be destroyed|\1|' | \
+          xargs -I {} -P 1 -n 1 sh -c "terraform state rm {}; sleep 1"
+    }
+
+    function tclean(){
+      for cmd in terraform xargs; do
+        if ! command -v "$cmd" &> /dev/null ; then
+          echo "zsh: function tsrm: command not found: $cmd" >&2
+          return 1
+        fi
+      done
+      find . -type d -name '.terraform' -print0 | xargs -0 -P 0 rm -rf
+    }
+fi
+
+if command -v gcloud &>/dev/null; then
+    [ -f "$HOME"/.local/bin/.fzf-gcloud.plugin.zsh ] && source "$HOME"/.local/bin/.fzf-gcloud.plugin.zsh
+
+    function gtoken(){
+      curl -H "Authorization: Bearer $(gcloud auth print-access-token)" $@
+    }
+
+    function glog() {
+      for cmd in gcloud curl jq nvim; do
+        if ! command -v "$cmd" &> /dev/null ; then
+          echo "zsh: function glog: command not found: $cmd" >&2
+          return 1
+        fi
+      done
+
+      # Validate arguments
+      if [ -z "$1" ]; then
+        echo "Usage: glog <project_id>" >&2
+        return 1
+      fi
+
+      if [ -z "$h1" ] || [ -z "$today" ]; then
+        echo "Error: 'h1' and 'today' variables must be set." >&2
+        return 1
+      fi
+
+      local token
+      token=$(gcloud auth print-access-token)
+      if [[ -z "$token" ]]; then
+        echo "Error: could not get gcloud access token. Please run 'gcloud auth login'." >&2
+        return 1
+      fi
+
+      curl --request POST "https://logging.googleapis.com/v2/entries:list" \
+        --header "Authorization: Bearer $token" \
+        --header 'Accept: application/json' \
+        --header 'Content-Type: application/json' \
+        --data '{
+          "projectIds": ["'"$1"'"],
+          "filter": "timestamp >= \"'"$h1"'\" AND timestamp <= \"'"$today"'\""
+        }'\
+        | jq '.entries[]' \
+        | nvim -c "set ft=json"
+    }
+fi
+
+function mkt(){
+    mkdir {nmap,content,exploits,scripts}
+}
+
+function rmk(){
+  if ! command -v scrub &> /dev/null ; then
+    echo "zsh: function rmk: command not found: scrub. On macOS, run: brew install secure-delete" >&2
+    return 1
+  fi
+  if ! command -v shred &> /dev/null ; then
+    echo "zsh: function rmk: command not found: shred. On macOS, run: brew install coreutils" >&2
+    return 1
+  fi
+	scrub -p dod "$1"
+	shred -zun 10 -v "$1"
+}
+
 # Catppuccin Mocha for LESS
 export LESS="-R --mouse --wheel-lines=3 --ignore-case --long-prompt -g -j20"
 export LESS_TERMCAP_mb=$(tput setaf 212)
@@ -184,15 +343,13 @@ export LESS_TERMCAP_ue=$(tput sgr0)
 # =============================================================================
 ZSH_PLUGINS_DIR="$HOME/.config/zsh"
 
-source_if_exists() { [[ -r "$1" ]] && source "$1" }
-
-source_if_exists "$ZSH_PLUGINS_DIR/nix-zsh-completions/nix-zsh-completions.plugin.zsh"
-source_if_exists "$HOME/.local/bin/google-cloud-sdk/completion.zsh.inc"
-source_if_exists "$ZSH_PLUGINS_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
-source_if_exists "$ZSH_PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+safe_source "$ZSH_PLUGINS_DIR/nix-zsh-completions/nix-zsh-completions.plugin.zsh"
+safe_source "$HOME/.local/bin/google-cloud-sdk/completion.zsh.inc"
+safe_source "$ZSH_PLUGINS_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
+safe_source "$ZSH_PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
 if command -v starship &>/dev/null; then
-  eval "$(starship init zsh)"
+  safe_eval "$(starship init zsh)"
 fi
 
 if [[ -f "$ZSH_PLUGINS_DIR/zsh-transient-prompt/zsh-transient-prompt.zsh" ]]; then
@@ -200,13 +357,13 @@ if [[ -f "$ZSH_PLUGINS_DIR/zsh-transient-prompt/zsh-transient-prompt.zsh" ]]; th
 fi
 
 if command -v fzf &>/dev/null; then
-  eval "$(fzf --zsh)"
+  safe_eval "$(fzf --zsh)"
 fi
 
 if command -v direnv &>/dev/null; then
-  eval "$(direnv hook zsh)"
+  safe_eval "$(direnv hook zsh)"
   _direnv_hook() {
-    eval "$(direnv export zsh 2>&1 | \
+    safe_eval "$(direnv export zsh 2>&1 | \
       sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,3})*)?[mGK]//g" | \
       egrep -v -e '^direnv: (loading|export|unloading)' \
     )"

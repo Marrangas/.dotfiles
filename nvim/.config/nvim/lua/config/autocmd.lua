@@ -5,12 +5,37 @@ vim.cmd([[
   iabbrev lenght length
 ]])
 
+-- open help in vertical split and set width
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "help",
+    callback = function()
+        vim.cmd("wincmd L")
+        vim.api.nvim_win_set_width(0, 85)
+    end,
+})
+
 -- Highlight when yanking (copying) text
 --  See `:help vim.highlight.on_yank()`
 vim.api.nvim_create_autocmd('TextYankPost', {
     desc = 'Highlight when yanking (copying) text',
     group = vim.api.nvim_create_augroup('highlight-yank', { clear = true }),
     callback = function() vim.hl.on_yank() end,
+})
+
+-- show cursorline only in active window enable
+-- Sam Natale
+vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter" }, {
+    group = vim.api.nvim_create_augroup("active_cursorline", { clear = true }),
+    callback = function()
+        vim.opt_local.cursorline = true
+    end,
+})
+
+vim.api.nvim_create_autocmd({ "WinLeave", "BufLeave" }, {
+    group = "active_cursorline",
+    callback = function()
+        vim.opt_local.cursorline = false
+    end,
 })
 
 local autoInsert = vim.api.nvim_create_augroup('autoInsert', { clear = true })
@@ -111,6 +136,22 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.wo.foldmethod = 'manual'
         vim.wo.foldlevel = 99
     end,
+})
+
+local function netrw_dir_jump(backwards)
+    local flags = backwards and "bW" or "W"
+    vim.fn.search([[\/ \?$]], flags)
+end
+
+local netrw = vim.api.nvim_create_augroup('netrw', { clear = true })
+
+vim.api.nvim_create_autocmd("FileType", {
+    group = netrw,
+    pattern = "netrw",
+    callback = function()
+        vim.keymap.set("n", "]]", function() netrw_dir_jump(false) end, { remap = false, buffer = true })
+        vim.keymap.set("n", "[[", function() netrw_dir_jump(true) end, { remap = false, buffer = true })
+    end
 })
 
 return {}

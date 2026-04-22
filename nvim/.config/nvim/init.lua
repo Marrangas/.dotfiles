@@ -38,6 +38,6 @@ package.preload["obsidian.lsp"] = function()
 end
 
 require('lazy').setup({
-    -- { import = 'experiments' },
+    -- { import = 'xperiments' },
     { import = 'plugins' },
 })
