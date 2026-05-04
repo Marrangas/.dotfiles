@@ -25,7 +25,8 @@ return {
                 documentation = { auto_show = false },
                 menu = { scrolloff = 2 },
                 trigger = {
-                    show_on_keyword = true,
+                    show_on_keyword = false,
+                    show_on_trigger_character = true,
                 },
             },
             sources = {

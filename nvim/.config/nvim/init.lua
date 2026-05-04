@@ -1,4 +1,6 @@
 -- [[ Diagnostic Config & Keymaps ]] :help vim.diagnostic.Opts
+-- vim.lsp.set_log_level("debug")
+vim.o.background = "dark"
 vim.diagnostic.config {
     update_in_insert = false,
     severity_sort = true,
@@ -7,7 +9,7 @@ vim.diagnostic.config {
     virtual_text = true,
     virtual_lines = false,
     -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
-    jump = { float = true },
+    jump = { on_jump = { float = true } },
 }
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 

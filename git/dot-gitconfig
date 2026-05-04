@@ -57,3 +57,5 @@
 
 [credential]
 	helper = store
+[http]
+	sslVerify = true

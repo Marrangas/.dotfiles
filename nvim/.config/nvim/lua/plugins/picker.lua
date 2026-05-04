@@ -199,6 +199,23 @@ return {
             end,
             desc = '[X]anadu [I]nsert template',
         },
+        {
+            '<leader>xi',
+            function()
+                Snacks.picker.files({
+                    title = "Insert Wikilink",
+                    cwd = vim.fn.expand("~/Documents/wiki"),
+                    confirm = function(picker, item)
+                        picker:close()
+                        if item then
+                            local name = vim.fn.fnamemodify(item.file, ':t:r')
+                            vim.api.nvim_put({ '[[' .. name .. ']]' }, 'c', true, true)
+                        end
+                    end,
+                })
+            end,
+            desc = '[X]anadu [I]nsert',
+        },
         { '<leader>bd', function() Snacks.bufdelete() end,                       desc = 'Delete Buffer' },
         { '<C-/>',      function() Snacks.terminal.toggle() end,                 desc = 'Toggle Terminal' },
 

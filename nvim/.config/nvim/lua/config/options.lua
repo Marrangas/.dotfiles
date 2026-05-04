@@ -95,7 +95,7 @@ vim.opt.wildmode = 'longest:full,full' -- command-line completion mode
 vim.opt.pumblend = 17
 vim.opt.wildoptions = 'pum'
 
-vim.lsp.set_log_level 'off'
+vim.lsp.log.set_level 'off'
 
 -- vim.keymap.set('n', '-', ':Ex<CR>')
 

@@ -314,7 +314,7 @@ return { -- LSP Configuration & Plugins
                     capabilities = {
                         workspace = {
                             didChangeWatchedFiles = {
-                                dynamicRegistration = true,
+                                dynamicRegistration = false,
                             },
                         },
                     },
@@ -326,9 +326,6 @@ return { -- LSP Configuration & Plugins
                         return util.root_pattern('.git', '.obsidian')(fname)
                             or util.path.dirname(fname)
                     end,
-                    flags = {
-                        debounce_text_changes = 500,
-                    },
                 },
             }
 
