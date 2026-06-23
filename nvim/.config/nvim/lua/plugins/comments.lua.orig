@@ -1,4 +1,22 @@
 return {
+<<<<<<< HEAD
+    'folke/todo-comments.nvim',
+    event = 'VimEnter',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    keys = {
+        { '<leader>st', function() Snacks.picker.todo_comments() end, desc = 'Todo' },
+    },
+
+    opts = { signs = false },
+}
+
+||||||| parent of bdbe770 (fix: todocomments list)
+        'folke/todo-comments.nvim',
+        event = 'VimEnter',
+        dependencies = { 'nvim-lua/plenary.nvim' },
+        opts = { signs = false },
+}
+=======
     {
         'folke/todo-comments.nvim',
         dependencies = { 'nvim-lua/plenary.nvim' },
@@ -25,5 +43,9 @@ return {
     },
     {
         'numToStr/Comment.nvim',
+        opts = {
+            -- add any options here
+        }
     }
 }
+>>>>>>> bdbe770 (fix: todocomments list)

@@ -52,11 +52,21 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_STATE_HOME="$HOME/.local/state"
 export BOTO_PATH="$XDG_CONFIG_HOME/boto"
+export CARGO_HOME="$HOME/.config/cargo"
+export GOBIN="$HOME/.local/bin"
+export TLDR_CONFIG_DIR="$HOME/.config/tldr"
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
 export EDITOR='nvim'
 export SHELL=$(which zsh)
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
+
+export ZSH_CACHE_DIR="$HOME/.cache/zsh"
+[[ -d "$ZSH_CACHE_DIR" ]] || mkdir -p "$ZSH_CACHE_DIR"
+autoload -Uz compinit
+compinit -d "$ZSH_CACHE_DIR/.zcompdump-$HOST"
+autoload -Uz bashcompinit
+bashcompinit
 
 # Unified PATH management using Zsh's 'path' array
 # Directories are ordered by precedence (top = highest)
@@ -64,8 +74,6 @@ typeset -U path
 path=(
   $HOME/.local/bin
   $HOME/bin
-  $HOME/.nix-profile/bin
-  /nix/var/nix/profiles/default/bin
   /opt/homebrew/bin
   /opt/homebrew/sbin
   /usr/local/bin
@@ -108,8 +116,7 @@ HISTSIZE=50000
 SAVEHIST=50000
 HISTFILE=~/.cache/.zsh_history
 
-autoload -U compinit && compinit
-autoload -U +X bashcompinit && bashcompinit
+
 
 # ZLE (Zsh Line Editor) settings
 bindkey -e
@@ -193,7 +200,8 @@ fi
 export today=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 
-
+alias wiki="cd ~/Documents/wiki/ && nvim atlas/TODO.md"
+alias dia="cd ~/Documents/dgrp/docs && nvim dia.md"
 if command -v git &>/dev/null; then
     function wiki(){
         git --git-dir="$HOME/Documents/marrangas/xanadu/.git" --work-tree="$HOME/Documents/wiki" $@
@@ -227,6 +235,19 @@ if command -v terraform &>/dev/null; then
     alias twl='terraform workspace list'
     alias tws='terraform workspace select'
     alias twn='terraform workspace new'
+
+    function tsrmt(){
+      for cmd in terraform xargs; do
+        if ! command -v "$cmd" &> /dev/null; then
+          echo "zsh: function tsrmt: command not found: $cmd" >&2
+          return 1
+        fi
+      done
+      terraform plan -refresh="false" -lock="false" -no-color -target "'$1'" | \
+          grep "will be destroyed" | \
+          sed 's|.*# \(.*\) will be destroyed|\1|' | \
+          xargs -I {} -P 1 -n 1 sh -c "terraform state rm {}; sleep 1"
+    }
 
     function tsrmq(){
       for cmd in terraform xargs; do
@@ -343,7 +364,6 @@ export LESS_TERMCAP_ue=$(tput sgr0)
 # =============================================================================
 ZSH_PLUGINS_DIR="$HOME/.config/zsh"
 
-safe_source "$ZSH_PLUGINS_DIR/nix-zsh-completions/nix-zsh-completions.plugin.zsh"
 safe_source "$HOME/.local/bin/google-cloud-sdk/completion.zsh.inc"
 safe_source "$ZSH_PLUGINS_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
 safe_source "$ZSH_PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
@@ -369,3 +389,6 @@ if command -v direnv &>/dev/null; then
     )"
   }
 fi
+
+# Added by Antigravity IDE
+export PATH="/Users/altostratus/.antigravity-ide/antigravity-ide/bin:$PATH"

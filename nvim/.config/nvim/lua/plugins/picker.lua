@@ -1,48 +1,3 @@
---[[ This runs on LSP attach per buffer (see main LSP attach function in 'neovim/nvim-lspconfig' config for more info,
--- it is better explained there). This allows easily switching between pickers if you prefer using something else!
-vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-vim.keymap.set({ 'n', 'v' }, '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earch [C]ommands' })
-vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-
--- Find references for the word under your cursor.
-vim.keymap.set('n', 'grr', builtin.lsp_references, { buffer = buf, desc = '[G]oto [R]eferences' })
-
--- Jump to the implementation of the word under your cursor.
--- Useful when your language has ways of declaring types without an actual implementation.
-vim.keymap.set('n', 'gri', builtin.lsp_implementations, { buffer = buf, desc = '[G]oto [I]mplementation' })
-
--- Jump to the definition of the word under your cursor.
--- This is where a variable was first declared, or where a function is defined, etc.
--- To jump back, press <C-t>.
-vim.keymap.set('n', 'grd', builtin.lsp_definitions, { buffer = buf, desc = '[G]oto [D]efinition' })
-
--- Fuzzy find all the symbols in your current document.
--- Symbols are things like variables, functions, types, etc.
-vim.keymap.set('n', 'gO', builtin.lsp_document_symbols, { buffer = buf, desc = 'Open Document Symbols' })
-
--- Fuzzy find all the symbols in your current workspace.
--- Similar to document symbols, except searches over your entire project.
-vim.keymap.set('n', 'gW', builtin.lsp_dynamic_workspace_symbols, { buffer = buf, desc = 'Open Workspace Symbols' })
-
--- Jump to the type of the word under your cursor.
--- Useful when you're not sure what type a variable is and you want to see
--- the definition of its *type*, not where it was *defined*.
-vim.keymap.set('n', 'grt', builtin.lsp_type_definitions, { buffer = buf, desc = '[G]oto [T]ype Definition' })
--- Override default behavior and theme when searching
-vim.keymap.set('n', '<leader>/', function() -- You can pass additional configuration to Telescope to change the theme, layout, etc. builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown { winblend = 10, previewer = false, }) end, { desc = '[/] Fuzzily search in current buffer' })
-vim.keymap.set( 'n', '<leader>s/', function() builtin.live_grep { grep_open_files = true, prompt_title = 'Live Grep in Open Files', } end, { desc = '[S]earch [/] in Open Files' })
-vim.keymap.set('n', '<leader>sn', function() builtin.find_files { cwd = vim.fn.stdpath 'config' } end, { desc = '[S]earch [N]eovim files' })
--- Legacy Telescope mappings (Disabled)
-]] --
-
 return {
     'folke/snacks.nvim',
     priority = 1000,
@@ -64,7 +19,6 @@ return {
     keys = {
         -- High performance replacements for Telescope
         { '<leader>sf', function() Snacks.picker.files() end,                                   desc = 'Search [F]iles' },
-
         { '<leader>sg', function() Snacks.picker.grep() end,                                    desc = 'Search [G]rep' },
         { '<leader>sb', function() Snacks.picker.buffers() end,                                 desc = 'Search [B]uffers' },
         { '<leader>sh', function() Snacks.picker.help() end,                                    desc = 'Search [H]elp' },
@@ -78,6 +32,8 @@ return {
         { '<leader>sn', function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end, desc = 'Search [N]eovim files' },
         { '<leader>/',  function() Snacks.picker.lines() end,                                   desc = 'Search [/] in Buffer' },
         { '<leader>s/', function() Snacks.picker.grep_buffers() end,                            desc = 'Search [/] in Open Files' },
+        -- { "<leader>st", function() Snacks.picker.todo_comments() end,                                          desc = "Todo" },
+        -- { "<leader>st", function() Snacks.picker.todo_comments({ keywords = { "TODO", "FIX", "FIXME" } }) end, desc = "Todo/Fix/Fixme" },
 
         -- Xanadu (Wiki) Keymaps
         {
@@ -85,6 +41,7 @@ return {
             function()
                 Snacks.picker.files({
                     cwd = vim.fn.expand("~/Documents/wiki"),
+                    follow = true,
                     win = {
                         input = {
                             keys = {
@@ -108,29 +65,6 @@ return {
                 })
             end,
             desc = '[X]anadu [F]iles',
-        },
-        {
-            '<leader>xg',
-            function()
-                Snacks.picker.grep({
-                    cwd = vim.fn.expand("~/Documents/wiki"),
-                    win = {
-                        input = {
-                            keys = {
-                                ['<C-l>'] = { 'insert_link', mode = { 'n', 'i' } },
-                            },
-                        },
-                    },
-                    actions = {
-                        insert_link = function(picker, item)
-                            picker:close()
-                            local name = vim.fn.fnamemodify(item.file, ':t:r')
-                            vim.api.nvim_put({ '[[' .. name .. ']]' }, 'c', true, true)
-                        end,
-                    },
-                })
-            end,
-            desc = '[X]anadu [G]rep',
         },
         {
             '<leader>xt',
@@ -186,7 +120,7 @@ return {
             '<leader>xi',
             function()
                 Snacks.picker.files({
-                    cwd = vim.fn.expand("~/Documents/wiki/templates"),
+                    cwd = vim.fn.expand("~/Documents/wiki/system"),
                     confirm = function(picker, item)
                         picker:close()
                         if item then
@@ -200,7 +134,7 @@ return {
             desc = '[X]anadu [I]nsert template',
         },
         {
-            '<leader>xi',
+            '<leader>xl',
             function()
                 Snacks.picker.files({
                     title = "Insert Wikilink",
@@ -214,10 +148,10 @@ return {
                     end,
                 })
             end,
-            desc = '[X]anadu [I]nsert',
+            desc = '[X]anadu [l]ink',
         },
         { '<leader>bd', function() Snacks.bufdelete() end,                       desc = 'Delete Buffer' },
-        { '<C-/>',      function() Snacks.terminal.toggle() end,                 desc = 'Toggle Terminal' },
+        { '<C-\\>',     function() Snacks.terminal.toggle() end,                 desc = 'Toggle Terminal' },
 
         -- LSP Keymaps
         { 'grr',        function() Snacks.picker.lsp_references() end,           desc = '[G]oto [R]eferences' },

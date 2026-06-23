@@ -125,6 +125,10 @@ vim.keymap.set('n', '<leader>..', function()
     vim.cmd('cd ' .. vim.fs.dirname(path))
 end, { desc = '[.] file as cwd' })
 
+vim.keymap.set('n', '<leader>.d', function()
+    vim.cmd('cd ' .. vim.fs.dirname('/Users/altostratus/Documents/dgrp/'))
+end, { desc = '[.] file as cwd' })
+
 -- -- Diagnostic keymaps (use an alternative quickfix?)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })

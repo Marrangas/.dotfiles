@@ -2,7 +2,7 @@ window-decoration = none
 macos-option-as-alt = left
 macos-titlebar-style = hidden
 macos-non-native-fullscreen = true
-cursor-style-blink = true
+cursor-style-blink = false
 mouse-hide-while-typing = true
 clipboard-paste-protection = false
 
@@ -13,7 +13,6 @@ font-size = 16
 font-feature = "calt"
 font-feature = "liga"
 font-feature = "zero" # Slashed zero for better variability
-# font-thicken = true # Remove this, it makes everything look too bold
 font-style = "Regular"
 font-style-bold = "Bold"
 font-style-italic = "Italic"

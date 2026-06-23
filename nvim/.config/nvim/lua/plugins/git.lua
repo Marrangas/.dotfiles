@@ -23,6 +23,8 @@ return {
             { '<leader>gh', '<cmd>diffget //2<CR>',                            desc = '[G]it [H]ead (Left)' },
             { '<leader>gl', '<cmd>diffget //3<CR>',                            desc = '[G]it [L]ink (Right)' },
             { '<leader>gp', function() require('gitsigns').preview_hunk() end, desc = '[G]it [P]review Hunk' },
+            { ']g',         function() require('gitsigns').next_hunk() end,    desc = '] [G]it next Hunk' },
+            { '[g',         function() require('gitsigns').prev_hunk() end,    desc = '[ [G]it prev Hunk' },
         },
     },
 }

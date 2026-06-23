@@ -25,7 +25,7 @@ return {
 
         keys = {
             { "<leader>x.", ":Obsidian links<CR>",   desc = "[X]anadu [>]" },
-            { "<leader>xl", ":Obsidian tags ",       desc = "[X]anadu [l]labels" },
+            { "<leader>xg", ":Obsidian tags ",       desc = "[X]anadu [l]labels" },
             { "<leader>xd", ":Obsidian dailies<CR>", desc = "[X]anadu [D]ailies" },
             { "<leader>xo", ":Obsidian open<CR>",    desc = "[X]anadu [O]pen" },
             { "<leader>xn", ":Obsidian new<CR>",     desc = "[X]anadu [N]ew" },
@@ -56,14 +56,6 @@ return {
                 sort = {},
             },
 
-            completion = {
-                nvim_cmp = false,
-                lsp = false,
-                blink = false,
-                min_chars = nil,
-                create_new = false,
-            },
-
             follow_strategy = 'open',
             new_notes_location = 'vault_root',
             ---@param title string|?
@@ -89,11 +81,11 @@ return {
                 folder = "time",
                 date_format = "%Y-%m-%d",
                 default_tags = { "time/days" },
-                template = "templates/t-days.md",
+                template = "system/templates/t-days.md",
             },
             -- TODO: Wrap my head arround: is this going to be obsidian or nvim
             templates = {
-                folder = "templates",
+                folder = "system/templates/",
                 date_format = "%Y-%m-%d",
                 time_format = "%H:%M",
                 substitutions = {},

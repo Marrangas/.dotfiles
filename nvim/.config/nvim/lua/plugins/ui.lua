@@ -143,15 +143,4 @@ return {
         },
     },
 
-    {
-        'folke/todo-comments.nvim',
-        dependencies = { 'nvim-lua/plenary.nvim' },
-        opts = {
-            keywords = {
-                TASK = { icon = '󰄱 ', color = 'info', alt = { '[- [ ]' }, },
-                PENDING = { icon = ' ', color = 'warning', alt = { '[- [~]' } },
-                DONE = { icon = '✔ ', color = 'hint', alt = { '[- [x]' } },
-            },
-        },
-    },
 }

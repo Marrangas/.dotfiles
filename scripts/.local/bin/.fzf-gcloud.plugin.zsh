@@ -2,7 +2,7 @@
 # Google Cloud SDK fzf helper functions
 # ==========================================================================
 {
-export GCLOUD_CMD_CACHE_DB="$HOME/.fzf-gcloud-cmd_cache.db"
+export GCLOUD_CMD_CACHE_DB="${GCLOUD_CMD_CACHE_DB:-$HOME/.cache/fzf-gcloud/.fzf-gcloud-cmd_cache.db}"
 
 __gcloud_cmd_cache() {
   # ==========================================================================
@@ -89,7 +89,8 @@ fi
     sqlite3 "$staging_db" "insert into GCLOUD_CMD_CACHE values('$api_source_file', '$cmd');"
   done
 
-  # Swap the staging db file into the production file
+  # Ensure target directory exists and swap the staging db file into the production file
+  mkdir -p "$(dirname "$GCLOUD_CMD_CACHE_DB")"
   mv "$staging_db" "$GCLOUD_CMD_CACHE_DB"
   return 0
 }

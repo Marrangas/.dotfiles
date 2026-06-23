@@ -1,12 +1,17 @@
 dotdotdot ... or with the gliph ...
 
-- [ ] firebox config
+- [ ] firebox config (maybe I do not like even firefox anymore)
       https://github.com/sobolevn/dotfiles/blob/master/firefox/user-overrides.js
+
 - [ ] global configurations
 - [ ] ansible deployment
-- [ ] ## nvim
-- [ ] local scripts
+- [ ] nvim
+- [ ] local scripts (as they may have a library, I can do make them a separate
+      element and work with submodules... they are boring thing but it is always
+      better. For this testing is needed. How to make it posix compliant... and learn
+      the needs for great software.
 - [ ] better secrets handling with cli
+- [ ] I believe the indications for pc and ram are completely off
 
 - que:: gestion y documentacion de mis configuraciones
 - por-que:: [[backup]]

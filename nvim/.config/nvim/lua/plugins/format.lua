@@ -37,9 +37,9 @@ return {
             formatters_by_ft = {
                 lua = { 'stylua' },
                 c = { 'clang-format' },
-                bash = { 'shellharden'  },
-                sh = { 'shellharden'  },
-                -- go = { 'goimports', 'gofmt' },
+                bash = { 'shellharden', 'shfmt' },
+                sh = { 'shellharden', 'shfmt' },
+                go = { 'goimports', 'gofmt' },
                 python = function(bufnr)
                     if require("conform").get_formatter_info("ruff_format", bufnr).available then
                         return { "ruff_format" }
