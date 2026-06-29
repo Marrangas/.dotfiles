@@ -2,13 +2,7 @@
 # Google Cloud SDK fzf helper functions
 # ==========================================================================
 {
-<<<<<<< Updated upstream
-export GCLOUD_CMD_CACHE_DB="${GCLOUD_CMD_CACHE_DB:-$HOME/.cache/fzf-gcloud/.fzf-gcloud-cmd_cache.db}"
-||||||| Stash base
-export GCLOUD_CMD_CACHE_DB="$HOME/.cache/fzf-gcloud/.fzf-gcloud-cmd_cache.db"
-=======
 GCLOUD_CMD_CACHE_DB="${GCLOUD_CMD_CACHE_DB:-$HOME/.cache/fzf-gcloud/.fzf-gcloud-cmd_cache.db}"
->>>>>>> Stashed changes
 
 __gcloud_cmd_cache() {
   # ==========================================================================

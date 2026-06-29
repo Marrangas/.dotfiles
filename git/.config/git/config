@@ -5,7 +5,7 @@
 [core]
 	excludesFile = ~/.config/git/.gitignore
 	editor = nvim
-    pager = "nvim -c 'set ft=man' -"
+	pager = nvimpager
 
 [pager]
    branch = false

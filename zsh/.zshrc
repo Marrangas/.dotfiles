@@ -160,23 +160,11 @@ if command -v nvim &>/dev/null;then
   export MANPAGER="nvim +Man!"
   export PAGER="nvim -c 'set ft=man' -"
 fi
-<<<<<<< Updated upstream
 
-# if command -v moor &>/dev/null; then
-#   export PAGER=moor
-#   export MOOR='--style=catppuccin-macchiato'
-# fi
-||||||| Stash base
-
-if command -v moor &>/dev/null; then
-  export PAGER=moor
-  export MOOR='--style=catppuccin-macchiato'
-fi
-=======
 if command -v nvimpager &>/dev/null;then
   export PAGER="nvimpager"
+  export MANPAGER="nvimpager"
 fi
->>>>>>> Stashed changes
 
 # if command -v moor &>/dev/null; then
 #   export PAGER=moor
@@ -223,18 +211,10 @@ export today=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 alias wiki="cd ~/Documents/wiki/ && nvim atlas/TODO.md"
 alias dia="cd ~/Documents/dgrp/docs && nvim dia.md"
-if command -v git &>/dev/null; then
-    function wiki(){
-        git --git-dir="$HOME/Documents/marrangas/xanadu/.git" --work-tree="$HOME/Documents/wiki" $@
-    }
-    alias g='git'
-<<<<<<< Updated upstream
-    compdef g=git
 
-||||||| Stash base
-=======
+if command -v git &>/dev/null; then
+    alias g='git'
     compdef g=git
->>>>>>> Stashed changes
 fi
 
 if command -v jq &>/dev/null; then
@@ -405,7 +385,6 @@ if [[ -n "$HOMEBREW_PREFIX" ]]; then
 fi
 
 safe_source "$HOME/.local/bin/google-cloud-sdk/completion.zsh.inc"
-<<<<<<< Updated upstream
 
 # Locate and source zsh-autosuggestions with portable fallbacks (Homebrew/Linux)
 if [[ -r "$ZSH_PLUGINS_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
@@ -428,13 +407,9 @@ elif [[ -r "/opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.
 elif [[ -r "/usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
   safe_source "/usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
-||||||| Stash base
-safe_source "$ZSH_PLUGINS_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
-safe_source "$ZSH_PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-=======
+
 safe_source "$ZSH_AUTOSUGGEST_PATH"
 safe_source "$ZSH_HIGHLIGHT_PATH"
->>>>>>> Stashed changes
 
 if command -v starship &>/dev/null; then
   safe_eval "$(starship init zsh)"
