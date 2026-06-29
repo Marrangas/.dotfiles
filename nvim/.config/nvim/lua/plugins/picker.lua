@@ -37,7 +37,7 @@ return {
 
         -- Xanadu (Wiki) Keymaps
         {
-            '<leader>xf',
+            '<leader>xx',
             function()
                 Snacks.picker.files({
                     cwd = vim.fn.expand("~/Documents/wiki"),
@@ -124,7 +124,7 @@ return {
                     confirm = function(picker, item)
                         picker:close()
                         if item then
-                            local path = (item.dir or picker:dir()) .. "/" .. item.file
+                            local path = Snacks.picker.util.path(item)
                             local content = vim.fn.readfile(path)
                             vim.api.nvim_put(content, "l", true, true)
                         end
@@ -133,24 +133,6 @@ return {
             end,
             desc = '[X]anadu [I]nsert template',
         },
-        {
-            '<leader>xl',
-            function()
-                Snacks.picker.files({
-                    title = "Insert Wikilink",
-                    cwd = vim.fn.expand("~/Documents/wiki"),
-                    confirm = function(picker, item)
-                        picker:close()
-                        if item then
-                            local name = vim.fn.fnamemodify(item.file, ':t:r')
-                            vim.api.nvim_put({ '[[' .. name .. ']]' }, 'c', true, true)
-                        end
-                    end,
-                })
-            end,
-            desc = '[X]anadu [l]ink',
-        },
-        { '<leader>bd', function() Snacks.bufdelete() end,                       desc = 'Delete Buffer' },
         { '<C-\\>',     function() Snacks.terminal.toggle() end,                 desc = 'Toggle Terminal' },
 
         -- LSP Keymaps
@@ -173,11 +155,11 @@ return {
         -- THE COMPROMISE: "Discovery Mode"
         -- This ignores your 'file_ignore_patterns' so you can find media/hidden files
         {
-            '<leader>sA',
+            '<leader>sa',
             function()
                 Snacks.picker.files {
                     ignored = true,
-                    hidden = true,
+                    khidden = true,
                     follow = true,
                     cmd = 'fd', -- Force fd for speed in large vaults
                 }

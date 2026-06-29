@@ -81,11 +81,11 @@ return {
                 folder = "time",
                 date_format = "%Y-%m-%d",
                 default_tags = { "time/days" },
-                template = "system/templates/t-days.md",
+                template = ".local/templates/t-days.md",
             },
             -- TODO: Wrap my head arround: is this going to be obsidian or nvim
             templates = {
-                folder = "system/templates/",
+                folder = ".local/templates/",
                 date_format = "%Y-%m-%d",
                 time_format = "%H:%M",
                 substitutions = {},

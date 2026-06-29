@@ -112,25 +112,16 @@ export KUBE_EDITOR="nvim"
 # ZSH OPTIONS & COMPLETIONS
 # =============================================================================
 setopt histignorealldups sharehistory
+unsetopt complete_aliases
 HISTSIZE=50000
 SAVEHIST=50000
 HISTFILE=~/.cache/.zsh_history
 
 
-
-# ZLE (Zsh Line Editor) settings
-bindkey -e
-autoload -U edit-command-line
-zle -N edit-command-line
-bindkey '^x^e' edit-command-line
-bindkey "^[[3~" delete-char    # Del
-bindkey '^[[3;3~' kill-word   # Alt+Del
-bindkey '\eb' backward-word   # Alt+b
-bindkey '\ef' forward-word    # Alt+f
-
 # Completion styling
 zstyle ':completion:*' auto-description 'specify: %d'
-zstyle ':completion:*' completer _expand _complete _correct _approximate
+zstyle ':completion:*' completer _complete _ignored _approximate
+zstyle ':completion:*:approximate:*' max-errors 'reply=( $(( ($#PREFIX+$#SUFFIX)/3 )) numeric )'
 zstyle ':completion:*' format 'Completing %d'
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' menu select=long
@@ -141,6 +132,18 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 # =============================================================================
 # ALIASES & MODERN TOOLS (with Fallbacks)
 # =============================================================================
+
+# ZLE (Zsh Line Editor) settings
+bindkey -e
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey '^x^e' edit-command-line
+bindkey "^[[3~" delete-char    # Del
+bindkey '^[[3;3~' kill-word   # Alt+Del
+bindkey '\eb' backward-word   # Alt+b
+bindkey '\ef' forward-word    # Alt+f
+bindkey -s '^x' 'kubectx\n'
+
 alias rc="${EDITOR} ${HOME}/.zshrc && source ${HOME}/.zshrc"
 alias vi='nvim'
 alias vim='nvim'
@@ -155,12 +158,30 @@ fi
 
 if command -v nvim &>/dev/null;then
   export MANPAGER="nvim +Man!"
+  export PAGER="nvim -c 'set ft=man' -"
 fi
+<<<<<<< Updated upstream
+
+# if command -v moor &>/dev/null; then
+#   export PAGER=moor
+#   export MOOR='--style=catppuccin-macchiato'
+# fi
+||||||| Stash base
 
 if command -v moor &>/dev/null; then
   export PAGER=moor
   export MOOR='--style=catppuccin-macchiato'
 fi
+=======
+if command -v nvimpager &>/dev/null;then
+  export PAGER="nvimpager"
+fi
+>>>>>>> Stashed changes
+
+# if command -v moor &>/dev/null; then
+#   export PAGER=moor
+#   export MOOR='--style=catppuccin-macchiato'
+# fi
 
 if command -v lsd &>/dev/null; then
   alias ls='lsd --group-dirs=first'
@@ -207,6 +228,13 @@ if command -v git &>/dev/null; then
         git --git-dir="$HOME/Documents/marrangas/xanadu/.git" --work-tree="$HOME/Documents/wiki" $@
     }
     alias g='git'
+<<<<<<< Updated upstream
+    compdef g=git
+
+||||||| Stash base
+=======
+    compdef g=git
+>>>>>>> Stashed changes
 fi
 
 if command -v jq &>/dev/null; then
@@ -215,10 +243,13 @@ fi
 
 if command -v kubectl &>/dev/null; then
     alias k='kubectl'
+    source <(kubectl completion zsh)
+    compdef k=kubectl
 fi
 
 if command -v terraform &>/dev/null; then
     alias t='terraform'
+    complete -o nospace -C terraform terraform t
     alias tv='terraform validate'
     alias ti='terraform init'
     alias tc='terraform console'
@@ -364,9 +395,46 @@ export LESS_TERMCAP_ue=$(tput sgr0)
 # =============================================================================
 ZSH_PLUGINS_DIR="$HOME/.config/zsh"
 
+# Determine plugin paths with Homebrew support
+ZSH_AUTOSUGGEST_PATH="$ZSH_PLUGINS_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
+ZSH_HIGHLIGHT_PATH="$ZSH_PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+
+if [[ -n "$HOMEBREW_PREFIX" ]]; then
+  [[ -r "$ZSH_AUTOSUGGEST_PATH" ]] || ZSH_AUTOSUGGEST_PATH="$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  [[ -r "$ZSH_HIGHLIGHT_PATH" ]] || ZSH_HIGHLIGHT_PATH="$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
+
 safe_source "$HOME/.local/bin/google-cloud-sdk/completion.zsh.inc"
+<<<<<<< Updated upstream
+
+# Locate and source zsh-autosuggestions with portable fallbacks (Homebrew/Linux)
+if [[ -r "$ZSH_PLUGINS_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+  safe_source "$ZSH_PLUGINS_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
+elif [[ -n "$HOMEBREW_PREFIX" && -r "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+  safe_source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+elif [[ -r "/opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+  safe_source "/opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+elif [[ -r "/usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+  safe_source "/usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+fi
+
+# Locate and source zsh-syntax-highlighting with portable fallbacks (Homebrew/Linux)
+if [[ -r "$ZSH_PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+  safe_source "$ZSH_PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+elif [[ -n "$HOMEBREW_PREFIX" && -r "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+  safe_source "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+elif [[ -r "/opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+  safe_source "/opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+elif [[ -r "/usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+  safe_source "/usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
+||||||| Stash base
 safe_source "$ZSH_PLUGINS_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
 safe_source "$ZSH_PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+=======
+safe_source "$ZSH_AUTOSUGGEST_PATH"
+safe_source "$ZSH_HIGHLIGHT_PATH"
+>>>>>>> Stashed changes
 
 if command -v starship &>/dev/null; then
   safe_eval "$(starship init zsh)"

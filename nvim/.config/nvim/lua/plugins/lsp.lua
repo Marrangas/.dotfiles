@@ -29,6 +29,7 @@ return { -- LSP Configuration & Plugins
             'williamboman/mason.nvim',
             'williamboman/mason-lspconfig.nvim',
             'WhoIsSethDaniel/mason-tool-installer.nvim',
+            'b0o/SchemaStore.nvim',
 
             -- Useful status updates for LSP.
             { 'j-hui/fidget.nvim', opts = {} },
@@ -189,35 +190,26 @@ return { -- LSP Configuration & Plugins
                     },
                 },
 
-                -- todo use schemastore pluggin https://github.com/b0o/SchemaStore.nvim
                 yamlls = {
                     settings = {
                         yaml = {
-                            schemas = {
-                                kubernetes = '*.yaml',
-                                ['http://json.schemastore.org/github-workflow'] = '.github/workflows/*',
-                                ['http://json.schemastore.org/github-action'] = '.github/action.{yml,yaml}',
-                                ['http://json.schemastore.org/ansible-stable-2.9'] = 'roles/tasks/*.{yml,yaml}',
-                                ['http://json.schemastore.org/prettierrc'] = '.prettierrc.{yml,yaml}',
-                                ['http://json.schemastore.org/kustomization'] = 'kustomization.{yml,yaml}',
-                                ['http://json.schemastore.org/ansible-playbook'] = '*play*.{yml,yaml}',
-                                ['http://json.schemastore.org/chart'] = 'Chart.{yml,yaml}',
-                                ['https://json.schemastore.org/dependabot-v2'] = '.github/dependabot.{yml,yaml}',
-                                ['https://json.schemastore.org/gitlab-ci'] = '*gitlab-ci*.{yml,yaml}',
-                                ['https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/v1.18.0-standalone-strict/all.json'] =
-                                '/*.k8s.yaml',
-                                ['https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json'] =
-                                '*api*.{yml,yaml}',
-                                ['https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json'] =
-                                '*docker-compose*.{yml,yaml}',
-                                ['https://raw.githubusercontent.com/argoproj/argo-workflows/master/api/jsonschema/schema.json'] =
-                                '*flow*.{yml,yaml}',
-
-                                -- Google Cloud Build (Community Schema)
-                                -- Note: Official Google schemas are often baked into the Cloud Code extension.
-                                -- You can find community versions at schemastore.org or via the URL below:
-                                ['https://json.schemastore.org/cloudbuild.json'] = 'cloudbuild.yaml',
+                            schemaStore = {
+                                enable = false,
+                                url = "",
                             },
+                            schemas = require('schemastore').yaml.schemas(),
+                            kubernetesCRDStore = {
+                                enable = true,
+                            },
+                        },
+                    },
+                },
+
+                jsonls = {
+                    settings = {
+                        json = {
+                            schemas = require('schemastore').json.schemas(),
+                            validate = { enable = true },
                         },
                     },
                 },

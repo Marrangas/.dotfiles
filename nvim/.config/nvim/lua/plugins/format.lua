@@ -17,7 +17,7 @@ return {
             format_on_save = function(bufnr)
                 -- Disable "format_on_save lsp_fallback" for languages that don't
                 -- have a well standardized coding style.
-                local disable_filetypes = { c = true, cpp = true }
+                local disable_filetypes = { c = true, cpp = true, terraform = true, ["terraform-vars"] = true, yaml = true }
                 if disable_filetypes[vim.bo[bufnr].filetype] then
                     return nil
                 end
@@ -57,6 +57,8 @@ return {
                 markdown = { 'prettierd', 'prettier', stop_after_first = true },
                 javascript = { 'prettierd', 'prettier', stop_after_first = true },
                 typescript = { 'prettierd', 'prettier', stop_after_first = true },
+                json = { 'prettierd', 'prettier', stop_after_first = true },
+                jsonc = { 'prettierd', 'prettier', stop_after_first = true },
                 -- Conform can also run multiple formatters sequentially
                 -- python = { "isort", "black" },
                 --

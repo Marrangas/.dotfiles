@@ -11,9 +11,22 @@ else
     # Dynamically find projects in common locations
     selected=$( cat <(echo "$HOME/Documents/marrangas/.dotfiles") \
                     <(echo "$HOME/Documents/marrangas/.secrets") \
+                    <(find "$HOME/Documents/marrangas" \
+                        -mindepth 1 -maxdepth 1 -type d  ! -name '.*' \
+                    ) \
+                    <(find "$HOME/Documents/alt/" \
+                        -mindepth 1 -maxdepth 1 -type d  ! -name '.*' \
+                    ) \
+                    <(find "$HOME/Documents/dgrp/" \
+                        -mindepth 1 -maxdepth 1 -type d  ! -name '.*' \
+                    ) \
+                    <(find "$HOME/Documents/dgrp/t-oc" \
+                        -mindepth 1 -maxdepth 1 -type d  ! -name '.*' \
+                    )\
                     <(find "$HOME/Documents/" \
                         -mindepth 1 -maxdepth 2 -type d  ! -name '.*' \
-                    ) | fzf --prompt="󱫋 Select Project: "
+                    ) | sort -u \
+                    | fzf --prompt="󱫋 Select Project: "
     )
 fi
 

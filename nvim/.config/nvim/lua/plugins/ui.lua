@@ -124,6 +124,9 @@ return {
 
                 -- Window Separators
                 hl.WinSeparator = { fg = c.dark3, bold = true }
+
+                -- Subtle CursorColumn (darker background)
+                hl.CursorColumn = { bg = c.bg_dark }
             end,
         },
         config = function(_, opts)
@@ -131,7 +134,9 @@ return {
             vim.cmd.colorscheme "tokyonight"
         end,
     },
-
+    {
+        'powerman/vim-plugin-AnsiEsc',
+    },
     {
         'nvim-lualine/lualine.nvim',
         opts = {

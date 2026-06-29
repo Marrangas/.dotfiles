@@ -6,6 +6,7 @@ vim.g.loaded_node_provider = 0
 
 vim.opt.path:append("**")
 vim.g.netrw_banner = 0 -- no banner
+vim.g.netrw_bufsettings = 'noma nomod nu rnu nobl nowrap ro'
 -- vim.g.netrw_liststyle = 3      -- Tree view
 -- vim.g.netrw_browse_split = 4   -- Open in previous window
 vim.g.netrw_preview = 1 -- Vertically split preview window
@@ -70,6 +71,7 @@ vim.opt.inccommand = 'nosplit'
 
 -- Show which line your cursor is on
 vim.opt.cursorline = true
+vim.opt.cursorcolumn = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 8
@@ -158,6 +160,7 @@ vim.o.inccommand = 'split'
 
 -- Show which line your cursor is on
 vim.o.cursorline = true
+vim.o.cursorcolumn = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.o.scrolloff = 10

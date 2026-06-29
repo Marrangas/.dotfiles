@@ -5,7 +5,7 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.keymap.set("i", "<C-c>", "<Esc>")
-vim.keymap.set('n', '<C-_>', ':Ex<CR>')
+vim.keymap.set('n', '<C-_>', ':Explore<CR>')
 
 vim.keymap.set('i', '<M-e>', '<C-k>\'', { noremap = true, desc = 'digraphs remap (conflicts with blink)' })
 vim.keymap.set('i', '<M-n>', '<C-k>~', { noremap = true, desc = 'digraphs remap (conflicts with blink)' })

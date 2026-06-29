@@ -5,24 +5,24 @@
 [core]
 	excludesFile = ~/.config/git/.gitignore
 	editor = nvim
-    pager = "command -v moor >/dev/null && moor || less"
+    pager = "nvim -c 'set ft=man' -"
 
 [pager]
-    log = "f() { if command -v moor >/dev/null; then moor --style=catppuccin-macchiato --quit-if-one-screen --no-clear-on-exit; else less -FRX; fi; }; f"
-    diff = "f() { if command -v moor >/dev/null; then moor --style=catppuccin-macchiato --quit-if-one-screen --no-clear-on-exit; else less -FRX; fi; }; f"
+   branch = false
 
 [init]
 	defaultBranch = master
 
 [color]
-	ui = always
-	diff = always
+	ui = auto
+	diff = auto
 	status = auto
 	branch = auto
 
 [pull]
 	rebase = true
 	autoStash = true
+	prune = true
 
 [push]
 	default = current
@@ -40,6 +40,7 @@
 
 [alias]
 	chof = "!git add $1 && git commit --amend --no-edit"
+    addw="!sh -c 'git diff -U1 -w --no-color --src-prefix=a/ --dst-prefix=b/ "$@" | git apply --cached --ignore-whitespace --unidiff-zero -'"
 	last = log -1 HEAD
 	unstage = reset HEAD --
 	parent = rev-parse --abbrev-ref --symbolic-full-name @{u}
@@ -48,6 +49,14 @@
     usage = "!git log --format=format: --name-only --since='1 year ago' | sort | uniq -c | sort -nr | head -50"
     months = "!git log --format='%ad' --date=format:'%Y-%m' | sort | uniq -c"
 	contrib = "!f() { git log --author=\"$(git config user.name)\" --pretty=tformat: --numstat \"$@\" | gawk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf \"added lines: %s removed lines: %s total lines: %s\\n\", add, subs, loc }' -; }; f"
+    hand = "!f() { \
+            git branch -a --format='%(refname:short)' | sed 's|^origin/||' | sort -u | fzf \
+                --header 'Enter: checkout | Ctrl-C: create branch [from search query] | Ctrl-X: delete local branch' \
+                --bind 'enter:become(git checkout {1})' \
+                --bind 'ctrl-c:become(git checkout -b {q})' \
+                --bind 'ctrl-x:execute(git branch -D {1})+reload(git branch -a --format=\"%(refname:short)\" | sed \"s|^origin/||\" | sort -u)'; \
+        }; f"
+
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
