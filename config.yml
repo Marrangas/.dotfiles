@@ -1,0 +1,62 @@
+# General Exposed Variables
+profile: standard
+theme: catppuccin-mocha
+font_family: "FiraCode Nerd Font"
+font_size: 12
+terminal: ghostty
+
+# Profile Package Mapping
+profiles:
+  lean:
+    - editorconfig
+    - git
+    - scripts
+    - tmux
+    - vim
+    - zsh
+  standard:
+    - bat
+    - editorconfig
+    - fzf
+    - garden
+    - git
+    - htop
+    - nvim
+    - scripts
+    - starship
+    - tmux
+    - vim
+    - zsh
+  workstation:
+    - bat
+    - editorconfig
+    - fonts
+    - fzf
+    - garden
+    - git
+    - ghostty
+    - htop
+    - nvim
+    - scripts
+    - starship
+    - tmux
+    - vim
+    - zsh
+  mac_workstation:
+    - aerospace
+    - bat
+    - copyq
+    - editorconfig
+    - fonts
+    - fzf
+    - garden
+    - git
+    - ghostty
+    - htop
+    - macOs
+    - nvim
+    - scripts
+    - starship
+    - tmux
+    - vim
+    - zsh

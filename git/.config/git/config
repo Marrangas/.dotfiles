@@ -4,8 +4,8 @@
 
 [core]
 	excludesFile = ~/.config/git/.gitignore
-	editor = nvim
-	pager = nvimpager
+	editor = "sh -c 'if command -v nvim >/dev/null 2>&1; then nvim \"$@\"; elif command -v vim; then vim \"$@\"; else vi \"$@\"; fi' --"
+    pager = "if command -v nvimpager >/dev/null 2>&1; then nvimpager -p -- -c 'set filetype=git'; else less; fi"
 
 [pager]
    branch = false
@@ -18,6 +18,7 @@
 	diff = auto
 	status = auto
 	branch = auto
+	pager = no
 
 [pull]
 	rebase = true
@@ -39,24 +40,25 @@
 	prompt = false
 
 [alias]
-	chof = "!git add $1 && git commit --amend --no-edit"
-    addw="!sh -c 'git diff -U1 -w --no-color --src-prefix=a/ --dst-prefix=b/ "$@" | git apply --cached --ignore-whitespace --unidiff-zero -'"
-	last = log -1 HEAD
-	unstage = reset HEAD --
-	parent = rev-parse --abbrev-ref --symbolic-full-name @{u}
-	tree = log --graph --date=format:'%y-%m-%d %H:%M' --pretty='format:%C(auto)%h %C(red)%d%C(reset)%n%C(yellow)%an -> %ae%n%C(green)%ad%C(reset) %s%n' --all
-	authors = shortlog --summary --numbered
-    usage = "!git log --format=format: --name-only --since='1 year ago' | sort | uniq -c | sort -nr | head -50"
-    months = "!git log --format='%ad' --date=format:'%Y-%m' | sort | uniq -c"
-	contrib = "!f() { git log --author=\"$(git config user.name)\" --pretty=tformat: --numstat \"$@\" | gawk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf \"added lines: %s removed lines: %s total lines: %s\\n\", add, subs, loc }' -; }; f"
-    hand = "!f() { \
-            git branch -a --format='%(refname:short)' | sed 's|^origin/||' | sort -u | fzf \
-                --header 'Enter: checkout | Ctrl-C: create branch [from search query] | Ctrl-X: delete local branch' \
-                --bind 'enter:become(git checkout {1})' \
-                --bind 'ctrl-c:become(git checkout -b {q})' \
-                --bind 'ctrl-x:execute(git branch -D {1})+reload(git branch -a --format=\"%(refname:short)\" | sed \"s|^origin/||\" | sort -u)'; \
+        chof = "!git add $1 && git commit --amend --no-edit"
+        last = log -1 HEAD
+        unstage = reset HEAD --
+        parent = rev-parse --abbrev-ref --symbolic-full-name @{u}
+        tree = log --graph --date=format:'%y-%m-%d %H:%M' --pretty='format:%C(auto)%h %C(red)%d%C(reset)%n%C(yellow)%an -> %ae%n%C(green)%ad%C(reset) %s%n' --all
+        authors = shortlog --summary --numbered
+        usage = "!git log --format=format: --name-only --since='1 year ago' | sort | uniq -c | sort -nr | head -50"
+        months = "!git log --format='%ad' --date=format:'%Y-%m' | sort | uniq -c"
+        stats = "!f() { git log --format='%aN' | sort -u | while read -r author; do stats=$(git log --author=\"$author\" --no-renames --pretty=tformat: --numstat | awk '{ add += $1; subs += $2 } END { printf \"added: %-6d | removed: %-6d | total: %-6d\", add, subs, add - subs }'); printf \"%-30s : %s\\n\" \"$author\" \"$stats\"; done; }; f"
+        white = "!sh -c 'git diff -U1 -w --no-color --src-prefix=a/ --dst-prefix=b/ \"$@\" | git apply --cached --ignore-whitespace --unidiff-zero -'"
+        hand = "!f() { \
+            if command -v fzf >/dev/null 2>&1; then \
+                git branch -a --format='%(refname:short)' | sed 's|^origin/||' | sort -u | fzf \
+                    --header 'Enter: checkout | Ctrl-N: create branch [from query] | Ctrl-X: delete local branch' \
+                    --bind 'enter:become(git checkout {1})' \
+                    --bind 'ctrl-n:become(git checkout -b {q})' \
+                    --bind 'ctrl-x:execute(git branch -D {1})+reload(git branch -a --format="%(refname:short)" | sed "s|^origin/||" | sort -u)'; \
+            fi; \
         }; f"
-
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f

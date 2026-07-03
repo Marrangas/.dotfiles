@@ -22,3 +22,7 @@ lazy-lock.json
 .venv/
 venv/
 pyvenv.cfg
+
+# Local configs
+local.yml
+.local-profile

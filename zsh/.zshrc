@@ -153,17 +153,14 @@ alias ....='cd ../../..'
 
 if command -v bat &>/dev/null; then
   alias cat=bat
-  export MANPAGER="nvim +Man!"
 fi
 
 if command -v nvim &>/dev/null;then
   export MANPAGER="nvim +Man!"
-  export PAGER="nvim -c 'set ft=man' -"
 fi
 
 if command -v nvimpager &>/dev/null;then
   export PAGER="nvimpager"
-  export MANPAGER="nvimpager"
 fi
 
 # if command -v moor &>/dev/null; then
@@ -210,7 +207,7 @@ export today=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 
 alias wiki="cd ~/Documents/wiki/ && nvim atlas/TODO.md"
-alias dia="cd ~/Documents/dgrp/docs && nvim dia.md"
+alias dia="cd ~/Documents/wiki/atlas/dia/ && nvim dia.md"
 
 if command -v git &>/dev/null; then
     alias g='git'

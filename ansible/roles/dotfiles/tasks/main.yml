@@ -1,0 +1,97 @@
+---
+- name: Set platform-specific variables
+  ansible.builtin.set_fact:
+    dotfiles_dir: "{{ ansible_user_dir }}/.dotfiles"
+    dotfiles_repo_url: "{{ dotfiles_repo | default('https://github.com/Marrangas/.dotfiles.git') }}"
+    profile_to_deploy: "{{ dotfiles_profile | default('standard') }}"
+
+- name: Verify if 'just' is installed
+  ansible.builtin.command:
+    cmd: which just
+  register: just_check
+  failed_when: false
+  changed_when: false
+
+- name: Check if 'stow' is installed
+  ansible.builtin.command:
+    cmd: which stow
+  register: stow_check
+  failed_when: false
+  changed_when: false
+
+- name: Fail if required tools are missing
+  ansible.builtin.fail:
+    msg: >
+      Required command 'just' or 'stow' was not found on the system.
+      Please install them before running this playbook (e.g. 'brew install just stow' or 'apt install just stow').
+  when: just_check.rc != 0 or stow_check.rc != 0
+
+- name: Ensure dotfiles directory exists
+  ansible.builtin.file:
+    path: "{{ dotfiles_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Check if dotfiles is already a git repository
+  ansible.builtin.stat:
+    path: "{{ dotfiles_dir }}/.git"
+  register: dotfiles_git_stat
+
+- name: Initialize sparse git repository if not already present
+  ansible.builtin.shell: |
+    set -e
+    git init
+    git remote add origin {{ dotfiles_repo_url }} || git remote set-url origin {{ dotfiles_repo_url }}
+    git sparse-checkout init --cone
+    git sparse-checkout set Justfile config.yml README.md LICENSE.md .gitignore .stow-local-ignore scripts/
+    git fetch --depth=1 origin master
+    git checkout -f master
+  args:
+    chdir: "{{ dotfiles_dir }}"
+  when: not dotfiles_git_stat.stat.exists
+  changed_when: true
+
+- name: Generate local.yml override for machine-specific profile
+  ansible.builtin.copy:
+    content: |
+      # Managed by central Ansible - DO NOT EDIT MANUALLY
+      profile: "{{ profile_to_deploy }}"
+    dest: "{{ dotfiles_dir }}/local.yml"
+    mode: '0644'
+  register: local_yml_config
+
+- name: Re-evaluate and run Git sparse-checkout matching profile packages
+  ansible.builtin.command:
+    cmd: just sparse
+    chdir: "{{ dotfiles_dir }}"
+  register: sparse_checkout_result
+  changed_when: "'Configuring Git sparse-checkout' in sparse_checkout_result.stdout"
+
+- name: Update sparse-checkout package sources from git origin
+  ansible.builtin.command:
+    cmd: git pull origin master
+    chdir: "{{ dotfiles_dir }}"
+  register: git_pull_result
+  changed_when: "'Already up to date' not in git_pull_result.stdout"
+  failed_when: false # Ignore if network is unavailable or there's nothing to pull
+
+- name: Apply stowed package symlinks via Just link
+  ansible.builtin.command:
+    cmd: just link
+    chdir: "{{ dotfiles_dir }}"
+  register: stow_link_result
+  changed_when: "'Stowing packages' in stow_link_result.stdout"
+
+- name: Check for uncommitted local changes (drift detection)
+  ansible.builtin.command:
+    cmd: git status --porcelain
+    chdir: "{{ dotfiles_dir }}"
+  register: git_drift_check
+  changed_when: false
+
+- name: Warn if local dotfiles drift is detected
+  ansible.builtin.debug:
+    msg: >
+      [DRIFT DETECTED] Host {{ inventory_hostname }} has uncommitted changes in {{ dotfiles_dir }}:
+      {{ git_drift_check.stdout }}
+  when: git_drift_check.stdout != ""

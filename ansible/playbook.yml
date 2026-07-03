@@ -1,0 +1,6 @@
+---
+- name: Deploy and Reconcile Layered Dotfiles
+  hosts: all
+  gather_facts: true
+  roles:
+    - role: dotfiles

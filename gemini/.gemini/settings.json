@@ -1,0 +1,21 @@
+{
+  "theme": "GitHub",
+  "ui": {
+    "hideBanner": true,
+    "hideWindowTitle": true
+  },
+  "general": {
+    "preferredEditor": "neovim"
+  },
+  "context": {
+    "includeDirectories": [
+      "/Users/altostratus/Documents/wiki/.local/agents/memories/"
+    ],
+    "loadMemoryFromIncludeDirectories": true
+  },
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  }
+}
