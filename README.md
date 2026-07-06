@@ -1,17 +1,145 @@
+## 1. El Manifiesto (Filosofía y Principios)
+
+Nuestra relación con las herramientas define nuestra capacidad cognitiva. Este
+proyecto nace de una crisis de propiedad intelectual sobre el propio entorno.
+
+- **Razón (Empirismo):** Inducción, deducción y abducción. Las configuraciones se
+  prueban empíricamente, no se copian de vídeos sin entenderlas.
+- **Pragmatismo:** Entender las consecuencias lógicas de cada línea. Si no puedo
+  implementarlo, comprenderlo y editarlo, no pertenece a mi sistema.
+- **Axiología (Valores):** Priorizar la soberanía tecnológica y el código abierto.
+  Exponer mis ideas de forma limpia y transparente.
+- **Experiencia:** Evitar la frustración del software que se rompe sin dejar rastro
+  en Git. Cada cambio debe ser rastreable para poder hacer `git bisect`.
+- **Emoción:** Crear un espacio de calma digital donde apetezca trabajar y donde la
+  mejora continua sea un hábito, no una obsesión.
+
+### Los 5 Porqués del Proyecto (Adquisición de Criterio)
+
+1.  **¿Por qué un backup?** Porque mi entorno actual es frágil.
+2.  **¿Por qué se rompe el Markdown/Entorno?** Porque no conozco la raíz de mis
+    herramientas de renderizado y formateo.
+3.  **¿Por qué no las conozco?** Porque nunca las he inventariado, documentado ni
+    testeado sistemáticamente.
+4.  **¿Por qué no las he testeado?** Porque históricamente he copiado y pegado
+    configuraciones de terceros sin criterio.
+5.  **¿Por qué quiero cambiar esto?** Para recuperar la soberanía tecnológica y tener
+    criterio propio.
+
+---
+
+## 2. Decisiones de Diseño (Los Problemas Principales)
+
+Para evitar perdernos en detalles insignificantes (_minor problems_), el diseño se
+rige por tres principios: **Modularidad, Reusabilidad y Granularidad**.
+
+### A. Propiedad Cognitiva frente a la IA
+
+La IA puede adormecer la capacidad crítica si se usa como un generador de cajas
+negras.
+
+- **La Shell como Fundamento:** Dominar los comandos Unix nativos antes de añadir
+  capas de abstracción pesadas.
+- **Saber Preguntar:** Usar la IA para evaluar nuestra propia capacidad de expresión,
+  precisión y liderazgo. El trabajo real consiste en dar el contexto preciso y
+  evaluar la competencia de las respuestas.
+
+### B. Multiplexación y Jerarquía Espacial
+
+Evitar interfaces complejas. El espacio de trabajo visual se limita estrictamente a
+tres niveles:
+
+1.  **Session (Contenedor):** El contexto o proyecto general (escala $N$).
+2.  **Tab:** Contextos de tarea activos en paralelo (de 2 a 5 máximo).
+3.  **Split:** Vistas complementarias en pantalla para ejecución o lectura (máximo
+    3).
+
+### C. Contexto y Variables de Entorno
+
+El sistema debe comportarse de forma adaptativa según el entorno físico e instancial:
+
+- **Detección de Contexto:** Distinguir claramente entre `dev`, `test` y `pro`.
+- **Adaptación Visual (Gestalt):** Modificar el fondo y el color de contraste (de la
+  Shell, de `cat`, de `vim`) según el entorno para evitar errores críticos en
+  producción y agrupar visualmente la criticidad.
+- **Carga Segura:** Modularizar las configuraciones si es una máquina
+  corporativa/personal o un servidor.
+
+### D. Árbol Sintáctico Funcional (Parser & LSP)
+
+El editor no es una suite monolítica, es una interfaz sobre parsers sintácticos:
+
+- **Tree-sitter** como base para resaltado, formateo y navegación.
+- **Multi-LSP** coordinado con bases de datos de conocimiento y linters nativos.
+
+---
+
+## 3. Hoja de Ruta Activa (Focus)
+
+Para avanzar con paso firme, nos enfocamos en los problemas de alto apalancamiento
+cognitivo y bloqueamos las distracciones accesorias.
+
+### Hito 1: Gestión de Configuración con Ansible `[Prioritario]`
+
+- [ ] **Encapsulación:** Aislar los dotfiles por recurso/herramienta de forma
+      modular.
+- [ ] **Sincronización Bidireccional:** Diseñar un flujo asíncrono con bloqueo
+      preventivo (centralizado pero capaz de operar sin conexión).
+- [ ] **Mapeo de Dependencias:** Declarar las herramientas mínimas requeridas por
+      entorno.
+- [ ] **Gestión de Secretos:** Implementar un manejo robusto de credenciales y
+      secretos a través del CLI de forma segura.
+
+### Hito 2: Entorno Adaptativo y Visual (Legibilidad y Seguridad)
+
+- [ ] **Variables de Entorno:** Crear un script de bootstrap que detecte e inyecte la
+      variable de entorno actual de forma segura.
+- [ ] **Temas Reactivos:** Automatizar que la Shell y Neovim cambien su color de
+      fondo/contraste según la criticidad del entorno detectado.
+
+### Hito 3: Control Sintáctico y Documentación
+
+- [ ] **Formateador Markdown:** Terminar el formateo estricto de Markdown.
+- [ ] **LSP Setup para Lenguajes Clave:** Configuración minimalista para: Terraform,
+      Ansible, YAML, HTML (con HTMX + JS), CSS (con Tailwind), Python, Go, Bash, Lua,
+      Markdown.
+- [ ] **Base de Gráfos de Conocimiento:** Conectar notas en Markdown
+      `[[referencias]]` mapeando variables locales en un inventario documentado
+      (similar a un grafo de base de datos personal).
+
+---
+
+## 4. Antipatrones y Distracciones (Evitar / Fuera de Foco)
+
+Estas tareas consumen tiempo sin aportar valor real a largo plazo. Se declaran fuera
+del alcance del proyecto actual:
+
+- ❌ **Hiper-personalización de navegadores:** Evitar perder tiempo en
+  configuraciones infinitas y frágiles (ej. `user-overrides.js` de Firefox). Si una
+  herramienta no encaja, se busca una nativa o se trabaja con defaults limpios.
+- ❌ **Búsqueda del editor/flujo perfecto:** No migrar constantemente entre suites
+  complejas (Emacs vs. Vim vs. Obsidian). Usar aplicaciones nativas auto-suficientes
+  que no añadan overhead cognitivo.
+- ❌ **Estilo estético cosmético:** El estilo visual no debe ser meramente
+  decorativo. Debe estar estrictamente supeditado a la accesibilidad, la distinción
+  de entornos y la psicología de la Gestalt.
+
 dotdotdot ... or with the gliph ...
+
+- [ ] ansible
+- [ ] nvim with ia
+- [ ] local scripts (probably those are separate repos) use git bash as a submodule
+      pattern
+- [ ] better secrets handling with cli
 
 - [ ] firebox config (maybe I do not like even firefox anymore)
       https://github.com/sobolevn/dotfiles/blob/master/firefox/user-overrides.js
 
-- [ ] global configurations
-- [ ] ansible deployment
-- [ ] nvim
-- [ ] local scripts (as they may have a library, I can do make them a separate
-      element and work with submodules... they are boring thing but it is always
-      better. For this testing is needed. How to make it posix compliant... and learn
-      the needs for great software.
-- [ ] better secrets handling with cli
-- [ ] I believe the indications for pc and ram are completely off
+## patrones de diseño
+
+- modularidad
+- reusabilidad
+- granularidad
 
 - que:: gestion y documentacion de mis configuraciones
 - por-que:: [[backup]]

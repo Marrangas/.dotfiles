@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Automatically sync hooks from remote on git checkout / switch branch
+echo "Syncing latest agnostic hooks from lib-gittools remote..."
+
+@git archive --remote=git@git.sr.ht:~marrangas/gittools master githooks | tar -xf - --strip-components=1 -C .githooks 2>/dev/null
+
+chmod +x .githooks/* 2>/dev/null || true

@@ -195,9 +195,23 @@ return { -- LSP Configuration & Plugins
                         yaml = {
                             schemaStore = {
                                 enable = false,
-                                url = "",
+                                url = '',
                             },
-                            schemas = require('schemastore').yaml.schemas(),
+                            -- Combine SchemaStore schemas with explicit Kubernetes mapping
+                            schemas = vim.tbl_deep_extend('force', require('schemastore').yaml.schemas(), {
+                                -- Force Kubernetes schema on these files
+                                kubernetes = {
+                                    'container_resources.yaml',
+                                    'hpa.yaml',
+                                    'service_account.yaml',
+                                    'deployment.yaml',
+                                },
+                                -- Force Kustomize schema on kustomization files
+                                ['https://json.schemastore.org/kustomization.json'] = {
+                                    'kustomization.yaml',
+                                    'kustomization.yml',
+                                },
+                            }),
                             kubernetesCRDStore = {
                                 enable = true,
                             },
@@ -311,7 +325,7 @@ return { -- LSP Configuration & Plugins
                         },
                     },
                     settings = {
-                        new_file_folder_path = "notes",
+                        new_file_folder_path = 'notes',
                     },
                     root_dir = function(fname)
                         local util = require 'lspconfig.util'
@@ -344,6 +358,7 @@ return { -- LSP Configuration & Plugins
             require('mason-lspconfig').setup {
                 handlers = {
                     function(server_name)
+                        vim.api.nvim_err_writeln("DEBUG-SETUP-SERVER: " .. tostring(server_name))
                         local server = servers[server_name] or {}
                         server.capabilities = vim.tbl_deep_extend(
                             'force',

@@ -19,22 +19,29 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-# 2-space indentation for specific formats
 [*.{yml,yaml,json,js,ts,jsx,tsx,html,css,scss,toml}]
+indent_size = 2
+
+[*.{conf,ini}]
 indent_size = 2
 
 # Python follows PEP8
 [*.py,*.lua]
 indent_size = 4
+indent_style = space
 
 # Tab-based indentation for makefiles and go
 [{Makefile,*.go,*.sh}]
-indent_style = tab
 indent_size = 4
+indent_style = tab
+
+[{.zshrc,.bashrc,.bash_profile,.zprofile,*.zsh,*.zsh-theme}]
+indent_size = 2
+indent_style = space
 
 # Markdown specific rules
 # indent_size for the frontmatter
 [*.md]
-indent_size = 2 
+indent_size = 2
 max_line_length = 80
 trim_trailing_whitespace = false

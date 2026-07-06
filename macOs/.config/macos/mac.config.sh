@@ -68,7 +68,7 @@ safe_defaults() {
   if [[ "$DEBUG" -eq 1 ]]; then
     echo "DRY-RUN: defaults write $domain \"$key\" $value"
   else
-    defaults write "$domain" "$key" $value
+    defaults write "$domain" "$key" "$value"
   fi
 }
 
@@ -195,7 +195,7 @@ defaults write -globalDomain NSStatusItemSpacing -int 12
 # Set sidebar icon size to medium
 defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2
 
-# Show scrollbars 
+# Show scrollbars
 defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
 # Possible values: `WhenScrolling`, `Automatic` and `Always`
 
@@ -301,9 +301,9 @@ defaults write com.apple.screensaver askForPassword -int 1
 defaults write com.apple.screensaver askForPasswordDelay -int 0
 
 # Re-enable subpixel antialiasing for non-Apple LCDs
-# Mojave renders fonts that are too thin for some, this brings back pre-mojave style
+# Mojave and later render fonts very thin on standard displays; this enables font smoothing (dilation)
 defaults write -g CGFontRenderingFontSmoothingDisabled -bool FALSE
-defaults write NSGlobalDomain AppleFontSmoothing -int 1
+defaults -currentHost write -g AppleFontSmoothing -int 2
 
 # Save screenshots to the desktop
 defaults write com.apple.screencapture location -string "${HOME}/Desktop"
@@ -558,7 +558,7 @@ for app in \
 	"SystemUIServer" \
 	"iTerm 2" \
 	"Transmission"; do
-	killall "${app}" &> /dev/null
+	killall "$app" &> /dev/null
 done
 
 echo "Done. Note that some changes require a logout or restart to take effect."

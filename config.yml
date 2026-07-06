@@ -3,7 +3,44 @@ profile: standard
 theme: catppuccin-mocha
 font_family: "FiraCode Nerd Font"
 font_size: 12
+opacity: 0.85
 terminal: ghostty
+
+# Search and Navigation Tools
+search_tool: ripgrep            # Options: [ripgrep, fd, grep]
+
+# Neovim Language Servers (LSP)
+lsp_servers:
+  - pyright
+  - tsserver
+  - gopls
+  - lua_ls
+
+# Future Feature: Context-Specific Identities and Secrets Configuration
+# (Commented out for future layered secrets implementation)
+# env_context: work                 # Options: [personal, work, server]
+# contexts:
+#   personal:
+#     git:
+#       name: "Javier Morras"
+#       email: "javier.morras@gmail.com"
+#       signing_key: "AA11BB22CC33DD44"
+#     ssh:
+#       key_name: "id_ed25519_personal"
+#     secrets_path: "~/.secrets/decrypted/personal"
+#     env_vars:
+#       GEMINI_DEFAULT_AUTH_TYPE: "oauth-personal"
+#   work:
+#     git:
+#       name: "Javier Morras (Dia)"
+#       email: "javier.morras.ext@diagroup.com"
+#       signing_key: "55EE66FF77GG88HH"
+#     ssh:
+#       key_name: "id_ed25519_work"
+#     secrets_path: "~/.secrets/decrypted/work"
+#     env_vars:
+#       GOOGLE_CLOUD_PROJECT: "es-dia-ecom-backoffice"
+#       GOOGLE_GENAI_USE_VERTEXAI: "true"
 
 # Profile Package Mapping
 profiles:

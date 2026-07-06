@@ -3,19 +3,17 @@ FROM ubuntu:24.04
 # Avoid interactive prompts during apt-get operations
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install core dependencies needed for the dotfiles and ansible deployment
+# Install core dependencies needed for the dotfiles and ansible deployment (including 'make' now)
 RUN apt-get update && apt-get install -y \
     git \
     stow \
+    make \
     python3 \
     python3-pip \
     ansible \
     sudo \
     curl \
     && rm -rf /var/lib/apt/lists/*
-
-# Install 'just' tool reliably using the official installer script
-RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
 
 # Create a non-root test user with passwordless sudo access
 RUN useradd -m -s /bin/bash testuser && \

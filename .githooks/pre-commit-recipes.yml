@@ -1,0 +1,17 @@
+# githooks/pre-commit-recipes.yml
+pre-commit:
+  commands:
+    gitleaks-recipe:
+      tags: security secret
+      run: |
+        if command -v gitleaks &> /dev/null; then
+            gitleaks protect --staged --verbose --no-banner
+        else
+            echo "WARNING: gitleaks is not installed. Skipping secrets protection check."
+        fi
+
+    yaml-lint-recipe:
+      tags: lint yaml
+      glob: "*.{yaml,yml}"
+      run: |
+        python3 -c "import sys, yaml; yaml.safe_load(open(sys.argv[1]))" "{staged_file}"

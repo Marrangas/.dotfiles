@@ -163,10 +163,11 @@ if command -v nvimpager &>/dev/null;then
   export PAGER="nvimpager"
 fi
 
-# if command -v moor &>/dev/null; then
-#   export PAGER=moor
-#   export MOOR='--style=catppuccin-macchiato'
-# fi
+if command -v page &>/dev/null;then
+  export PAGER="page -W -C -q 1000 -z 90000"
+  export MANPAGER="page -t man"
+fi
+
 
 if command -v lsd &>/dev/null; then
   alias ls='lsd --group-dirs=first'
@@ -206,8 +207,22 @@ fi
 export today=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 
-alias wiki="cd ~/Documents/wiki/ && nvim atlas/TODO.md"
 alias dia="cd ~/Documents/wiki/atlas/dia/ && nvim dia.md"
+alias wiki="cd ~/Documents/wiki/ && nvim atlas/TODO.md"
+
+wikisearch() {
+      local RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case"
+      local INITIAL_QUERY="${*:-}"
+
+      fzf --ansi --disabled --query "$INITIAL_QUERY" \
+          --bind "start:reload:$RG_PREFIX {q}" \
+          --bind "change:reload:sleep 0.1; $RG_PREFIX {q} || true" \
+          --delimiter : \
+          --preview 'bat --color=always --style=numbers --highlight-line {2} {1}' \
+          --preview-window 'right,60%,border-left,+{2}+3/3' \
+          --bind "enter:become(nvim +{2} {1})" \
+          --prompt=" Live Grep > "
+}
 
 if command -v git &>/dev/null; then
     alias g='git'
@@ -432,3 +447,16 @@ fi
 
 # Added by Antigravity IDE
 export PATH="/Users/altostratus/.antigravity-ide/antigravity-ide/bin:$PATH"
+
+# =============================================================================
+# GLOBAL FONT CONFIGURATION
+# =============================================================================
+# Exposes your preferred monospace font as a global dotfiles variable.
+# Recommended astigmatism/accessibility monospace fonts:
+#   - "JetBrainsMono Nerd Font" (Default; high x-height, highly readable)
+#   - "Hack Nerd Font"          (Open counters, balanced spacing; stowed locally)
+#   - "Intel One Mono"          (Intel accessibility font)
+export DOTFILE_FONT="JetBrainsMono Nerd Font"
+
+# Run ghostty with the DOTFILE_FONT environment variable
+alias ghostty='ghostty --font-family="${DOTFILE_FONT}"'

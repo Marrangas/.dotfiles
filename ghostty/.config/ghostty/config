@@ -17,3 +17,12 @@ font-style = "Regular"
 font-style-bold = "Bold"
 font-style-italic = "Italic"
 font-style-bold-italic = "Bold Italic"
+
+# macOS CoreText Font Rendering & Smoothing (Optimizations for low-res monitors)
+# Artificially thickens the font stroke to prevent text from looking thin or jagged
+font-thicken = true
+font-thicken-strength = 35 # Adjust (0 to 255) to fine-tune thickness to your preference
+
+# Enhance blending and colorspace for smoother, richer text edges
+alpha-blending = native
+window-colorspace = display-p3

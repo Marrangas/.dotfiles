@@ -4,8 +4,11 @@
 # Set the theme to Catppuccin Macchiato (if installed)
 --theme="Catppuccin Mocha"
 
-# Show only line numbers and git changes (cleaner look, no boxes)
+# Show plain text with syntax highlighting (no line numbers, no boxes)
 --style="changes"
+
+# Disable pager (behave like cat)
+--pager="never"
 
 # Case-insensitive search
 --map-syntax "*.jenkinsfile:Groovy"

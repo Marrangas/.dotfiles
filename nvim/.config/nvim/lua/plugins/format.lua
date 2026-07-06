@@ -17,10 +17,14 @@ return {
             format_on_save = function(bufnr)
                 -- Disable "format_on_save lsp_fallback" for languages that don't
                 -- have a well standardized coding style.
-                local disable_filetypes = { c = true, cpp = true, terraform = true, ["terraform-vars"] = true, yaml = true }
-                if disable_filetypes[vim.bo[bufnr].filetype] then
-                    return nil
-                end
+                local disable_filetypes = {
+                    c = true,
+                    cpp = true,
+                    terraform = true,
+                    ['terraform-vars'] = true,
+                    yaml = true,
+                }
+                if disable_filetypes[vim.bo[bufnr].filetype] then return nil end
 
                 -- Dynamic timeout: increase for large files
                 local timeout = 1000
@@ -41,10 +45,10 @@ return {
                 sh = { 'shellharden', 'shfmt' },
                 go = { 'goimports', 'gofmt' },
                 python = function(bufnr)
-                    if require("conform").get_formatter_info("ruff_format", bufnr).available then
-                        return { "ruff_format" }
+                    if require('conform').get_formatter_info('ruff_format', bufnr).available then
+                        return { 'ruff_format' }
                     else
-                        return { "isort", "black" }
+                        return { 'isort', 'black' }
                     end
                 end,
                 -- Use the "*" filetype to run formatters on all filetypes.
