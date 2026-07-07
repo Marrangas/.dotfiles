@@ -456,7 +456,12 @@ export PATH="/Users/altostratus/.antigravity-ide/antigravity-ide/bin:$PATH"
 #   - "JetBrainsMono Nerd Font" (Default; high x-height, highly readable)
 #   - "Hack Nerd Font"          (Open counters, balanced spacing; stowed locally)
 #   - "Intel One Mono"          (Intel accessibility font)
-export DOTFILE_FONT="JetBrainsMono Nerd Font"
 
-# Run ghostty with the DOTFILE_FONT environment variable
-alias ghostty='ghostty --font-family="${DOTFILE_FONT}"'
+# Sourcing dynamically generated dotfiles environment if available
+safe_source "$HOME/.config/dotfiles/env"
+
+export DOTFILE_FONT="${DOTFILE_FONT:-JetBrainsMono Nerd Font}"
+export DOTFILE_FONT_SIZE="${DOTFILE_FONT_SIZE:-15}"
+
+# Run ghostty with the DOTFILE_FONT and DOTFILE_FONT_SIZE environment variables
+alias ghostty='ghostty --font-family="${DOTFILE_FONT}" --font-size=${DOTFILE_FONT_SIZE}'

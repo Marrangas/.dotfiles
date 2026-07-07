@@ -25,6 +25,7 @@ info:
 link:
 	@mkdir -p $(HOME)/.config/dotfiles
 	@python3 scripts/parse_config.py env > $(HOME)/.config/dotfiles/env
+	@python3 scripts/parse_config.py template
 	@echo "Stowing packages: $(PKGS)"
 	stow --target $(HOME) --dotfiles --verbose 1 $(PKGS)
 

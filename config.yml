@@ -1,8 +1,8 @@
 # General Exposed Variables
 profile: standard
 theme: catppuccin-mocha
-font_family: "FiraCode Nerd Font"
-font_size: 12
+dotfile_font: "FiraCode Nerd Font"
+dotfile_font_size: 12
 opacity: 0.85
 terminal: ghostty
 

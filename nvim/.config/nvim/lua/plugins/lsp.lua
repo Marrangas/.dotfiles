@@ -30,6 +30,7 @@ return { -- LSP Configuration & Plugins
             'williamboman/mason-lspconfig.nvim',
             'WhoIsSethDaniel/mason-tool-installer.nvim',
             'b0o/SchemaStore.nvim',
+            'someone-stole-my-name/yaml-companion.nvim',
 
             -- Useful status updates for LSP.
             { 'j-hui/fidget.nvim', opts = {} },
@@ -105,6 +106,13 @@ return { -- LSP Configuration & Plugins
                     -- Execute a code action, usually your cursor needs to be on top of an error
                     -- or a suggestion from your LSP for this to activate.
                     map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+
+                    -- Select YAML Schema (using yaml-companion and Snacks.picker via vim.ui.select)
+                    if vim.bo[event.buf].filetype == 'yaml' then
+                        map('<leader>ys', function()
+                            require('yaml-companion').open_ui_select()
+                        end, 'Select [Y]AML [S]chema')
+                    end
 
                     -- Opens a popup that displays documentation about the word under your cursor
                     --  See `:help K` for why this keymap
@@ -198,20 +206,24 @@ return { -- LSP Configuration & Plugins
                                 url = '',
                             },
                             -- Combine SchemaStore schemas with explicit Kubernetes mapping
-                            schemas = vim.tbl_deep_extend('force', require('schemastore').yaml.schemas(), {
-                                -- Force Kubernetes schema on these files
-                                kubernetes = {
-                                    'container_resources.yaml',
-                                    'hpa.yaml',
-                                    'service_account.yaml',
-                                    'deployment.yaml',
-                                },
-                                -- Force Kustomize schema on kustomization files
-                                ['https://json.schemastore.org/kustomization.json'] = {
-                                    'kustomization.yaml',
-                                    'kustomization.yml',
-                                },
-                            }),
+                            schemas = vim.tbl_deep_extend(
+                                'force',
+                                require('schemastore').yaml.schemas(),
+                                {
+                                    -- Force Kubernetes schema on these files
+                                    kubernetes = {
+                                        'container_resources.yaml',
+                                        'hpa.yaml',
+                                        'service_account.yaml',
+                                        'deployment.yaml',
+                                    },
+                                    -- Force Kustomize schema on kustomization files
+                                    ['https://json.schemastore.org/kustomization.json'] = {
+                                        'kustomization.yaml',
+                                        'kustomization.yml',
+                                    },
+                                }
+                            ),
                             kubernetesCRDStore = {
                                 enable = true,
                             },
@@ -358,7 +370,6 @@ return { -- LSP Configuration & Plugins
             require('mason-lspconfig').setup {
                 handlers = {
                     function(server_name)
-                        vim.api.nvim_err_writeln("DEBUG-SETUP-SERVER: " .. tostring(server_name))
                         local server = servers[server_name] or {}
                         server.capabilities = vim.tbl_deep_extend(
                             'force',
@@ -394,6 +405,21 @@ return { -- LSP Configuration & Plugins
                                         },
                                     })
                             end
+                        end
+
+                        -- Special handling for yamlls with yaml-companion
+                        if server_name == 'yamlls' then
+                            local companion = require('yaml-companion').setup({
+                                builtin_matchers = {
+                                    kubernetes = { enabled = true },
+                                },
+                                lspconfig = {
+                                    capabilities = server.capabilities,
+                                    settings = server.settings or {},
+                                },
+                            })
+                            require('lspconfig')[server_name].setup(companion)
+                            return
                         end
 
                         require('lspconfig')[server_name].setup(server)

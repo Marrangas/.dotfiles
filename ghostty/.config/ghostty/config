@@ -8,8 +8,8 @@ clipboard-paste-protection = false
 
 theme = Catppuccin Macchiato
 
-font-family = "JetBrainsMono Nerd Font"
-font-size = 16
+font-family = "FiraCode Nerd Font"
+font-size = 12
 font-feature = "calt"
 font-feature = "liga"
 font-feature = "zero" # Slashed zero for better variability
@@ -20,8 +20,8 @@ font-style-bold-italic = "Bold Italic"
 
 # macOS CoreText Font Rendering & Smoothing (Optimizations for low-res monitors)
 # Artificially thickens the font stroke to prevent text from looking thin or jagged
-font-thicken = true
-font-thicken-strength = 35 # Adjust (0 to 255) to fine-tune thickness to your preference
+font-thicken = false
+font-thicken-strength = 20
 
 # Enhance blending and colorspace for smoother, richer text edges
 alpha-blending = native

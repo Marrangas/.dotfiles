@@ -3,7 +3,23 @@
   ansible.builtin.set_fact:
     dotfiles_dir: "{{ ansible_user_dir }}/.dotfiles"
     dotfiles_repo_url: "{{ dotfiles_repo | default('https://github.com/Marrangas/.dotfiles.git') }}"
-    profile_to_deploy: "{{ dotfiles_profile | default('standard') }}"
+
+- name: Check if local.yml exists on the host
+  ansible.builtin.stat:
+    path: "{{ dotfiles_dir }}/local.yml"
+  register: local_yml_stat
+
+- name: Load variables from local.yml if it exists
+  ansible.builtin.include_vars:
+    file: "{{ dotfiles_dir }}/local.yml"
+    name: local_config
+  when: local_yml_stat.stat.exists
+
+- name: Set final deployment variables
+  ansible.builtin.set_fact:
+    profile_to_deploy: "{{ (local_config | default({})).profile | default(dotfiles_profile) | default('standard') }}"
+    dotfile_font_to_deploy: "{{ (local_config | default({})).dotfile_font | default(dotfile_font) | default('JetBrainsMono Nerd Font') }}"
+    dotfile_font_size_to_deploy: "{{ (local_config | default({})).dotfile_font_size | default(dotfile_font_size) | default(15) }}"
 
 - name: Verify if 'make' is installed
   ansible.builtin.command:
@@ -56,8 +72,11 @@
     content: |
       # Managed by central Ansible - DO NOT EDIT MANUALLY
       profile: "{{ profile_to_deploy }}"
+      dotfile_font: "{{ dotfile_font_to_deploy }}"
+      dotfile_font_size: {{ dotfile_font_size_to_deploy }}
     dest: "{{ dotfiles_dir }}/local.yml"
     mode: '0644'
+    force: no
   register: local_yml_config
 
 - name: Re-evaluate and run Git sparse-checkout matching profile packages
