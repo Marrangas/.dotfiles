@@ -55,20 +55,9 @@
             git branch -a --format='%(refname:short)' | grep -v 'HEAD' | sort -u | fzf \
                 --header 'enter: checkout | ctrl-n: create branch [from query] | ctrl-x: delete branch locally (local or remote-tracking)' \
                 --bind 'enter:become(git checkout {1})' \
-                --bind 'ctrl-n:become(git checkout -b {q})' \
+                --bind 'ctrl-c:become(git checkout -b {q})' \
                 --bind 'ctrl-x:execute(if echo {1} | grep -q \"^origin/\"; then git branch -D -r {1}; else git branch -D {1}; fi)+reload(git branch -a --format=\"%(refname:short)\" | grep -v \"HEAD\" | sort -u)'; \
         fi; }; f"
-        sneak = "!f() { \
-            if command -v fzf >/dev/null 2>&1; then \
-              git log --graph --color=always --format='%c(auto)%h%d %s %c(black)%c(bold)%cr' $@ | \
-              fzf --ansi --no-sort --reverse --tiebreak=index \
-                  --prompt=' git log > ' \
-                  --preview 'git show --color=always $(echo {} | grep -e -o [a-f0-9]{7,40} | head -n1)' \
-                  --preview-window=right:65% \
-                  --bind 'enter:execute(git show $(echo {} | grep -e -o [a-f0-9]{7,40} | head -n1) | bat --color=always)'; \
-            fi; \
-        }; f"
-
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f

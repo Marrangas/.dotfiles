@@ -143,6 +143,7 @@ bindkey '^[[3;3~' kill-word   # Alt+Del
 bindkey '\eb' backward-word   # Alt+b
 bindkey '\ef' forward-word    # Alt+f
 bindkey -s '^x' 'kubectx\n'
+bindkey -s '^s' 'kubens\n'
 
 alias rc="${EDITOR} ${HOME}/.zshrc && source ${HOME}/.zshrc"
 alias vi='nvim'

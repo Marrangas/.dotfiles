@@ -4,8 +4,9 @@ vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_node_provider = 0
 
-vim.opt.path:append("**")
+vim.opt.path:append '**'
 vim.g.netrw_banner = 0 -- no banner
+vim.g.netrw_keepdir = 0 -- allow to delete current dir
 vim.g.netrw_bufsettings = 'noma nomod nu rnu nobl nowrap ro'
 -- vim.g.netrw_liststyle = 3      -- Tree view
 -- vim.g.netrw_browse_split = 4   -- Open in previous window
