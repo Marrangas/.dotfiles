@@ -11,19 +11,18 @@ return {
             highlight = {
                 comments_only = false,
                 pattern = {
-                    ".*<(KEYWORDS)\\s*:",   -- matches standard KEYWORDS:
-                    "\\s*-\\s*\\[[ x~]\\]", -- Vim regex matching - [ ], - [x], or - [~]
+                    '.*<(KEYWORDS)\\s*:', -- matches standard KEYWORDS:
+                    '\\s*-\\s*\\[[ x~]\\]', -- Vim regex matching - [ ], - [x], or - [~]
                 },
             },
             search = {
-                pattern = "\\b(KEYWORDS):|[-]\\s*\\[[ x~]\\]",
+                pattern = '\\b(KEYWORDS):|[-]\\s*\\[[ x~]\\]',
             },
         },
         keys = {
             { '<leader>st', function() Snacks.picker.todo_comments() end, desc = 'Todo' },
         },
     },
-    {
-        'numToStr/Comment.nvim',
-    }
+    { 'nvim-mini/mini.comment' },
+    { 'numToStr/Comment.nvim' },
 }

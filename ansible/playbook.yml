@@ -1,0 +1,57 @@
+---
+- name: Deploy Layered Dotfiles
+  hosts: localhost
+  connection: local
+  vars:
+    env: dia
+    dotfiles_dir: "{{ playbook_dir }}/.."
+    dest_dir: "{{ ansible_env.HOME }}"
+
+  tasks:
+    - name: Verify workspace env file exists
+      stat:
+        path: "{{ dotfiles_dir }}/.{{ env }}.env"
+      register: env_file_stat
+
+    - name: Fail if environment file is missing
+      fail:
+        msg: "Workspace environment file .{{ env }}.env does not exist!"
+      when: not env_file_stat.stat.exists
+
+    - name: Retrieve active files from workspace env layers
+      shell: |
+        source "{{ dotfiles_dir }}/.{{ env }}.env"
+        for layer in "${DEPLOY_LAYERS[@]}"; do
+          var="LAYER_${layer}[@]"
+          for file in "${!var}"; do
+            echo "$file"
+          done
+        done
+      args:
+        executable: /bin/bash
+      register: active_files_output
+      changed_when: false
+
+    - name: Set active files fact
+      set_fact:
+        active_files: "{{ active_files_output.stdout_lines }}"
+
+    - name: Display files to be deployed
+      debug:
+        msg: "Deploying files for layer profile '{{ env }}': {{ active_files }}"
+
+    - name: Ensure destination directories exist
+      file:
+        path: "{{ dest_dir }}/{{ (item.split('/')[1:] | join('/')) | dirname }}"
+        state: directory
+        mode: '0755'
+      loop: "{{ active_files }}"
+      when: "item.split('/') | length > 2"
+
+    - name: Symlink active dotfiles to destination
+      file:
+        src: "{{ dotfiles_dir }}/{{ item }}"
+        dest: "{{ dest_dir }}/{{ item.split('/')[1:] | join('/') }}"
+        state: link
+        force: yes
+      loop: "{{ active_files }}"

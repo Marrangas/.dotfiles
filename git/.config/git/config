@@ -52,11 +52,19 @@
         white = "!sh -c 'git diff -U0 -w --no-color --src-prefix=a/ --dst-prefix=b/ "$@" | git apply --cached --ignore-whitespace --unidiff-zero -'"
         hand = "!f() { \
         if command -v fzf >/dev/null 2>&1; then \
-            git branch -a --format='%(refname:short)' | grep -v 'HEAD' | sort -u | fzf \
-                --header 'enter: checkout | ctrl-n: create branch [from query] | ctrl-x: delete branch locally (local or remote-tracking)' \
+            git branch -a --format='%(refname:short)' | grep -v 'HEAD' | sort -u | while read -r b; do \
+                desc=$(git config branch.\"$b\".description 2>/dev/null | tr '\\n' ' ' | xargs); \
+                if [ -n \"$desc\" ]; then \
+                    printf \"%-40s | %s\\n\" \"$b\" \"$desc\"; \
+                else \
+                    echo \"$b\"; \
+                fi; \
+            done | fzf \
+                --header 'enter: checkout | ctrl-d: edit [d]escription | ctrl-y: create branch | ctrl-x: delete branch' \
                 --bind 'enter:become(git checkout {1})' \
-                --bind 'ctrl-c:become(git checkout -b {q})' \
-                --bind 'ctrl-x:execute(if echo {1} | grep -q \"^origin/\"; then git branch -D -r {1}; else git branch -D {1}; fi)+reload(git branch -a --format=\"%(refname:short)\" | grep -v \"HEAD\" | sort -u)'; \
+                --bind 'ctrl-y:become(git checkout -b {q})' \
+                --bind 'ctrl-d:execute(if ! echo {1} | grep -q \"^origin/\"; then git branch --edit-description {1}; fi)+reload(git branch -a --format=\"%(refname:short)\" | grep -v \"HEAD\" | sort -u | while read -r b; do desc=$(git config branch.\"$b\".description 2>/dev/null | tr \"\\n\" \" \" | xargs); if [ -n \"$desc\" ]; then printf \"%-40s | %s\\n\" \"$b\" \"$desc\"; else echo \"$b\"; fi; done)' \
+                --bind 'ctrl-x:execute(if echo {1} | grep -q \"^origin/\"; then git branch -D -r {1}; else git branch -D {1}; fi)+reload(git branch -a --format=\"%(refname:short)\" | grep -v \"HEAD\" | sort -u | while read -r b; do desc=$(git config branch.\"$b\".description 2>/dev/null | tr \"\\n\" \" \" | xargs); if [ -n \"$desc\" ]; then printf \"%-40s | %s\\n\" \"$b\" \"$desc\"; else echo \"$b\"; fi; done)'; \
         fi; }; f"
 
 [filter "lfs"]

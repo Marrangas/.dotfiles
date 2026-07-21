@@ -26,3 +26,8 @@ font-thicken-strength = 20
 # Enhance blending and colorspace for smoother, richer text edges
 alpha-blending = native
 window-colorspace = display-p3
+
+# Keybindings for word navigation (Option+b / Option+f) and line-start (Command+b)
+keybind = alt+b=esc:b
+keybind = alt+f=esc:f
+keybind = cmd+b=text:\x01

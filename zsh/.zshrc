@@ -142,6 +142,8 @@ bindkey "^[[3~" delete-char    # Del
 bindkey '^[[3;3~' kill-word   # Alt+Del
 bindkey '\eb' backward-word   # Alt+b
 bindkey '\ef' forward-word    # Alt+f
+bindkey '∫' backward-word      # Option+b on macOS
+bindkey 'ƒ' forward-word       # Option+f on macOS
 bindkey -s '^x' 'kubectx\n'
 bindkey -s '^s' 'kubens\n'
 
@@ -208,8 +210,8 @@ fi
 export today=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 
-alias dia="cd ~/Documents/wiki/atlas/dia/ && nvim dia.md"
-alias wiki="cd ~/Documents/wiki/ && nvim atlas/TODO.md"
+alias dia="cd ~/Documents/wiki/atlas/dia/ && nvim dia.md && cd - > /dev/null 2>&1"
+alias wiki="cd ~/Documents/wiki/ && nvim atlas/TODO.md && cd - > /dev/null 2>&1"
 
 wikisearch() {
       local RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case"

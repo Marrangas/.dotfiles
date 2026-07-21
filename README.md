@@ -1,12 +1,11 @@
 dotdotdot ... or with the gliph ...
 
 - [[dotfiles]]
-- [ ] ansible
-- [ ] nvim with ia (use deep seek)
-- [ ] add layers for the sparse checkout
-- [ ] rclone setup
-- [ ] how to backup this and expose publicly
-- [ ] better secret cli
+
+- [x] add layers for the sparse checkout ([Architecture Guide](neovim-layering.md))
+
+- [ ] how to backup this and expose publicly check for pre commit secrets ... and
+      hoock as a bootstrap...
 - [ ] footprint
 - [ ] testing performance
 - [ ] testing
@@ -14,7 +13,74 @@ dotdotdot ... or with the gliph ...
   - tablet
   - workstation
 - [ ] when push redeploy ansible
-- [ ] being able to clean
+- [x] being able to clean
+- [ ] maquetar dispositivos
+- [ ] using/ migrate nvim to visual studio just to know what you are using aprender a
+      usar el visual studio de la forma más parecida... la ia, creo que es una forma
+      muy diferente de leer, y de editar. hay que saber o al menos terner en cuenta
+      cuales son los archivos que estás tocando tu y los que va a tocar la ia?
+- [ ] expose variables
+  - https://github.com/adapta-project/adapta-gtk-theme
+  - [themes](https://github.com/mbadolato/iTerm2-Color-Schemes/tree/a56897c3e031cb1be715706b7b25df860d5fc0a5)
+  - [nvim theme](https://www.opendesktop.org/p/1154707/)
+- [ ] make the jira accessible (know your coworkers)
+- [ ] investigate git patterns
+- MAKEFILE
+- BASH
+- PROCESSES
+- LUA
+- VIM
+
+---
+
+## Layered & Environment-by-Default Deployment
+
+This workspace is **Layered by Default** and **Environment-by-Default**. This means standard operations read your active configuration automatically, with optional overrides via environment variables or Makefile arguments.
+
+### 1. Default Behavior
+By default, running `make link`, `make sparse`, or `make unlink` will:
+1. Auto-detect the active profile configured in `config.yml` (using the `profile:` key, e.g. `profile: workspace`).
+2. Load the corresponding environment configuration from `.workspace-$(ENV).env` (e.g. `.workspace-workspace.env` which is linked to your active profile `.workspace-dia.env`).
+3. Deploy or clean files based on the active **layers** (e.g., `MINIMAL`, `STANDARD`, `SPECIFIC`) configured in that `.env` file using standard Bash indexed arrays.
+
+### 2. Overriding Configurations
+You can override standard configurations instantly on the command line by passing the `ENV` variable. This will load the custom `.workspace-$(ENV).env` profile instead of the default:
+
+```bash
+# Display the active configuration and files for the default profile
+make info-layered
+
+# Display active configuration for the minimal profile
+make info-layered ENV=minimal
+
+# Deploy layers for a specific environment (e.g. minimal)
+make link ENV=minimal
+
+# Configure Git sparse-checkout for a specific environment
+make sparse ENV=minimal
+
+# Clean and unlink files for a specific environment
+make unlink ENV=minimal
+```
+
+### 3. Pure-Bash Zero-Dependency Engine
+The deployment relies on native `/bin/bash` features (such as indirect expansion) to parse the indexed arrays inside `.workspace-$(ENV).env` files. This keeps the bootstrapping lifecycle completely independent of external dependencies or third-party interpreters.
+
+---
+
+- [ ] better secret cli
+
+---
+
+- [ ] git commit hooks
+- [ ] headers and templates
+- [ ] make norm and auto headers to check for formating and autodocumentation
+      elements + a todo documentations to go to with links as a markdown or vim so it
+      is like a pane of glass for navegation (static tools)
+
+---
+
+- [ ] nvim with ia (use deep seek)
 - lsp the python bien
   - de htmx
   - de html
@@ -28,19 +94,6 @@ dotdotdot ... or with the gliph ...
   - formating
 
 - [[ansible]]
-
-- maquetar dispositivos
-
-- [ ] using/ migrate nvim to visual studio just to know what you are using aprender a
-      usar el visual studio de la forma más parecida... la ia, creo que es una forma
-      muy diferente de leer, y de editar. hay que saber o al menos terner en cuenta
-      cuales son los archivos que estás tocando tu y los que va a tocar la ia?
-- [ ] expose variables
-  - https://github.com/adapta-project/adapta-gtk-theme
-  - [themes](https://github.com/mbadolato/iTerm2-Color-Schemes/tree/a56897c3e031cb1be715706b7b25df860d5fc0a5)
-  - [nvim theme](https://www.opendesktop.org/p/1154707/)
-- [ ] make the jira accessible (know your coworkers)
-- [ ] investigate git patterns
 
 ## mac defaults
 

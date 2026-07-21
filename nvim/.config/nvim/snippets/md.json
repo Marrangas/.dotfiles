@@ -177,5 +177,17 @@
             "</div>"
         ],
         "description": "HTML htmlprogress snippet"
+    },
+    "file_header": {
+        "prefix": "header",
+        "body": [
+            "---",
+            "layer: ${1|Minimal,Standard,Specific|}",
+            "description: ${2:Short description of the file's purpose}",
+            "component: ${3:Component name}",
+            "dependencies: ${4:None}",
+            "---"
+        ],
+        "description": "Deterministic Markdown Frontmatter metadata header"
     }
 }

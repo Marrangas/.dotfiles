@@ -125,5 +125,17 @@
             "expr ${0:1 + 1}"
         ],
         "description": "Calculate numbers with Bash."
+    },
+    "file_header": {
+        "prefix": "header",
+        "body": [
+            "# ============================================================================",
+            "# Layer: ${1|Minimal,Standard,Specific|}",
+            "# Description: ${2:Short description of the file's purpose}",
+            "# Component: ${3:Component name}",
+            "# Dependencies: ${4:None}",
+            "# ============================================================================"
+        ],
+        "description": "Deterministic metadata header"
     }
 }

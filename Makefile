@@ -1,44 +1,120 @@
 # Makefile for layered dotfiles deployment using GNU Stow & Git sparse-checkouts.
 
+SHELL := /bin/bash
+PROFILE := $(shell grep "^profile:" config.yml | awk '{print $$2}')
+ENV ?= $(PROFILE)
+
 # Read active profile and packages using our helper script
-PROFILE  := $(shell python3 scripts/parse_config.py profile)
-PACKAGES := $(shell python3 scripts/parse_config.py packages)
+# PACKAGES := $(shell python3 scripts/parse_config.py packages)
 
 # Default stowed packages (can be overridden via make link PKGS="pkg1 pkg2")
 PKGS ?= $(PACKAGES)
 
-.PHONY: default info link unlink sparse config test-env test-live
+.PHONY: help info link unlink sparse config test-env test-live
+.SILENT: help info
 
-default:
-	@echo "Available Makefile targets:"
-	@echo "  make info       - Show currently active profile and exposed variables"
-	@echo "  make link       - Link active dotfiles (or specific packages, e.g. make link PKGS=\"git nvim\")"
-	@echo "  make unlink     - Unlink active dotfiles (or specific packages, e.g. make unlink PKGS=\"git nvim\")"
-	@echo "  make sparse     - Configure Git sparse-checkout for the active profile"
-	@echo "  make config     - Set up git configurations, hooks, and download plugins"
-	@echo "  make test-env   - Build and run the dotfiles deployment in a clean, isolated Docker test container"
-	@echo "  make test-live  - Deploy the dotfiles inside Docker and drop into an interactive bash shell"
+help:
+	echo "Available Makefile targets:"
+	echo "  make info           - Show active workspace environment and layered files"
+	echo "  make link           - Link active dotfiles (uses layered profile if present, else fallback to Stow)"
+	echo "  make unlink         - Unlink active dotfiles (uses layered profile if present, else fallback to Stow)"
+	echo "  make sparse         - Configure Git sparse-checkout (uses layered profile if present, else fallback to standard)"
+	echo "  make config         - Set up git configurations, hooks, and download plugins"
+	echo "  make test-env       - Build and run the dotfiles deployment in a clean, isolated Docker test container"
+	echo "  make test-live      - Deploy the dotfiles inside Docker and drop into an interactive bash shell"
 
 info:
-	@python3 scripts/parse_config.py info
+	if [ ! -f .$(ENV).env ]; then \
+		echo "Error: .$(ENV).env not found."; \
+		exit 1; \
+	fi
+	echo "========================================================="
+	echo "Active Workspace Profile: $(ENV)"
+	echo "========================================================="
+	bash -c ' \
+		source .$(ENV).env && \
+		echo "Workspace Name: $$WORKSPACE_NAME" && \
+		echo "Active Layers:  $${DEPLOY_LAYERS[*]}" && \
+		echo "Files to be deployed:" && \
+		for layer in "$${DEPLOY_LAYERS[@]}"; do \
+			echo "  [Layer: $$layer]" && \
+			var="LAYER_$${layer}[@]"; \
+			for file in "$${!var}"; do \
+				echo "    - $$file"; \
+			done; \
+		done \
+	'
 
 link:
-	@mkdir -p $(HOME)/.config/dotfiles
-	@python3 scripts/parse_config.py env > $(HOME)/.config/dotfiles/env
-	@python3 scripts/parse_config.py template
-	@echo "Stowing packages: $(PKGS)"
-	stow --target $(HOME) --dotfiles --verbose 1 $(PKGS)
+	@if [ -f .$(ENV).env ]; then \
+		echo "Deploying files for layers in .$(ENV).env..."; \
+		bash -c ' \
+			source .$(ENV).env && \
+			for layer in "$${DEPLOY_LAYERS[@]}"; do \
+				var="LAYER_$${layer}[@]"; \
+				for file in "$${!var}"; do \
+					target_path=$$(echo "$$file" | cut -d/ -f2-); \
+					echo "Linking: $$file -> $(HOME)/$$target_path"; \
+					mkdir -p "$$(dirname "$(HOME)/$$target_path")"; \
+					ln -sf "$$(pwd)/$$file" "$(HOME)/$$target_path"; \
+				done; \
+			done \
+		'; \
+		echo "Deployment complete."; \
+	else \
+		mkdir -p $(HOME)/.config/dotfiles; \
+		echo "Stowing packages: $(PKGS)"; \
+		stow --target $(HOME) --dotfiles --verbose 1 $(PKGS); \
+	fi
 
 unlink:
-	@echo "Unstowing packages: $(PKGS)"
-	stow -D --target $(HOME) --dotfiles --verbose 1 $(PKGS)
+	@if [ -f .$(ENV).env ]; then \
+		echo "Removing linked files for layers in .$(ENV).env..."; \
+		bash -c ' \
+			source .$(ENV).env && \
+			for layer in "$${DEPLOY_LAYERS[@]}"; do \
+				var="LAYER_$${layer}[@]"; \
+				for file in "$${!var}"; do \
+					target_path=$$(echo "$$file" | cut -d/ -f2-); \
+					if [ -L "$(HOME)/$$target_path" ]; then \
+						echo "Unlinking: $(HOME)/$$target_path"; \
+						rm "$(HOME)/$$target_path"; \
+						rmdir "$$(dirname "$(HOME)/$$target_path")" 2>/dev/null || true; \
+					fi; \
+				done; \
+			done \
+		'; \
+		echo "Removal complete."; \
+	else \
+		echo "Unstowing packages: $(PKGS)"; \
+		stow -D --target $(HOME) --dotfiles --verbose 1 $(PKGS); \
+	fi
 
 sparse:
-	@echo "Configuring Git sparse-checkout for profile $(PROFILE)..."
-	@if ! git sparse-checkout list >/dev/null 2>&1; then \
-		git sparse-checkout init --cone; \
+	@if [ -f .$(ENV).env ]; then \
+		echo "Configuring Git sparse-checkout for layers in .$(ENV).env..."; \
+		if ! git sparse-checkout list >/dev/null 2>&1; then \
+			git sparse-checkout init --cone; \
+		fi; \
+		bash -c ' \
+			source .$(ENV).env && \
+			files=() && \
+			for layer in "$${DEPLOY_LAYERS[@]}"; do \
+				var="LAYER_$${layer}[@]"; \
+				for file in "$${!var}"; do \
+					files+=("$$file"); \
+				done; \
+			done && \
+			echo "Setting sparse checkout list with $${#files[@]} files..." && \
+			git sparse-checkout set scripts/ "$${files[@]}" \
+		'; \
+	else \
+		echo "Configuring Git sparse-checkout for profile $(PROFILE)..."; \
+		if ! git sparse-checkout list >/dev/null 2>&1; then \
+			git sparse-checkout init --cone; \
+		fi; \
+		git sparse-checkout set scripts/ ansible/ $(PACKAGES); \
 	fi
-	@git sparse-checkout set scripts/ ansible/ $(PACKAGES)
 
 config:
 	@chmod +x scripts/.local/bin/helpers/* scripts/parse_config.py 2>/dev/null || true
