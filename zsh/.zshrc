@@ -12,7 +12,6 @@ debug_log() {
   [[ "$DEBUG_ZSH" -eq 1 ]] && echo "DEBUG: $*" >&2
 }
 
-# Safe source function with error handling
 safe_source() {
   local file="$1"
   if [[ -r "$file" ]]; then
@@ -27,7 +26,6 @@ safe_source() {
   fi
 }
 
-# Safe eval function with error handling
 safe_eval() {
   local cmd="$1"
   debug_log "Evaluating: $cmd"
@@ -390,48 +388,28 @@ export LESS_TERMCAP_ue=$(tput sgr0)
 # =============================================================================
 ZSH_PLUGINS_DIR="$HOME/.config/zsh"
 
-# Determine plugin paths with Homebrew support
-ZSH_AUTOSUGGEST_PATH="$ZSH_PLUGINS_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
-ZSH_HIGHLIGHT_PATH="$ZSH_PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+# Inline self-healing download manager
+bootstrap_zsh_plugin() {
+    local name="$1"
+    local repo="$2"
+    local target_dir="${ZSH_PLUGINS_DIR}/${name}"
+    if [ ! -d "$target_dir" ]; then
+        printf "Cloning Zsh plugin '%s'...\n" "$name"
+        git clone --depth=1 "$repo" "$target_dir"
+    fi
+    source "${target_dir}/${name}.plugin.zsh" 2>/dev/null || source "${target_dir}/${name}.zsh" 2>/dev/null
+}
 
-if [[ -n "$HOMEBREW_PREFIX" ]]; then
-  [[ -r "$ZSH_AUTOSUGGEST_PATH" ]] || ZSH_AUTOSUGGEST_PATH="$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-  [[ -r "$ZSH_HIGHLIGHT_PATH" ]] || ZSH_HIGHLIGHT_PATH="$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-fi
-
+# Sourcing the Google Cloud SDK completion if present
 safe_source "$HOME/.local/bin/google-cloud-sdk/completion.zsh.inc"
 
-# Locate and source zsh-autosuggestions with portable fallbacks (Homebrew/Linux)
-if [[ -r "$ZSH_PLUGINS_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
-  safe_source "$ZSH_PLUGINS_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
-elif [[ -n "$HOMEBREW_PREFIX" && -r "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
-  safe_source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-elif [[ -r "/opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
-  safe_source "/opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-elif [[ -r "/usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
-  safe_source "/usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-fi
-
-# Locate and source zsh-syntax-highlighting with portable fallbacks (Homebrew/Linux)
-if [[ -r "$ZSH_PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
-  safe_source "$ZSH_PLUGINS_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-elif [[ -n "$HOMEBREW_PREFIX" && -r "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
-  safe_source "$HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-elif [[ -r "/opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
-  safe_source "/opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-elif [[ -r "/usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
-  safe_source "/usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-fi
-
-safe_source "$ZSH_AUTOSUGGEST_PATH"
-safe_source "$ZSH_HIGHLIGHT_PATH"
+# Automatically fetch and source plugins via our self-healing manager
+bootstrap_zsh_plugin "zsh-autosuggestions" "https://github.com/zsh-users/zsh-autosuggestions"
+bootstrap_zsh_plugin "zsh-syntax-highlighting" "https://github.com/zsh-users/zsh-syntax-highlighting"
+bootstrap_zsh_plugin "zsh-transient-prompt" "https://github.com/olets/zsh-transient-prompt"
 
 if command -v starship &>/dev/null; then
   safe_eval "$(starship init zsh)"
-fi
-
-if [[ -f "$ZSH_PLUGINS_DIR/zsh-transient-prompt/zsh-transient-prompt.zsh" ]]; then
-  source "$ZSH_PLUGINS_DIR/zsh-transient-prompt/zsh-transient-prompt.zsh"
 fi
 
 if command -v fzf &>/dev/null; then

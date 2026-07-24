@@ -12,6 +12,8 @@
 # Management Folders
 (^|/)\.git/.*
 (^|/)\.githooks/.*
+(^|/)helpers/.*
+(^|/)tests/.*
 (^|/)TODO/.*
 
 # macOS junk

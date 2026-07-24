@@ -1,18 +1,21 @@
-# Workspace Environment: minimal (Minimal Server Profile)
-# This file is loaded by Bash, Makefile, and Ansible.
-# It uses standard Bash indexed arrays to declare the deployment layers.
-
-# Name of the workspace/environment
-WORKSPACE_NAME="minimal"
-
-# Active layers to deploy in this environment
-# Options: "MINIMAL" "STANDARD" "SPECIFIC"
-DEPLOY_LAYERS=(
-  "MINIMAL"
-)
+# config.sh - Global Layer Definitions for Dotfiles Workspace
+# This file is the single source of truth for layering arrays.
 
 # --- LAYER 1: MINIMAL (CI/CD, Headless Server, thin VMs) ---
-LAYER_MINIMAL=(
+DOTFILE_FONT="FiraCode Nerd Font"
+DOTFILE_THEME="catppuccin-mocha"
+DOTFILE_TERMINAL="ghostty"
+DOTFILE_SEARCH_TOOL="ripgrep"
+DOTFILE_TERMINAL_OPACITY=0.85
+
+DOTFILE_LSP_SERVERS=(
+  "pyright"
+  "tsserver"
+  "gopls"
+  "lua_ls"
+)
+
+DOTFILE_LAYER_MINIMAL=(
   "nvim/.config/nvim/init.lua"
   "nvim/.config/nvim/lua/config/autocmd.lua"
   "nvim/.config/nvim/lua/config/options.lua"
@@ -21,7 +24,7 @@ LAYER_MINIMAL=(
 )
 
 # --- LAYER 2: STANDARD (Full-featured Developer IDE Profile) ---
-LAYER_STANDARD=(
+DOTFILE_LAYER_STANDARD=(
   "nvim/.config/nvim/lua/plugins/treesitter.lua"
   "nvim/.config/nvim/lua/plugins/lsp.lua"
   "nvim/.config/nvim/lua/plugins/completion.lua"
@@ -35,10 +38,31 @@ LAYER_STANDARD=(
   "nvim/.config/nvim/lua/plugins/undo.lua"
 )
 
-# --- LAYER 3: SPECIFIC (Workspace & Personal Knowledge Profile) ---
-LAYER_SPECIFIC=(
+DOTFILE_LAYER_SPECIFIC=(
   "nvim/.config/nvim/lua/plugins/markdown.lua"
   "nvim/.config/nvim/lua/plugins/ia.lua"
   "nvim/.config/nvim/lua/plugins/sec.lua"
   "nvim/.config/nvim/lua/plugins/debug.lua"
+)
+
+DOTFILE_PACKAGES=(
+  "aerospace"
+  "bat"
+  "copyq"
+  "editorconfig"
+  "fonts"
+  "fzf"
+  "garden"
+  "gemini"
+  "ghostty"
+  "git"
+  "htop"
+  "macOs"
+  "nvim"
+  "nvimpager"
+  "scripts"
+  "starship"
+  "tmux"
+  "vim"
+  "zsh"
 )

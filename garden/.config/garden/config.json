@@ -1,0 +1,136 @@
+{
+  "default_root": "~/Documents/wiki",
+  "_comment": "Garden Configuration - Centralized settings for all garden scripts",
+  "backend": {
+    "_comment": "Storage backend for garden state. Options: 'local' or 'gcs'",
+    "type": "local",
+    "bucket_name": "my-garden-state-bucket",
+    "_note": "Requires google-cloud-storage library."
+  },
+  "ignore": {
+    "_comment": "Ignore patterns. `glob` `regex` (prefix with 'regex:')",
+    "links": [
+      ".git/",
+      ".obsidian/",
+      ".trash/",
+      "build/",
+      "templates/",
+      "assets/",
+      "node_modules/",
+      "dist/",
+      "README.md",
+      "*.excalidraw.md"
+    ],
+    "tags": [
+      ".git/",
+      ".obsidian/",
+      "node_modules/",
+      "templates/",
+      "regex:.*test.*"
+    ],
+    "syntax": [".git/", ".obsidian/", "templates/", "*.excalidraw.md"],
+    "filename": [
+      ".git/",
+      ".github/*",
+      ".vscode/*",
+      ".idea/*",
+      ".obsidian/",
+      ".obsidian-mobile/*",
+      ".obsidian-tablet/*",
+      ".tmp.drivedownload/*",
+      ".tmp.driveupload/*",
+      "README.md",
+      "README-*.md",
+      "CHANGELOG.md",
+      "CONTRIBUTING.md",
+      "LICENSE.md",
+      "CODE_OF_CONDUCT.md",
+      "node_modules/",
+      "HOME.md",
+      "TODO.md",
+      "projects/*",
+      "vault/**"
+    ]
+  },
+  "naming": {
+    "_comment": "Filename naming conventions",
+    "preferred_case": "lowercase",
+    "preferred_separator": "-",
+    "allow_underscores": false,
+    "allow_dots": false,
+    "warn_non_compliant": true
+  },
+  "frontmatter": {
+    "_comment": "Frontmatter validation with conditional requirements",
+    "global": {
+      "_comment": "Fields required for ALL files",
+      "required_fields": ["id", "created", "modified"],
+      "optional_fields": ["tags", "aliases"],
+      "tag_format": "list",
+      "alias_format": "list"
+    },
+    "conditional_rules": [
+      {
+        "_comment": "Articles require author and publication metadata",
+        "name": "article_requirements",
+        "match": {
+          "type": "path_regex",
+          "pattern": "^(articles|posts|blog)/.*\\.md$"
+        },
+        "require": ["author", "published", "description"],
+        "suggest": ["tags", "category"]
+      },
+      {
+        "_comment": "Project files require status and related metadata",
+        "name": "project_requirements",
+        "match": {
+          "type": "path_regex",
+          "pattern": "^projects/.*\\.md$"
+        },
+        "require": ["status", "date", "image", "tags", "description"],
+        "suggest": ["repository"]
+      },
+      {
+        "_comment": "Files with specific metadata trigger additional requirements",
+        "name": "published_content",
+        "match": {
+          "type": "metadata_exists",
+          "field": "published"
+        },
+        "require": ["author", "description"],
+        "suggest": ["canonical_url", "seo_title"]
+      },
+      {
+        "_comment": "Comparison notes must be correctly tagged",
+        "name": "comparison",
+        "match": {
+          "type": "path_regex",
+          "pattern": ".*(-vs-).*\\.md$"
+        },
+        "require": ["tags"],
+        "suggest": []
+      },
+      {
+        "_comment": "Files tagged with specific categories",
+        "name": "technical_documentation",
+        "match": {
+          "type": "metadata_contains",
+          "field": "tags",
+          "value": "technical"
+        },
+        "require": ["language", "framework"],
+        "suggest": ["api_version", "deprecated"]
+      },
+      {
+        "_comment": "Specific file list",
+        "name": "important_files",
+        "match": {
+          "type": "file_list",
+          "files": ["README.md", "INDEX.md", "home.md"]
+        },
+        "require": ["description", "last_reviewed"],
+        "suggest": ["maintainer"]
+      }
+    ]
+  }
+}

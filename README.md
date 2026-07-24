@@ -2,12 +2,17 @@ dotdotdot ... or with the gliph ...
 
 - [[dotfiles]]
 
-- [x] add layers for the sparse checkout ([Architecture Guide](neovim-layering.md))
+- [ ] layers?
+- [ ] secrets
+- [ ] ansible
+
+## ansible
 
 - [ ] how to backup this and expose publicly check for pre commit secrets ... and
       hoock as a bootstrap...
 - [ ] footprint
 - [ ] testing performance
+
 - [ ] testing
   - phone
   - tablet
@@ -25,26 +30,43 @@ dotdotdot ... or with the gliph ...
   - [nvim theme](https://www.opendesktop.org/p/1154707/)
 - [ ] make the jira accessible (know your coworkers)
 - [ ] investigate git patterns
+
+## understand
+
 - MAKEFILE
+  - this should be with files and folders
 - BASH
-- PROCESSES
-- LUA
+  - you suck at programming
 - VIM
+- LUA
 
 ---
 
+- [x] add layers for the sparse checkout ([Architecture Guide](neovim-layering.md))
+
 ## Layered & Environment-by-Default Deployment
 
-This workspace is **Layered by Default** and **Environment-by-Default**. This means standard operations read your active configuration automatically, with optional overrides via environment variables or Makefile arguments.
+This workspace is **Layered by Default** and **Environment-by-Default**. This means
+standard operations read your active configuration automatically, with optional
+overrides via environment variables or Makefile arguments.
 
 ### 1. Default Behavior
+
 By default, running `make link`, `make sparse`, or `make unlink` will:
-1. Auto-detect the active profile configured in `config.yml` (using the `profile:` key, e.g. `profile: workspace`).
-2. Load the corresponding environment configuration from `.workspace-$(ENV).env` (e.g. `.workspace-workspace.env` which is linked to your active profile `.workspace-dia.env`).
-3. Deploy or clean files based on the active **layers** (e.g., `MINIMAL`, `STANDARD`, `SPECIFIC`) configured in that `.env` file using standard Bash indexed arrays.
+
+1. Auto-detect the active profile configured in `config.yml` (using the `profile:`
+   key, e.g. `profile: workspace`).
+2. Load the corresponding environment configuration from `.workspace-$(ENV).env`
+   (e.g. `.workspace-workspace.env` which is linked to your active profile
+   `.workspace-dia.env`).
+3. Deploy or clean files based on the active **layers** (e.g., `MINIMAL`, `STANDARD`,
+   `SPECIFIC`) configured in that `.env` file using standard Bash indexed arrays.
 
 ### 2. Overriding Configurations
-You can override standard configurations instantly on the command line by passing the `ENV` variable. This will load the custom `.workspace-$(ENV).env` profile instead of the default:
+
+You can override standard configurations instantly on the command line by passing the
+`ENV` variable. This will load the custom `.workspace-$(ENV).env` profile instead of
+the default:
 
 ```bash
 # Display the active configuration and files for the default profile
@@ -64,7 +86,11 @@ make unlink ENV=minimal
 ```
 
 ### 3. Pure-Bash Zero-Dependency Engine
-The deployment relies on native `/bin/bash` features (such as indirect expansion) to parse the indexed arrays inside `.workspace-$(ENV).env` files. This keeps the bootstrapping lifecycle completely independent of external dependencies or third-party interpreters.
+
+The deployment relies on native `/bin/bash` features (such as indirect expansion) to
+parse the indexed arrays inside `.workspace-$(ENV).env` files. This keeps the
+bootstrapping lifecycle completely independent of external dependencies or
+third-party interpreters.
 
 ---
 
