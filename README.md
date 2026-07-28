@@ -2,21 +2,25 @@ dotdotdot ... or with the gliph ...
 
 - [[dotfiles]]
 
-- [ ] layers?
+- makefile as a tab completion and something easy to watch files (not tasks)
+- layers? more or less: now input the variables with git sparse
+- variables to expose in my system (once you know the data, you probably know a lot)
+- secrets
+
 - [ ] secrets
-- [ ] ansible
+- [ ] implement
 
 ## ansible
 
-- [ ] how to backup this and expose publicly check for pre commit secrets ... and
-      hoock as a bootstrap...
-- [ ] footprint
+- [ ] instrumentalize secret watching
+- [ ] footprint as minimal as possible
 - [ ] testing performance
 
 - [ ] testing
   - phone
   - tablet
   - workstation
+
 - [ ] when push redeploy ansible
 - [x] being able to clean
 - [ ] maquetar dispositivos

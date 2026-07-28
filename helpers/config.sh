@@ -10,7 +10,6 @@ DOTFILE_TERMINAL_OPACITY=0.85
 
 DOTFILE_LSP_SERVERS=(
   "pyright"
-  "tsserver"
   "gopls"
   "lua_ls"
 )
