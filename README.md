@@ -1,5 +1,7 @@
 dotdotdot ... or with the gliph ...
 
+- bat seems something a little bit cumbersome
+
 - [[dotfiles]]
 
 - makefile as a tab completion and something easy to watch files (not tasks)
@@ -8,45 +10,13 @@ dotdotdot ... or with the gliph ...
 - secrets
 
 - [ ] secrets
-- [ ] implement
-
-## ansible
-
 - [ ] instrumentalize secret watching
-- [ ] footprint as minimal as possible
-- [ ] testing performance
-
-- [ ] testing
-  - phone
-  - tablet
-  - workstation
-
-- [ ] when push redeploy ansible
-- [x] being able to clean
-- [ ] maquetar dispositivos
-- [ ] using/ migrate nvim to visual studio just to know what you are using aprender a
-      usar el visual studio de la forma más parecida... la ia, creo que es una forma
-      muy diferente de leer, y de editar. hay que saber o al menos terner en cuenta
-      cuales son los archivos que estás tocando tu y los que va a tocar la ia?
+- [ ] implement
+- [ ] being able to clean
 - [ ] expose variables
   - https://github.com/adapta-project/adapta-gtk-theme
   - [themes](https://github.com/mbadolato/iTerm2-Color-Schemes/tree/a56897c3e031cb1be715706b7b25df860d5fc0a5)
   - [nvim theme](https://www.opendesktop.org/p/1154707/)
-- [ ] make the jira accessible (know your coworkers)
-- [ ] investigate git patterns
-
-## understand
-
-- MAKEFILE
-  - this should be with files and folders
-- BASH
-  - you suck at programming
-- VIM
-- LUA
-
----
-
-- [x] add layers for the sparse checkout ([Architecture Guide](neovim-layering.md))
 
 ## Layered & Environment-by-Default Deployment
 

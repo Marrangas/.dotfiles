@@ -85,11 +85,15 @@ path=(
   $path
 )
 
-
 # Source tool-specific path injections
 safe_source "$HOME/.local/bin/google-cloud-sdk/path.zsh.inc"
 safe_source "$HOME/.local/bin/terraform-old/path.zsh.inc"
 [[ -d "$HOME/.local/bin/fzf/bin" ]] && path+=("$HOME/.local/bin/fzf/bin")
+
+if command -v fzf &>/dev/null; then
+  safe_eval "$(fzf --zsh)"
+  safe_source "${XDG_CONFIG_HOME:-$HOME/.config}/fzf/.fzf.zsh"
+fi
 
 export PATH
 
@@ -210,20 +214,6 @@ export today=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 alias dia="cd ~/Documents/wiki/atlas/dia/ && nvim dia.md && cd - > /dev/null 2>&1"
 alias wiki="cd ~/Documents/wiki/ && nvim atlas/TODO.md && cd - > /dev/null 2>&1"
-
-wikisearch() {
-      local RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case"
-      local INITIAL_QUERY="${*:-}"
-
-      fzf --ansi --disabled --query "$INITIAL_QUERY" \
-          --bind "start:reload:$RG_PREFIX {q}" \
-          --bind "change:reload:sleep 0.1; $RG_PREFIX {q} || true" \
-          --delimiter : \
-          --preview 'bat --color=always --style=numbers --highlight-line {2} {1}' \
-          --preview-window 'right,60%,border-left,+{2}+3/3' \
-          --bind "enter:become(nvim +{2} {1})" \
-          --prompt=" Live Grep > "
-}
 
 if command -v git &>/dev/null; then
     alias g='git'
@@ -412,10 +402,6 @@ if command -v starship &>/dev/null; then
   safe_eval "$(starship init zsh)"
 fi
 
-if command -v fzf &>/dev/null; then
-  safe_eval "$(fzf --zsh)"
-fi
-
 if command -v direnv &>/dev/null; then
   safe_eval "$(direnv hook zsh)"
   _direnv_hook() {
@@ -427,22 +413,22 @@ if command -v direnv &>/dev/null; then
 fi
 
 # Added by Antigravity IDE
+# TODO is this right
 export PATH="/Users/altostratus/.antigravity-ide/antigravity-ide/bin:$PATH"
 
 # =============================================================================
-# GLOBAL FONT CONFIGURATION
+# GLOBAL DOTFILES CORE VARIABLES
 # =============================================================================
-# Exposes your preferred monospace font as a global dotfiles variable.
-# Recommended astigmatism/accessibility monospace fonts:
-#   - "JetBrainsMono Nerd Font" (Default; high x-height, highly readable)
-#   - "Hack Nerd Font"          (Open counters, balanced spacing; stowed locally)
-#   - "Intel One Mono"          (Intel accessibility font)
-
+# Exposes your preferred environment variables globally.
 # Sourcing dynamically generated dotfiles environment if available
 safe_source "$HOME/.config/dotfiles/env"
+safe_source "$HOME/.config/dotfiles/.env"
+safe_source "/Users/altostratus/Documents/marrangas/.dotfiles/.env"
 
 export DOTFILE_FONT="${DOTFILE_FONT:-JetBrainsMono Nerd Font}"
 export DOTFILE_FONT_SIZE="${DOTFILE_FONT_SIZE:-15}"
+export DOTFILE_TERMINAL_OPACITY="${DOTFILE_TERMINAL_OPACITY:-0.85}"
+export DOTFILE_THEME="${DOTFILE_THEME:-tokyonight}"
 
-# Run ghostty with the DOTFILE_FONT and DOTFILE_FONT_SIZE environment variables
-alias ghostty='ghostty --font-family="${DOTFILE_FONT}" --font-size=${DOTFILE_FONT_SIZE}'
+# Run ghostty with the environment variables dynamically applied
+alias ghostty='ghostty --theme="${DOTFILE_THEME}" --font-family="${DOTFILE_FONT}" --font-size=${DOTFILE_FONT_SIZE} --background-opacity=${DOTFILE_TERMINAL_OPACITY}'

@@ -3,7 +3,10 @@
 
 # --- LAYER 1: MINIMAL (CI/CD, Headless Server, thin VMs) ---
 DOTFILE_FONT="FiraCode Nerd Font"
-DOTFILE_THEME="catppuccin-mocha"
+DOTFILE_FONT_SIZE=12
+
+DOTFILE_STYLE="dark"
+DOTFILE_THEME="tokyonight"
 DOTFILE_TERMINAL="ghostty"
 DOTFILE_SEARCH_TOOL="ripgrep"
 DOTFILE_TERMINAL_OPACITY=0.85

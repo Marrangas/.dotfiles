@@ -2,10 +2,12 @@
   "theme": "GitHub",
   "ui": {
     "hideBanner": true,
-    "hideWindowTitle": true
+    "hideWindowTitle": true,
+    "errorVerbosity": "full"
   },
   "general": {
-    "preferredEditor": "neovim"
+    "preferredEditor": "neovim",
+    "enableAutoUpdate": false
   },
   "context": {
     "includeDirectories": [

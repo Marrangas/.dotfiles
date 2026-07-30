@@ -1,20 +1,4 @@
--- =============================================================================
--- LOAD DOTFILES ENVIRONMENT VARIABLES
--- =============================================================================
-local env_path = vim.fn.expand('~/.config/dotfiles/.env')
-if vim.fn.filereadable(env_path) == 0 then
-    env_path = '/Users/altostratus/Documents/marrangas/.dotfiles/.env'
-end
-
-if vim.fn.filereadable(env_path) == 1 then
-    for line in io.lines(env_path) do
-        local key, val = line:match('^%s*export%s+([%w_]+)%s*=%s*"([^"]+)"') or line:match('^%s*([%w_]+)%s*=%s*"([^"]+)"')
-        if key and val then
-            vim.env[key] = val
-        end
-    end
-end
--- =============================================================================
+-- Environment variables (such as DOTFILE_LSP_SERVERS) are loaded directly from the shell (sourced in zshrc).
 
 -- [[ Diagnostic Config & Keymaps ]] :help vim.diagnostic.Opts
 -- vim.lsp.set_log_level("debug")

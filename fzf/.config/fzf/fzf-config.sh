@@ -10,11 +10,5 @@ export FZF_DEFAULT_OPTS=" \
 --multi --height 60% --layout=reverse --border --prompt='󰭎 ' \
 --preview 'if [ -d {} ]; then lsd --tree --color=always {} | head -200; else bat --color=always --style=numbers --line-range :500 {}; fi'"
 
-# 3. Use ripgrep for search (faster, respects .gitignore)
 export FZF_DEFAULT_COMMAND="rg --files --hidden --glob '!.git/*'"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-
-# 4. CUSTOM COMMANDS
-# e: Quick open in Neovim with preview
-# Use 'xargs -o' on macOS to ensure nvim takes over the terminal correctly
-alias e='fzf --preview "bat --color=always --style=numbers {}" | xargs -o nvim'

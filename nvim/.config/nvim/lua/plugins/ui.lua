@@ -1,14 +1,97 @@
-return {
-    {
-        -- "nyoom-engineering/oxocarbon.nvim",
-        -- "zootedb0t/citruszest.nvim"
-        -- "https://github.com/miikanissi/modus-themes.nvim?tab=readme-ov-file
-        -- [WCAG21](https://www.w3.org/WAI/WCAG21/Understanding/contrast-enhanced.html)
+local active_theme = vim.env.DOTFILE_THEME
+if not active_theme or active_theme == "" then
+    vim.api.nvim_err_writeln("Error: 'DOTFILE_THEME' environment variable is not defined or is empty!")
+    active_theme = "tokyonight-moon"
+end
+
+local theme_plugin
+
+if active_theme:match("^catppuccin") then
+    theme_plugin = {
+        'catppuccin/nvim',
+        name = 'catppuccin',
+        lazy = false,
+        priority = 1000,
+        config = function()
+            local flavour = active_theme:match("catppuccin%-(%w+)") or "mocha"
+            require('catppuccin').setup {
+                flavour = flavour,
+                integrations = {
+                    treesitter = true,
+                    markdown = true,
+                    native_lsp = {
+                        enabled = true,
+                        semantic_tokens = true,
+                    },
+                    obsidian = true,
+                },
+                custom_highlights = function(cp)
+                    return {
+                        -- Headers: Comprehensive hijacking of Syntax, Treesitter, and LSP
+                        markdownH1 = { fg = cp.blue, style = { 'bold' } },
+                        markdownH2 = { fg = cp.peach, style = { 'bold' } },
+                        markdownH3 = { fg = cp.green, style = { 'bold' } },
+                        markdownH4 = { fg = cp.sapphire, style = { 'bold' } },
+                        markdownH5 = { fg = cp.lavender, style = { 'bold' } },
+                        markdownH6 = { fg = cp.mauve, style = { 'bold' } },
+
+                        -- Link Treesitter captures to these groups
+                        ['@markup.heading.1.markdown'] = { link = 'markdownH1' },
+                        ['@markup.heading.2.markdown'] = { link = 'markdownH2' },
+                        ['@markup.heading.3.markdown'] = { link = 'markdownH3' },
+                        ['@markup.heading.4.markdown'] = { link = 'markdownH4' },
+                        ['@markup.heading.5.markdown'] = { link = 'markdownH5' },
+                        ['@markup.heading.6.markdown'] = { link = 'markdownH6' },
+
+                        -- Link LSP Semantic Tokens (markdown-oxide)
+                        ['@lsp.type.heading.markdown'] = { link = 'markdownH1' },
+                        ['@lsp.type.section.markdown'] = { link = 'markdownH1' },
+
+                        -- Frontmatter (YAML Metadata) - Separación Robusta
+                        ['@markup.metadata.markdown'] = { fg = cp.overlay1 },
+                        ['@punctuation.delimiter.markdown'] = { fg = cp.overlay1 },
+                        ['@property.yaml'] = { fg = cp.blue, style = { 'bold' } },
+                        ['@variable.member.yaml'] = { fg = cp.blue, style = { 'bold' } },
+                        ['@punctuation.delimiter.yaml'] = { fg = cp.rosewater },
+                        ['@string.yaml'] = { fg = cp.green },
+                        ['@string.unquoted.yaml'] = { fg = cp.green },
+                        ['@number.yaml'] = { fg = cp.peach },
+                        ['@boolean.yaml'] = { fg = cp.peach },
+                        ['@type.yaml'] = { fg = cp.yellow },
+                        ['@label.yaml'] = { fg = cp.blue },
+
+                        -- Elementos Inline con más contraste
+                        ['@markup.raw.markdown_inline'] = { fg = cp.teal },
+                        ['@markup.list.markdown'] = { fg = cp.yellow, style = { 'bold' } },
+                        ['@markup.strong.markdown_inline'] = { fg = cp.maroon, style = { 'bold' } },
+                        ['@markup.italic.markdown_inline'] = { fg = cp.sky, style = { 'italic' } },
+
+                        -- UI de Obsidian y Enlaces
+                        ObsidianTag = { fg = cp.pink, style = { 'bold' } },
+                        ObsidianCheckbox = { fg = cp.blue },
+                        ObsidianRefText = { fg = cp.mauve, style = { 'bold' } },
+                        ['@markup.link.label.markdown_inline'] = { fg = cp.blue, style = { 'bold' } },
+                        ['@markup.link.url.markdown_inline'] = { fg = cp.rosewater, style = { 'italic' } },
+
+                        -- Tablas
+                        ['@markup.table.header.markdown'] = { fg = cp.sky, style = { 'bold' } },
+                        ['@punctuation.special.markdown_inline'] = { fg = cp.lavender },
+
+                        -- General Overrides
+                        Comment = { style = {} },
+                    }
+                end,
+            }
+            vim.cmd.colorscheme 'catppuccin'
+        end,
+    }
+else
+    theme_plugin = {
         "folke/tokyonight.nvim",
         lazy = false,
         priority = 1000,
         opts = {
-            style = "moon", -- "storm", "night", "day", "moon"
+            style = active_theme:match("tokyonight%-(%w+)") or "moon",
             transparent = false,
             styles = {
                 comments = { italic = true },
@@ -30,9 +113,7 @@ return {
                 hl.markdownH5Delimiter                = { fg = c.purple, bold = true }
                 hl.markdownH6Delimiter                = { fg = c.magenta, bold = true }
                 hl.markdownH7Delimiter                = { fg = c.magenta, bold = true }
-                -- hl.markdownH4          = { fg = c.magenta2, bold = true }
 
-                -- Direct Treesitter & LSP links to ensure the colors stick
                 hl["@markup.heading.1.markdown"]      = { link = "markdownH1" }
                 hl["@markup.heading.2.markdown"]      = { link = "markdownH2" }
                 hl["@markup.heading.3.markdown"]      = { link = "markdownH3" }
@@ -40,7 +121,6 @@ return {
                 hl["@markup.heading.5.markdown"]      = { link = "markdownH5" }
                 hl["@markup.heading.6.markdown"]      = { link = "markdownH6" }
 
-                -- YAML / Frontmatter
                 hl.yamlPlainScalar                    = { fg = c.blue }
                 hl["@string.yaml"]                    = { link = "yamlPlainScalar" }
 
@@ -72,13 +152,10 @@ return {
                 hl["@markup.link.url.markdown"]       = { link = "markdownAutomaticLink" }
                 hl["@markup.link.label.markdown"]     = { link = "markdownUrlDelimiter" }
 
-
-
                 hl.markdownBlockquote = { fg = c.green1, bold = true }
                 hl["@markup.quote"] = { link = "markdownBlockquote" }
                 hl["@markup.quote.markdown"] = { link = "markdownBlockquote" }
                 hl["@punctuation.definition.quote.markdown"] = { link = "markdownBlockquote" }
-
 
                 hl.markdownUrl = { fg = c.green2, italic = true }
                 hl.markdownLinkDelimiter = { fg = c.green1, italic = true }
@@ -87,13 +164,10 @@ return {
                 hl["@lsp.type.decorator.markdown"] = { fg = c.purple, bold = true }
                 hl["@lsp.typemod.link.resolved.markdown"] = { fg = c.purple, bold = true }
                 hl["@lsp.typemod.wikiLink.resolved.markdown"] = { fg = c.purple, bold = true }
-                -- Standard WikiLink labels (fallback)
                 hl["@markup.link.label.markdown_inline"] = { fg = c.purple, bold = true }
                 hl["@markup.link.url.markdown_inline"] = { fg = c.cyan, italic = true }
-                -- Brackets for resolved links (slightly different color to distinguish)
                 hl["@lsp.typemod.punctuation.bracket.resolved.markdown"] = { fg = c.blue0 }
 
-                -- Tables (Magenta2 & Bold)
                 hl.markdownTableHeader = { fg = c.magenta2, bold = true }
                 hl.markdownTableSeparator = { fg = c.magenta2 }
                 hl.markdownTable = { fg = c.magenta2 }
@@ -110,22 +184,16 @@ return {
                 hl["@punctuation.delimiter.markdown_inline"] = { fg = c.magenta2 }
                 hl["@punctuation.bracket.markdown_inline"] = { fg = c.magenta2 }
 
-                -- bold lines for render-markdown.nvim
                 hl.RenderMarkdownTableHead = { fg = c.magenta2, bold = true }
                 hl.RenderMarkdownTableRow = { fg = c.magenta2, bold = true }
                 hl.RenderMarkdownTableFill = { fg = c.magenta2, bold = true }
-
-                -- Checkbox highlights
                 hl.RenderMarkdownTodo = { fg = c.cyan }
                 hl.RenderMarkdownSuccess = { fg = c.green }
                 hl.RenderMarkdownWarn = { fg = c.yellow }
                 hl.RenderMarkdownError = { fg = c.red }
                 hl.RenderMarkdownInfo = { fg = c.blue }
 
-                -- Window Separators
                 hl.WinSeparator = { fg = c.dark3, bold = true }
-
-                -- Subtle CursorColumn (darker background)
                 hl.CursorColumn = { bg = c.bg_dark }
             end,
         },
@@ -133,7 +201,11 @@ return {
             require("tokyonight").setup(opts)
             vim.cmd.colorscheme "tokyonight"
         end,
-    },
+    }
+end
+
+return {
+    theme_plugin,
     {
         'powerman/vim-plugin-AnsiEsc',
     },
@@ -147,5 +219,4 @@ return {
             },
         },
     },
-
 }

@@ -170,3 +170,17 @@ vim.o.scrolloff = 10
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
 vim.o.confirm = true
+
+-- Set GUI font for Neovide/GUIs if running
+if vim.g.neovide then
+    local font = vim.env.DOTFILE_FONT or "FiraCode Nerd Font"
+    local size = vim.env.DOTFILE_FONT_SIZE or "12"
+    vim.o.guifont = font .. ":h" .. size
+end
+
+-- Configure grep to use the workspace search tool if available
+local search_tool = vim.env.DOTFILE_SEARCH_TOOL or "ripgrep"
+if (search_tool == "ripgrep" or search_tool == "rg") and vim.fn.executable("rg") == 1 then
+    vim.opt.grepprg = "rg --vimgrep --no-heading --smart-case"
+    vim.opt.grepformat = "%f:%l:%c:%m"
+end
