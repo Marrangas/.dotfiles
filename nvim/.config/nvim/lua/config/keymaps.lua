@@ -110,19 +110,6 @@ vim.keymap.set('n', '<C-h>', '<cmd>colder<CR>', { desc = 'pattern h (down) quick
 vim.keymap.set('n', '<C-l>', '<cmd>cnewer<CR>', { desc = 'pattern l (up) quickfix' })
 vim.keymap.set('n', '<C-n>', '<cmd>lnext<CR>zz', { desc = 'pattern n (down) location-list' })
 vim.keymap.set('n', '<C-p>', '<cmd>lprev<CR>zz', { desc = 'pattern p (down) location-list' })
-vim.keymap.set('n', '<C-m>', function()
-  local qf_item = {
-    bufnr = vim.api.nvim_get_current_buf(),
-    lnum = vim.fn.line('.'),
-    col = vim.fn.col('.'),
-    text = vim.api.nvim_get_current_line(),
-  }
-
-  -- 'a' appends to the quickfix list without wiping existing items
-  vim.fn.setqflist({ qf_item }, 'a')
-  vim.notify("Line added to quickfix list", vim.log.levels.INFO)
-end, { desc = "Add current line to quickfix list" })
-
 -- Location list jumps
 -- vim.keymap.set('n', '<leader>k', '<cmd>lnext<CR>zz')
 -- vim.keymap.set('n', '<leader>j', '<cmd>lprev<CR>zz')

@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+if [ "$1" = "" ]; then
+    echo "Usage: gtask <JIRA-KEY> [short-description]"
+    echo "Example: gtask PROJ-1234 fix-login-auth"
+    return 1
+fi
+
+ticket_key=$(echo "$1" | tr '[:lower:]' '[:upper:]')
+raw_proj=$(echo "$ticket_key" | cut -d'-' -f1 | tr '[:upper:]' '[:lower:]')
+raw_num=$(echo "$ticket_key" | cut -d'-' -f2)
+shift
+
+desc="$*"
+
+if [ "$desc" = "" ]; then
+    read -p "Enter short description: " desc
+fi
+
+clean_desc=$(echo "$desc" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g')
+branch_name="feature/${ticket_key}-${clean_desc}"
+
+docs_base="$HOME/Documents"
+current_dir="$PWD"
+customer_context="general"
+
+while [ "$current_dir" != "$docs_base" ] && [ "$current_dir" != "/" ] && [ "$current_dir" != "$HOME" ]; do
+    parent_dir=$(dirname "$current_dir")
+    if [ "$parent_dir" = "$docs_base" ]; then
+      customer_context=$(basename "$current_dir")
+      break
+    fi
+    current_dir="$parent_dir"
+done
+
+if [ "$customer_context" = "wiki" ] || [ "$customer_context" = "" ]; then
+    customer_context="general"
+fi
+
+git checkout -b "feature/$branch_name"
+
+if [ "$customer_context" = "general" ]; then
+    wiki_dir="$HOME/Documents/wiki/.agents/memories/"
+else
+    wiki_dir="$HOME/Documents/wiki/atlas/${customer_context}"
+fi
+
+wiki_file="${wiki_dir}/z-task-${clean_desc}-${raw_proj}-${raw_num}.md"
+cache_dir="$HOME/.cache/nvim/whip/${customer_context}/${raw_proj}-${raw_num}"
+
+mkdir -p "$wiki_dir" "$cache_dir"
+
+if [ ! -f "$wiki_file" ]; then
+    cat <<EOF > "$wiki_file"
+---
+id: \"${wiki_file}\"
+aliases:
+    - \"${wiki_file}\"
+title: \"$desc\"
+tags:
+  - project/${custommer_context}
+  - format/tasks
+  - status/queue
+created: \"$(date -u  +"%Y-%m-%d")\"
+relate:
+---
+
+- topic::
+- gratitud::
+- emociones::
+- reflexiones::
+- mejora-continua::
+
+# ${ticket_key} - ${desc}
+
+EOF
+    echo "Created Wiki note in [${customer_context}]: $wiki_file"
+  else
+    echo "Wiki note already exists: $wiki_file"
+fi
+
+

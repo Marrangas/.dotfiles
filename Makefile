@@ -1,8 +1,16 @@
 SHELL := /bin/bash
+
+# Folders to exclude from stowing (internal management only)
+EXCLUDE := nix .git TODO helpers tests scripts/parse_config.py
+
+# Use Makefile's native functions to handle spaces and exclusions correctly
+PACKAGES := $(filter-out $(EXCLUDE), $(patsubst %/,%,$(wildcard */)))
+STOW_SRC := $(foreach pkg,$(PACKAGES),"$(pkg)")
+
 PKGS ?= $(PACKAGES)
 
-.PHONY: help ifo bootstrap config link sparse clean test live
-.SILENT: help info bootstrap config link clean test live
+.PHONY: help ifo bootstrap config init link sparse clean test live
+.SILENT: help info bootstrap config init link sparse clean test live
 
 help:
 	echo "Available Makefile targets:"
@@ -65,44 +73,20 @@ sparse:
 	fi
 
 link: sparse
-	if [ ! -f .env ]; then \
+	@if [ ! -f .env ]; then \
 		echo "Error: .env not found. Run 'make bootstrap' first."; \
 		exit 1; \
 	fi
-	echo "Deploying files for active packages from .env..."
-	source .env && \
-	for file in "$${DEPLOY_FILES[@]}"; do \
-		target_path=$$(echo "$$file" | cut -d/ -f2-); \
-		parent_dir=$$(dirname "$(HOME)/$$target_path"); \
-		if [ -L "$$parent_dir" ]; then \
-			echo "Removing old stow symlink directory: $$parent_dir"; \
-			rm -f "$$parent_dir"; \
-		fi; \
-		echo "Linking: $$file -> $(HOME)/$$target_path"; \
-		mkdir -p "$$parent_dir"; \
-		ln -sf "$$(pwd)/$$file" "$(HOME)/$$target_path"; \
-	done
-	echo "Deployment complete."
+	@echo "Deploying visible packages: $(PACKAGES)"
+	stow --target $(HOME) --dotfiles --verbose 1 $(STOW_SRC)
+	@echo "Deployment complete."
 
 
 # TODO: check with iostat
 clean:
-	if [ -f .env ]; then \
-		echo "Removing linked files for active packages from .env..."; \
-		source .env && \
-		for file in "$${DEPLOY_FILES[@]}"; do \
-			target_path=$$(echo "$$file" | cut -d/ -f2-); \
-			if [ -L "$(HOME)/$$target_path" ]; then \
-				echo "Unlinking: $(HOME)/$$target_path"; \
-				rm "$(HOME)/$$target_path"; \
-				rmdir "$$(dirname "$(HOME)/$$target_path")" 2>/dev/null || true; \
-			fi; \
-		done \
-		; \
-		echo "Removal complete."; \
-	else \
-		echo "No active .env profile found. Unstowing fallback packages..."; \
-		stow -D --target $(HOME) --dotfiles --verbose 1 $(PKGS) 2>/dev/null || true; \
+	@if [ -f .env ]; then \
+		echo "Removing linked files for active packages..."; \
+		stow -D --target $(HOME) --dotfiles --verbose 1 $(STOW_SRC); \
 	fi
 	git clean -fdx
 

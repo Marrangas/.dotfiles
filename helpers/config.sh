@@ -40,12 +40,9 @@ DOTFILE_LAYER_STANDARD=(
   "nvim/.config/nvim/lua/plugins/ui.lua"
   "nvim/.config/nvim/lua/plugins/undo.lua"
   "nvim/.config/nvim/lua/util/wiki_completions.lua"
-  "nvim/.config/nvim/lua/util/choice_provider.lua"
-  "nvim/.config/nvim/snippets/global.json"
-  "nvim/.config/nvim/snippets/markdown.json"
-  "nvim/.config/nvim/snippets/package.json"
-  "nvim/.config/nvim/snippets/sh.json"
   "nvim/.config/nvim/luasnippets/markdown.lua"
+  "nvim/.config/nvim/luasnippets/all.lua"
+  "nvim/.config/nvim/luasnippets/sh.lua"
 )
 
 DOTFILE_LAYER_SPECIFIC=(
