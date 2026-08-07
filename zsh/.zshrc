@@ -72,6 +72,7 @@ typeset -U path
 path=(
   $HOME/.local/bin
   $HOME/bin
+  $HOME/.config/cargo/bin
   /opt/homebrew/bin
   /opt/homebrew/sbin
   /usr/local/bin

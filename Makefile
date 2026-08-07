@@ -1,11 +1,4 @@
-# Makefile for layered dotfiles deployment using GNU Stow & Git sparse-checkouts.
-
 SHELL := /bin/bash
-
-# Read active profile and packages using our helper script
-# PACKAGES := $(shell python3 scripts/parse_config.py packages)
-
-# Default stowed packages (can be overridden via make link PKGS="pkg1 pkg2")
 PKGS ?= $(PACKAGES)
 
 .PHONY: help ifo bootstrap config link sparse clean test live
@@ -37,9 +30,6 @@ info:
 	done
 
 
-bootstrap:
-	./helpers/bootstrap.sh
-
 config:
 	git config core.hooksPath .githooks
 	echo "Fetching latest agnostic hooks from remote lib-gittools..."
@@ -49,26 +39,8 @@ config:
 	chmod +x .githooks/* 2>/dev/null || true
 	echo "Git configurations, scripts, and standard hooks are ready."
 
-link: sparse
-	if [ ! -f .env ]; then \
-		echo "Error: .env not found. Run 'make bootstrap' first."; \
-		exit 1; \
-	fi
-	echo "Deploying files for active packages from .env..."
-	source .env && \
-	for file in "$${DEPLOY_FILES[@]}"; do \
-		target_path=$$(echo "$$file" | cut -d/ -f2-); \
-		parent_dir=$$(dirname "$(HOME)/$$target_path"); \
-		if [ -L "$$parent_dir" ]; then \
-			echo "Removing old stow symlink directory: $$parent_dir"; \
-			rm -f "$$parent_dir"; \
-		fi; \
-		echo "Linking: $$file -> $(HOME)/$$target_path"; \
-		mkdir -p "$$parent_dir"; \
-		ln -sf "$$(pwd)/$$file" "$(HOME)/$$target_path"; \
-	done
-	echo "Deployment complete."
-
+init: config
+	./helpers/bootstrap.sh
 
 sparse:
 	@if [ -f .env ]; then \
@@ -91,6 +63,27 @@ sparse:
 			git sparse-checkout set "/Makefile" "/helpers/" "/tests/" "/.gitignore" "/.stow-local-ignore" "/.*.env" "$${files[@]}" \
 		'; \
 	fi
+
+link: sparse
+	if [ ! -f .env ]; then \
+		echo "Error: .env not found. Run 'make bootstrap' first."; \
+		exit 1; \
+	fi
+	echo "Deploying files for active packages from .env..."
+	source .env && \
+	for file in "$${DEPLOY_FILES[@]}"; do \
+		target_path=$$(echo "$$file" | cut -d/ -f2-); \
+		parent_dir=$$(dirname "$(HOME)/$$target_path"); \
+		if [ -L "$$parent_dir" ]; then \
+			echo "Removing old stow symlink directory: $$parent_dir"; \
+			rm -f "$$parent_dir"; \
+		fi; \
+		echo "Linking: $$file -> $(HOME)/$$target_path"; \
+		mkdir -p "$$parent_dir"; \
+		ln -sf "$$(pwd)/$$file" "$(HOME)/$$target_path"; \
+	done
+	echo "Deployment complete."
+
 
 # TODO: check with iostat
 clean:
