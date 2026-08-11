@@ -1,0 +1,35 @@
+*whip.txt*    Integration with the whip CLI tool
+
+==============================================================================
+INTRODUCTION                                                     *whip-intro*
+
+Whip is a Neovim plugin and CLI tool that manages feature branches and 
+associates them with your wiki notes and quickfix lists, using JIRA keys
+for context.
+
+When you run `whip PROJ-1234 description` in your terminal, a branch and 
+a task note are created. In Neovim, Whip can then open this task note 
+or persist the quickfix list for the current Jira context.
+
+==============================================================================
+COMMANDS                                                      *whip-commands*
+
+:Whip {subcmd}                                                       *:Whip*
+    Execute a whip subcommand. Supports tab completion.
+    Available subcommands:
+    
+    open    - Open the wiki note for the current Jira ticket.
+    save    - Save the current quickfix list to the ticket's cache.
+    load    - Load the saved quickfix list for the current ticket.
+
+==============================================================================
+KEYMAPS                                                        *whip-keymaps*
+
+The following default keymaps are provided:
+
+<leader>wo      Open the wiki note for the current context.
+<leader>ww      Save (write) the quickfix list.
+<leader>wl      Load the saved quickfix list.
+
+==============================================================================
+ vim:tw=78:ts=8:ft=help:norl:

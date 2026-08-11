@@ -1,19 +1,19 @@
-dotdotdot ... or with the gliph ...
+- layering
+- use variables
+- auto generated elements
 
-- bat seems something a little bit cumbersome (maybe advise that it is something
-  handled by the bootstrap, and backfilled bit the bootstrap with DOT_STYLE)
-- separation of nvim gitfiles and how to update changes ( I could disable the sparse
-  for developing?? or in my main machine?)
-- completions
-- headers
-- snippets
+- [ ] headers
+- [ ] snippets
+
+- dotfile packages??
+- dotdile files? => seems like there are only some of them which make sense
+
+- dotdotdot ... or with the gliph ...
 
 - [[dotfiles]]
 - [ ] use all the elements not only the previous (como actualizar facilmente cuendo
       añado un nuevo archivo??)
 - [ ] simplificar los nuevos snippets
-
--
 
 - makefile as a tab completion and something easy to watch files (not tasks)
 - layers? more or less: now input the variables with git sparse

@@ -1,42 +1,41 @@
-SHELL := /bin/bash
-
 # Folders to exclude from stowing (internal management only)
-EXCLUDE := nix .git TODO helpers tests scripts/parse_config.py
-
 # Use Makefile's native functions to handle spaces and exclusions correctly
 # TODO: this is the magic of makefile do not waste it
+SHELL := /bin/bash
+EXCLUDE := nix .git TODO helpers tests
 PACKAGES := $(filter-out $(EXCLUDE), $(patsubst %/,%,$(wildcard */)))
-STOW_SRC := $(foreach pkg,$(PACKAGES),"$(pkg)")
 
-PKGS ?= $(PACKAGES)
-
-.PHONY: help ifo bootstrap config init link sparse clean test live
-.SILENT: help info bootstrap config init link sparse clean test live
+.PHONY: help info build link sparse clean test live
+.SILENT: help info build link sparse clean test live
 
 help:
 	echo "Available Makefile targets:"
-	echo "  make bootstrap    Initialize a new workspace profile and link to .envrc for direnv auto-loading"
 	echo "  make info         Show active workspace environment and layered files"
+	echo "  make build        Initialize a new workspace profile and link to .envrc for direnv auto-loading"
 	echo "  make link         Link active dotfiles (uses layered profile if present, else fallback to Stow)"
 	echo "  make sparse       Configure Git sparse-checkout (uses layered profile if present, else fallback to standard)"
 	echo "  make clean        Unlink all active files and completely nuke all untracked/ignored workspace configurations"
-	echo "  make config       Set up git configurations, hooks, and download plugins"
 	echo "  make test         Build and run the dotfiles deployment in a clean, isolated Docker test container"
-	echo "  make try          Deploy the dotfiles inside Docker and drop into an interactive bash shell"
+	echo "  make live         Deploy the dotfiles inside Docker and drop into an interactive bash shell"
 
 info:
-	if [ ! -f .env ]; then \
+	@if [ ! -f .env ]; then \
 		echo "Error: .env not found. Run 'make bootstrap' first."; \
 		exit 1; \
 	fi
 	source .env && \
+	active_pkgs=("$${DOTFILE_PACKAGES[@]}") && \
+	source helpers/config.sh && \
 	echo -e "Active Workspace Profile: $$WORKSPACE_NAME" && \
 	echo -e "Active Layer Setting:     $$DOTFILE_LAYER" && \
-	echo -e "Active Packages:          $${DOTFILE_PACKAGES[*]}\n" && \
-	echo "Files to be deployed ($${#DEPLOY_FILES[@]} files):" && \
-	for file in "$${DEPLOY_FILES[@]}"; do \
-		echo "    - $$file"; \
-	done
+	echo -e "Active Packages:          $${active_pkgs[*]}\n" && \
+	echo "Available Extra Packages:" && \
+	extra=$$(comm -13 <(echo "$${active_pkgs[*]}" | tr " " "\n" | sort) <(echo "$${DOTFILE_PACKAGES[*]}" | tr " " "\n" | sort)) && \
+	if [ -n "$$extra" ]; then \
+		echo "$$extra" | sed "s/^/  + /"; \
+	else \
+		echo "  None (all configured packages are active)"; \
+	fi
 
 
 config:
@@ -48,7 +47,7 @@ config:
 	chmod +x .githooks/* 2>/dev/null || true
 	echo "Git configurations, scripts, and standard hooks are ready."
 
-init: config
+build: config
 	./helpers/bootstrap.sh
 
 sparse:
@@ -83,7 +82,7 @@ link:
 	@for pkg in $(PACKAGES); do \
 		echo "  - $$pkg"; \
 	done
-	stow --target $(HOME) --dotfiles --verbose 1 $(STOW_SRC)
+	stow --target $(HOME) --dotfiles --verbose 1 $(PACKAGES)
 	@echo "Deployment complete."
 
 

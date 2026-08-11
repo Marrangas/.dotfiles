@@ -34,7 +34,13 @@ local function get_year_week() return os.date '%Y-w%W' end
 
 -- Helper to define a choice option with selection highlight and custom label
 local function opt(value, label)
-    local node = t(value)
+    local node = t(value, {
+        node_ext_opts = {
+            active = {
+                virt_text = { { label, 'Comment' } },
+            },
+        },
+    })
     node.label = label
     return node
 end
@@ -64,6 +70,10 @@ local function get_wiki_affections()
     return choices
 end
 
+-- TODO: salud make the list of things you want to insert in your routine
+-- TODO: personal
+-- TODO: profesional
+-- TODO: social
 ls.add_snippets('markdown', {
     s(
         'pkm-table',
@@ -113,10 +123,7 @@ ls.add_snippets('markdown', {
             for idx = 0, 6 do
                 local day_time = monday_noon + (idx * 86400)
                 local formatted_date = os.date('%Y-%m-%d', day_time)
-                table.insert(
-                    lines,
-                    '- ' .. day_prefixes[idx + 1] .. ' [[' .. formatted_date .. ']]'
-                )
+                table.insert(lines, '- ' .. day_prefixes[idx + 1] .. ' [[' .. formatted_date .. ']]')
             end
             return lines
         end, {}),
@@ -137,7 +144,7 @@ ls.add_snippets('markdown', {
 ]=],
             {
                 c1 = c(1, {
-                    opt('induccion', 'generalizar a partir de casos'),
+                    opt('induccion', 'generalizar de lo particular'),
                     opt('deduccion', 'derivar por logica formal'),
                     opt('abduccion', 'hipotesis de la mejor explicacion'),
                 }),
@@ -183,3 +190,27 @@ ls.add_snippets('markdown', {
         }),
     }),
 })
+
+-- local fmt = require("luasnip.extras.fmt").fmt
+--
+-- return {
+--
+--   ls.snippet({trig="l", descr="Insert a link"},
+--     fmt(
+--       [[
+--       [{}]({})
+--       ]],
+--       { i(1, "text"), i(2, "url"), }
+--     )
+--   ),
+--
+--   ls.snippet({trig="img", descr="Insert an image"},
+--     fmt(
+--       [[
+--       ![{}]({})
+--       ]],
+--       { i(1, "alt text"), i(2, "src")}
+--     )
+--   ),
+--
+-- }

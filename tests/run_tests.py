@@ -13,22 +13,38 @@ class DotfilesUnitTests(unittest.TestCase):
     within the dotfiles repository.
     """
 
-    def test_config_yml_syntax(self):
+    def test_config_sh_syntax(self):
         """
-        Verify that config.yml exists and can be parsed correctly as a valid YAML document.
+        Verify that helpers/config.sh exists and is syntactically valid bash.
         """
-        config_path = os.path.join(DOTFILES_ROOT, "config.yml")
-        self.assertTrue(os.path.exists(config_path), f"config.yml not found at {config_path}")
+        config_path = os.path.join(DOTFILES_ROOT, "helpers", "config.sh")
+        self.assertTrue(os.path.exists(config_path), f"helpers/config.sh not found at {config_path}")
         
-        with open(config_path, "r") as f:
-            try:
-                data = yaml.safe_load(f)
-            except yaml.YAMLError as exc:
-                self.fail(f"config.yml failed to parse as valid YAML: {exc}")
-                
-        self.assertIsNotNone(data, "config.yml parsed as empty or None")
-        self.assertIn("profile", data, "config.yml is missing 'profile' key")
-        self.assertIn("packages", data, "config.yml is missing 'packages' key")
+        # 1. Run bash syntax check
+        result = subprocess.run(
+            ["bash", "-n", config_path],
+            capture_output=True,
+            text=True
+        )
+        self.assertEqual(
+            result.returncode, 0,
+            f"helpers/config.sh has bash syntax errors:\n{result.stderr}"
+        )
+        
+        # 2. Source the file and output key variables to ensure they are defined
+        source_cmd = [
+            "bash", "-c",
+            f"source {config_path} && declare -p DOTFILE_PACKAGES DOTFILE_LAYERED"
+        ]
+        result_vars = subprocess.run(
+            source_cmd,
+            capture_output=True,
+            text=True
+        )
+        self.assertEqual(
+            result_vars.returncode, 0,
+            f"helpers/config.sh is missing expected arrays DOTFILE_PACKAGES or DOTFILE_LAYERED.\nSTDERR: {result_vars.stderr}"
+        )
 
     def test_stow_ignore_contains_tests(self):
         """
@@ -115,6 +131,157 @@ class DotfilesIntegrationTests(unittest.TestCase):
                 os.path.exists(expected_link),
                 f"Symlink {expected_link} still exists after unstow"
             )
+
+
+class DotfilesProfileTests(unittest.TestCase):
+    """
+    Integration tests verifying environment profile generation (.env files)
+    via helpers/bootstrap.sh.
+    """
+
+    def setUp(self):
+        self.env_file = os.path.join(DOTFILES_ROOT, ".env")
+        self.envrc_file = os.path.join(DOTFILES_ROOT, ".envrc")
+        self.test_profile = os.path.join(DOTFILES_ROOT, ".testprofile.env")
+        
+        # Backup existing .env and .envrc if they exist
+        self.env_backup = None
+        if os.path.lexists(self.env_file):
+            try:
+                # If .env is a symlink, resolve and backup target
+                if os.path.islink(self.env_file):
+                    self.env_link_target = os.readlink(self.env_file)
+                else:
+                    self.env_link_target = None
+                    with open(self.env_file, "rb") as f:
+                        self.env_backup = f.read()
+                os.remove(self.env_file)
+            except Exception:
+                pass
+            
+        self.envrc_backup = None
+        if os.path.lexists(self.envrc_file):
+            try:
+                with open(self.envrc_file, "rb") as f:
+                    self.envrc_backup = f.read()
+                os.remove(self.envrc_file)
+            except Exception:
+                pass
+
+    def tearDown(self):
+        # Remove any generated test profile
+        if os.path.lexists(self.test_profile):
+            try:
+                os.remove(self.test_profile)
+            except Exception:
+                pass
+        if os.path.lexists(self.env_file):
+            try:
+                os.remove(self.env_file)
+            except Exception:
+                pass
+        if os.path.lexists(self.envrc_file):
+            try:
+                os.remove(self.envrc_file)
+            except Exception:
+                pass
+            
+        # Restore backups
+        if self.env_backup is not None:
+            try:
+                with open(self.env_file, "wb") as f:
+                    f.write(self.env_backup)
+            except Exception:
+                pass
+        elif hasattr(self, 'env_link_target') and self.env_link_target is not None:
+            try:
+                if os.path.lexists(self.env_file):
+                    os.remove(self.env_file)
+                os.symlink(self.env_link_target, self.env_file)
+            except Exception:
+                pass
+            
+        if self.envrc_backup is not None:
+            try:
+                with open(self.envrc_file, "wb") as f:
+                    f.write(self.envrc_backup)
+            except Exception:
+                pass
+
+    def test_profile_generation_minimal_layer(self):
+        """
+        Run bootstrap.sh for MINIMAL layer and verify generated package arrays.
+        """
+        # Execute helpers/bootstrap.sh
+        env = os.environ.copy()
+        env["ENV"] = "testprofile"
+        env["LAYER"] = "MINIMAL"
+        
+        result = subprocess.run(
+            ["./helpers/bootstrap.sh"],
+            cwd=DOTFILES_ROOT,
+            env=env,
+            capture_output=True,
+            text=True
+        )
+        self.assertEqual(
+            result.returncode, 0,
+            f"bootstrap.sh failed during test. STDOUT: {result.stdout}\nSTDERR: {result.stderr}"
+        )
+        
+        # Verify .testprofile.env exists
+        self.assertTrue(
+            os.path.exists(self.test_profile),
+            f"Expected profile file {self.test_profile} was not created."
+        )
+        
+        # Read and check contents of the generated profile
+        with open(self.test_profile, "r") as f:
+            content = f.read()
+            
+        # 1. Verify general variables
+        self.assertIn('WORKSPACE_NAME="testprofile"', content)
+        self.assertIn('DOTFILE_LAYER="MINIMAL"', content)
+        
+        # 2. Verify some standard package array is generated
+        self.assertIn('DOTFILE_BAT=(', content)
+        self.assertIn('"bat/.config/bat/config"', content)
+        
+        # 3. Verify layered package (nvim) array is generated
+        self.assertIn('DOTFILE_NVIM=(', content)
+        # 4. Verify ONLY minimal files are present in DOTFILE_NVIM for MINIMAL layer
+        self.assertIn('"nvim/.config/nvim/init.lua"', content)
+        self.assertNotIn('"nvim/.config/nvim/lua/plugins/treesitter.lua"', content)
+
+    def test_profile_generation_all_layer(self):
+        """
+        Run bootstrap.sh for ALL layer and verify generated package arrays.
+        """
+        env = os.environ.copy()
+        env["ENV"] = "testprofile"
+        env["LAYER"] = "ALL"
+        
+        result = subprocess.run(
+            ["./helpers/bootstrap.sh"],
+            cwd=DOTFILES_ROOT,
+            env=env,
+            capture_output=True,
+            text=True
+        )
+        self.assertEqual(
+            result.returncode, 0,
+            f"bootstrap.sh failed during test. STDOUT: {result.stdout}\nSTDERR: {result.stderr}"
+        )
+        
+        with open(self.test_profile, "r") as f:
+            content = f.read()
+            
+        self.assertIn('DOTFILE_LAYER="ALL"', content)
+        
+        # Verify nvim has standard/specific files in ALL layer
+        self.assertIn('"nvim/.config/nvim/init.lua"', content)
+        self.assertIn('"nvim/.config/nvim/lua/plugins/treesitter.lua"', content)
+        self.assertIn('"nvim/.config/nvim/lua/plugins/markdown.lua"', content)
 
 
 if __name__ == "__main__":

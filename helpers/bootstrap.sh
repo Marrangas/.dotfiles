@@ -7,6 +7,9 @@ set -euo pipefail
 CONFIG_FILE="helpers/config.sh"
 
 # Ensure we operate relative to the repository root directory
+setup(){
+	echo "setup"
+}
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$DOTFILES_DIR"
 
@@ -39,44 +42,6 @@ background-opacity = ${DOTFILE_TERMINAL_OPACITY:-1.0}
 EOF
   fi
 
-  # Gather files dynamically
-  local -a deploy_files=()
-  local -a nvim_files=()
-
-  # Now gather stowed files based on active packages and layers
-  for pkg in "${DOTFILE_PACKAGES[@]}"; do
-    if [ "$pkg" = "nvim" ]; then
-      # nvim has layers
-      for file in "${DOTFILE_LAYER_MINIMAL[@]}"; do
-        deploy_files+=("$file")
-        nvim_files+=("$file")
-      done
-
-      if [ "$active_layer" = "STANDARD" ] || [ "$active_layer" = "SPECIFIC" ] || [ "$active_layer" = "ALL" ]; then
-        for file in "${DOTFILE_LAYER_STANDARD[@]}"; do
-          deploy_files+=("$file")
-          nvim_files+=("$file")
-        done
-      fi
-
-      if [ "$active_layer" = "SPECIFIC" ] || [ "$active_layer" = "ALL" ]; then
-        for file in "${DOTFILE_LAYER_SPECIFIC[@]}"; do
-          deploy_files+=("$file")
-          nvim_files+=("$file")
-        done
-      fi
-    else
-      # Standard package: find all files recursively
-      if [ -d "$pkg" ]; then
-        while IFS= read -r file; do
-          if [ "$file" != "" ]; then
-            deploy_files+=("$file")
-          fi
-        done < <(find "$pkg" -type f 2>/dev/null)
-      fi
-    fi
-  done
-
   # Start writing the profile with clean formatting
   printf '# Workspace Environment: %s\n' "$env_name" > "$dest_file"
   printf '# Loaded by Bash, Makefile, and Ansible.\n' >> "$dest_file"
@@ -106,14 +71,50 @@ EOF
   done
   printf ')\n\n' >> "$dest_file"
 
+  # Gather files dynamically
+  local -a deploy_files=()
+
+  # Now gather stowed files based on active packages and layers
+  for pkg in "${DOTFILE_PACKAGES[@]}"; do
+    local -a pkg_files=()
+
+    if [ "$pkg" = "nvim" ]; then
+      # nvim has layers; build active files based on selected layer setting
+      pkg_files+=("${NVIM_MINIMAL[@]}")
+
+      if [ "$active_layer" = "STANDARD" ] || [ "$active_layer" = "SPECIFIC" ] || [ "$active_layer" = "ALL" ]; then
+        pkg_files+=("${NVIM_STANDARD[@]}")
+      fi
+
+      if [ "$active_layer" = "SPECIFIC" ] || [ "$active_layer" = "ALL" ]; then
+        pkg_files+=("${NVIM_SPECIFIC[@]}")
+      fi
+    else
+      # Standard package: find all files recursively
+      if [ -d "$pkg" ]; then
+        while IFS= read -r file; do
+          if [ "$file" != "" ]; then
+            pkg_files+=("$file")
+          fi
+        done < <(find "$pkg" -type f 2>/dev/null)
+      fi
+    fi
+
+    # Append this package's active files to the global deploy list
+    deploy_files+=("${pkg_files[@]}")
+
+    # Write package-specific file list to the destination file
+    local pkg_upper=$(echo -n "$pkg" | tr '[:lower:]' '[:upper:]' | tr -c '[:alnum:]' '_')
+    printf 'DOTFILE_%s=(\n' "$pkg_upper" >> "$dest_file"
+    for file in "${pkg_files[@]}"; do
+      printf '  "%s"\n' "$file" >> "$dest_file"
+    done
+    printf ')\n\n' >> "$dest_file"
+  done
+
+  # Write the complete DEPLOY_FILES array
   printf 'DEPLOY_FILES=(\n' >> "$dest_file"
   for file in "${deploy_files[@]}"; do
-    printf '  "%s"\n' "$file" >> "$dest_file"
-  done
-  printf ')\n\n' >> "$dest_file"
-
-  printf 'DOTFILE_NVIM=(\n' >> "$dest_file"
-  for file in "${nvim_files[@]}"; do
     printf '  "%s"\n' "$file" >> "$dest_file"
   done
   printf ')\n' >> "$dest_file"

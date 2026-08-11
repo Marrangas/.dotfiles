@@ -211,4 +211,26 @@ vim.keymap.set("n", "<leader>wo", M.open_wiki_note, { desc = "[Whip] [O]pen note
 vim.keymap.set("n", "<leader>ww", M.save_quickfix, { desc = "[Whip] [w]rite quickfix" })
 vim.keymap.set("n", "<leader>wl", M.load_quickfix, { desc = "[Whip] [L]oad quickfix" })
 
+vim.api.nvim_create_user_command("Whip", function(opts)
+    local subcmd = opts.args
+    if subcmd == "open" then
+        M.open_wiki_note()
+    elseif subcmd == "save" then
+        M.save_quickfix()
+    elseif subcmd == "load" then
+        M.load_quickfix()
+    else
+        vim.notify("[Whip] Unknown subcommand: '" .. subcmd .. "'. Valid options: open, save, load", vim.log.levels.ERROR)
+    end
+end, {
+    nargs = 1,
+    complete = function(ArgLead)
+        local subcmds = { "open", "save", "load" }
+        return vim.tbl_filter(function(cmd)
+            return cmd:find(ArgLead, 1, true) == 1
+        end, subcmds)
+    end,
+    desc = "Whip integration commands (open, save, load)",
+})
+
 return M
