@@ -24,10 +24,6 @@ end
 
 vim.keymap.set('n', '<C-z>', '<Nop>', { desc = 'Disable suspend' })
 
--- the most repeated, with one less keypress
--- who knows if I will still be doing it
-vim.keymap.set('n', '<leader>w', ':w<CR>', { desc = 'Classic :w improved' })
-
 -- write/save when the buffer has been modified.
 vim.keymap.set({ 'i', 'n' }, '<C-s>', '<ESC>ma<ESC>:update <CR>`a', { noremap = true, silent = true })
 

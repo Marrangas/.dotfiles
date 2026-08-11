@@ -213,7 +213,7 @@ fi
 export today=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 
-alias dia="cd ~/Documents/wiki/atlas/dia/ && nvim dia.md && cd - > /dev/null 2>&1"
+alias dia="cd ~/Documents/wiki/atlas/dgrp/ && nvim dia.md && cd - > /dev/null 2>&1"
 alias wiki="cd ~/Documents/wiki/ && nvim atlas/TODO.md && cd - > /dev/null 2>&1"
 
 if command -v git &>/dev/null; then

@@ -1,81 +1,150 @@
 #!/usr/bin/env bash
+
+# Robust error exiting helper
+error_exit() {
+    echo "$1" >&2
+    # Detect if sourced or executed
+    if (return 0 2>/dev/null); then
+        return 1
+    else
+        exit 1
+    fi
+}
+
 if [ "$1" = "" ]; then
-    echo "Usage: gtask <JIRA-KEY> [short-description]"
-    echo "Example: gtask PROJ-1234 fix-login-auth"
-    return 1
+    echo "Usage: whip <JIRA-KEY> [short-description]"
+    echo "Example: whip PROJ-1234 fix-login-auth"
+    error_exit ""
 fi
 
-ticket_key=$(echo "$1" | tr '[:lower:]' '[:upper:]')
-raw_proj=$(echo "$ticket_key" | cut -d'-' -f1 | tr '[:upper:]' '[:lower:]')
-raw_num=$(echo "$ticket_key" | cut -d'-' -f2)
+# Basic environment checks
+if ! command -v git >/dev/null 2>&1; then
+    error_exit "Error: git is not installed or not in PATH."
+fi
+
+if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    error_exit "Error: Not in a git repository (or any of the parent directories)."
+fi
+
+ticket=$(echo "$1" | tr '[:lower:]' '[:upper:]')
+
+# Robust JIRA key validation (Alphanumeric project key, hyphen, digits)
+if [[ ! "$ticket" =~ ^[A-Z0-9]+-[0-9]+$ ]]; then
+    error_exit "Error: Invalid JIRA key format '$1'. Expected format: PROJ-1234"
+fi
+
+raw_proj=$(echo "$ticket" | cut -d'-' -f1 | tr '[:upper:]' '[:lower:]')
+raw_num=$(echo "$ticket" | cut -d'-' -f2)
 shift
 
-desc="$*"
+# Validate project key starts with a letter (JIRA standard)
+if [[ ! "$raw_proj" =~ ^[a-z][a-z0-9]*$ ]]; then
+    error_exit "Error: JIRA project key must start with a letter (got '$raw_proj')."
+fi
 
+desc="$*"
 if [ "$desc" = "" ]; then
-    read -p "Enter short description: " desc
+    while [ "$desc" = "" ]; do
+        read -p "Enter short description: " desc
+    done
 fi
 
 clean_desc=$(echo "$desc" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g')
-branch_name="feature/${ticket_key}-${clean_desc}"
+branch_name="feature/${ticket}"
 
 docs_base="$HOME/Documents"
 current_dir="$PWD"
-customer_context="general"
+ctx="mrgs"
 
+# Determine customer context by walking up the directory tree
 while [ "$current_dir" != "$docs_base" ] && [ "$current_dir" != "/" ] && [ "$current_dir" != "$HOME" ]; do
     parent_dir=$(dirname "$current_dir")
     if [ "$parent_dir" = "$docs_base" ]; then
-      customer_context=$(basename "$current_dir")
-      break
+        ctx=$(basename "$current_dir")
+        break
     fi
     current_dir="$parent_dir"
 done
 
-if [ "$customer_context" = "wiki" ] || [ "$customer_context" = "" ]; then
-    customer_context="general"
-fi
-
-git checkout -b "feature/$branch_name"
-
-if [ "$customer_context" = "general" ]; then
-    wiki_dir="$HOME/Documents/wiki/.agents/memories/"
+if [ "$ctx" = "wiki" ] || [ "$ctx" = "" ]; then
+    ctx="mrgs"
+    wiki_dir="$HOME/Documents/wiki/atlas"
 else
-    wiki_dir="$HOME/Documents/wiki/atlas/${customer_context}"
+    wiki_dir="$HOME/Documents/wiki/atlas/${ctx}"
 fi
 
-wiki_file="${wiki_dir}/z-task-${clean_desc}-${raw_proj}-${raw_num}.md"
-cache_dir="$HOME/.cache/nvim/whip/${customer_context}/${raw_proj}-${raw_num}"
+current_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+if [ "$current_branch" = "$branch_name" ]; then
+    echo "Already on branch '$branch_name'."
+else
+    if git show-ref --verify --quiet "refs/heads/$branch_name" || git show-ref --quiet "refs/remotes/origin/$branch_name"; then
+        echo "Branch '$branch_name' already exists. Switching to it..."
+        if ! git checkout "$branch_name"; then
+            error_exit "Error: Failed to switch to existing branch '$branch_name'."
+        fi
+    else
+        echo "Creating and switching to new branch '$branch_name'..."
+        if ! git checkout -b "$branch_name"; then
+            error_exit "Error: Failed to create and switch to new branch '$branch_name'."
+        fi
+    fi
+fi
 
-mkdir -p "$wiki_dir" "$cache_dir"
+current_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+if [ "$current_branch" != "HEAD" ] && [ "$current_branch" != "" ]; then
+    if ! git config branch."$current_branch".description "$desc"; then
+        echo "Warning: Could not configure branch description." >&2
+    fi
+fi
 
-if [ ! -f "$wiki_file" ]; then
-    cat <<EOF > "$wiki_file"
+cache="$HOME/.cache/nvim/whip/${ctx}/${raw_proj}-${raw_num}"
+if ! mkdir -p "$wiki_dir" "$cache"; then
+    error_exit "Error: Failed to create directory '$wiki_dir' or '$cache'."
+fi
+
+existing_note=""
+if [ -d "$HOME/Documents/wiki/atlas" ]; then
+    if [ -d "$wiki_dir" ]; then
+        existing_note=$(find "$wiki_dir" -maxdepth 1 -name "z-task-*-${raw_proj}-${raw_num}.md" -print -quit 2>/dev/null)
+    fi
+    if [ "$existing_note" = "" ] && [ -d "$HOME/Documents/wiki/atlas" ]; then
+        existing_note=$(find "$HOME/Documents/wiki/atlas" -name "z-task-*-${raw_proj}-${raw_num}.md" -print -quit 2>/dev/null)
+    fi
+fi
+
+if [ "$existing_note" != "" ]; then
+    file="$existing_note"
+    echo "Wiki note already exists: $file"
+else
+    id="z-task-${clean_desc}-${raw_proj}-${raw_num}"
+    file="${wiki_dir}/${id}.md"
+    cat <<EOF > "$file"
 ---
-id: \"${wiki_file}\"
+id: "$id"
 aliases:
-    - \"${wiki_file}\"
-title: \"$desc\"
+  - "$id"
+  - "$ticket"
+title: "$desc"
 tags:
-  - project/${custommer_context}
-  - format/tasks
   - status/queue
-created: \"$(date -u  +"%Y-%m-%d")\"
+  - format/task
+  - profesional/${ctx}
+description:
+created: "$(date +'%Y-%m-%d')"
 relate:
+assets:
+  - "[context-file]()"
+  - "[other docs?]()"
 ---
 
-- topic::
+- topic::[[dia-tools#internal tools]]
 - gratitud::
 - emociones::
 - reflexiones::
 - mejora-continua::
 
-# ${ticket_key} - ${desc}
+# ${ticket} - ${desc}
 
 EOF
-    echo "Created Wiki note in [${customer_context}]: $wiki_file"
-  else
-    echo "Wiki note already exists: $wiki_file"
+    echo "Created Wiki note in [${ctx}]: $file"
 fi
-
-

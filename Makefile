@@ -4,6 +4,7 @@ SHELL := /bin/bash
 EXCLUDE := nix .git TODO helpers tests scripts/parse_config.py
 
 # Use Makefile's native functions to handle spaces and exclusions correctly
+# TODO: this is the magic of makefile do not waste it
 PACKAGES := $(filter-out $(EXCLUDE), $(patsubst %/,%,$(wildcard */)))
 STOW_SRC := $(foreach pkg,$(PACKAGES),"$(pkg)")
 
@@ -72,17 +73,20 @@ sparse:
 		'; \
 	fi
 
-link: sparse
+link:
+	#sparse
 	@if [ ! -f .env ]; then \
 		echo "Error: .env not found. Run 'make bootstrap' first."; \
 		exit 1; \
 	fi
-	@echo "Deploying visible packages: $(PACKAGES)"
+	@echo "Deploying visible packages:"
+	@for pkg in $(PACKAGES); do \
+		echo "  - $$pkg"; \
+	done
 	stow --target $(HOME) --dotfiles --verbose 1 $(STOW_SRC)
 	@echo "Deployment complete."
 
 
-# TODO: check with iostat
 clean:
 	@if [ -f .env ]; then \
 		echo "Removing linked files for active packages..."; \

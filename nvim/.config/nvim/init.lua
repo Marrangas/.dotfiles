@@ -55,3 +55,5 @@ require('lazy').setup {
     -- { import = 'xperiments' },
     { import = 'plugins' },
 }
+
+require 'util'
