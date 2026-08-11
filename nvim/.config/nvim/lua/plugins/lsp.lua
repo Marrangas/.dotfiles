@@ -137,7 +137,7 @@ return { -- LSP Configuration & Plugins
             --stylua: ignore start
             local capabilities = vim.lsp.protocol.make_client_capabilities()
             capabilities.workspace.didChangeWatchedFiles = { dynamicRegistration = true }
-            capabilities = vim.tbl_deep_extend('force', capabilities, require('blink.cmp').get_lsp_capabilities())
+            capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
             --stylua: ignore end
 
             -- Enable the following language servers

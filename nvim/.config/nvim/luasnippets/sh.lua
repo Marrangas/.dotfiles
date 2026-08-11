@@ -1,19 +1,19 @@
 ---@diagnostic disable: unused-local
-require("luasnip.session.snippet_collection").clear_snippets("sh")
+require('luasnip.session.snippet_collection').clear_snippets 'sh'
 
-local ls = require("luasnip")
+local ls = require 'luasnip'
 local s = ls.snippet
 local t = ls.text_node
 local i = ls.insert_node
 local c = ls.choice_node
-local fmt = require("luasnip.extras.fmt").fmt
+local fmt = require('luasnip.extras.fmt').fmt
 
-ls.add_snippets("sh", {
-    s("echo", fmt('echo "{msg}"', { msg = i(1, "message") })),
-    s("read", fmt("read -r {var}", { var = i(1, "VAR") })),
+ls.add_snippets('sh', {
+    s('echo', fmt('echo "{msg}"', { msg = i(1, 'message') })),
+    s('read', fmt('read -r {var}', { var = i(1, 'VAR') })),
 
     s(
-        "if",
+        'if',
         fmt(
             [=[
 if [[ {cond} ]]; then
@@ -21,41 +21,41 @@ if [[ {cond} ]]; then
 fi
 ]=],
             {
-                cond = i(1, "condition"),
-                body = i(2, ""),
+                cond = i(1, 'condition'),
+                body = i(2, ''),
             }
         )
     ),
 
     s(
-        "elseif",
+        'elseif',
         fmt(
             [=[
 elif [[ {cond} ]]; then
 	{body}
 ]=],
             {
-                cond = i(1, "condition"),
-                body = i(2, ""),
+                cond = i(1, 'condition'),
+                body = i(2, ''),
             }
         )
     ),
 
     s(
-        "else",
+        'else',
         fmt(
             [=[
 else
 	{body}
 ]=],
             {
-                body = i(1, "command"),
+                body = i(1, 'command'),
             }
         )
     ),
 
     s(
-        "for_in",
+        'for_in',
         fmt(
             [=[
 for {var} in {list}
@@ -64,15 +64,15 @@ do
 done
 ]=],
             {
-                var = i(1, "VAR"),
-                list = i(2, "LIST"),
-                var_echo = require("luasnip.extras").rep(1),
+                var = i(1, 'VAR'),
+                list = i(2, 'LIST'),
+                var_echo = require('luasnip.extras').rep(1),
             }
         )
     ),
 
     s(
-        "for_i",
+        'for_i',
         fmt(
             [=[
 for (({index} = 0; {index_rep} < {max}; {index_rep2}++)); do
@@ -80,17 +80,17 @@ for (({index} = 0; {index_rep} < {max}; {index_rep2}++)); do
 done
 ]=],
             {
-                index = i(1, "i"),
-                max = i(2, "10"),
-                index_rep = require("luasnip.extras").rep(1),
-                index_rep2 = require("luasnip.extras").rep(1),
-                index_rep3 = require("luasnip.extras").rep(1),
+                index = i(1, 'i'),
+                max = i(2, '10'),
+                index_rep = require('luasnip.extras').rep(1),
+                index_rep2 = require('luasnip.extras').rep(1),
+                index_rep3 = require('luasnip.extras').rep(1),
             }
         )
     ),
 
     s(
-        "while",
+        'while',
         fmt(
             [=[
 while [[ {cond} ]]; do
@@ -98,13 +98,13 @@ while [[ {cond} ]]; do
 done
 ]=],
             {
-                cond = i(1, "condition"),
-                body = i(2, ""),
+                cond = i(1, 'condition'),
+                body = i(2, ''),
             }
         )
     ),
     s(
-        "until",
+        'until',
         fmt(
             [=[
 until [[ {cond} ]]; do
@@ -112,14 +112,14 @@ until [[ {cond} ]]; do
 done
 ]=],
             {
-                cond = i(1, "condition"),
-                body = i(2, ""),
+                cond = i(1, 'condition'),
+                body = i(2, ''),
             }
         )
     ),
 
     s(
-        "function",
+        'function',
         fmt(
             [=[
 {name} () {{
@@ -127,14 +127,14 @@ done
 }}
 ]=],
             {
-                name = i(1, "name"),
-                body = i(2, ""),
+                name = i(1, 'name'),
+                body = i(2, ''),
             }
         )
     ),
 
     s(
-        "case",
+        'case',
         fmt(
             [=[
 case "${var}" in
@@ -147,14 +147,14 @@ case "${var}" in
 esac
 ]=],
             {
-                var = i(1, "VAR"),
-                opt1 = i(2, "1"),
-                opt2 = i(3, "2|3"),
+                var = i(1, 'VAR'),
+                opt1 = i(2, '1'),
+                opt2 = i(3, '2|3'),
             }
         )
     ),
 
-    s("break", fmt("break {val}", { val = i(1, "") })),
+    s('break', fmt('break {val}', { val = i(1, '') })),
 
-    s("expr", fmt("expr {val}", { val = i(1, "1 + 1") })),
+    s('expr', fmt('expr {val}', { val = i(1, '1 + 1') })),
 })

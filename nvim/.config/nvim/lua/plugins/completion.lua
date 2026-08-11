@@ -1,77 +1,102 @@
 return {
-    'saghen/blink.cmp',
-    event = 'VimEnter',
-    version = '1.*',
-    dependencies = {
-        {
-            'L3MON4D3/LuaSnip',
-            version = 'v2.*',
-            build = (function()
-                if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then return end
-                return 'make install_jsregexp'
-            end)(),
-            config = function()
-                local luasnip = require('luasnip')
-                luasnip.config.setup({
-                    history = true,
-                    delete_check_events = 'TextChanged',
-                })
-                -- Load lua-style snippets natively
-                require('luasnip.loaders.from_lua').lazy_load({
-                    paths = { vim.fn.stdpath('config') .. '/luasnippets' },
-                })
+    {
+        'hrsh7th/nvim-cmp',
+        event = { 'InsertEnter', 'CmdlineEnter' },
+        dependencies = {
+            'hrsh7th/cmp-nvim-lsp',
+            'hrsh7th/cmp-buffer',
+            'hrsh7th/cmp-path',
+            'saadparwaiz1/cmp_luasnip',
+            {
+                'L3MON4D3/LuaSnip',
+                version = 'v2.*',
+                build = (function()
+                    if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then return end
+                    return 'make install_jsregexp'
+                end)(),
+                config = function()
+                    local luasnip = require 'luasnip'
+                    luasnip.config.setup {
+                        history = true,
+                        delete_check_events = 'TextChanged',
+                    }
+                    require('luasnip.loaders.from_lua').lazy_load {
+                        paths = { vim.fn.stdpath 'config' .. '/luasnippets' },
+                    }
 
-                -- Extend zsh filetype to include sh snippets under LuaSnip
-                luasnip.filetype_extend('zsh', { 'sh' })
-
-                -- Autocommand to trigger native LuaSnip choice selector automatically upon entering choice nodes
-                local luasnip_choice_group =
-                    vim.api.nvim_create_augroup('LuaSnipChoiceSelect', { clear = true })
-                vim.api.nvim_create_autocmd('User', {
-                    pattern = 'LuasnipChoiceNodeEnter',
-                    group = luasnip_choice_group,
-                    callback = function()
-                        vim.schedule(function()
-                            if luasnip.choice_active() then
-                                require('luasnip.extras.select_choice')()
-                            end
-                        end)
-                    end,
-                })
-            end,
-        },
-    },
-    --- @module 'blink.cmp'
-    --- @type blink.cmp.Config
-    opts = {
-        -- See :h blink-cmp-config-keymap for defining your own keymap
-        completion = {
-            documentation = { auto_show = false },
-            menu = { scrolloff = 2 },
-            trigger = {
-                show_on_keyword = true,
-                show_on_trigger_character = true,
+                    luasnip.filetype_extend('zsh', { 'sh' })
+                end,
             },
+            'doxnit/cmp-luasnip-choice',
         },
-        sources = {
-            default = { 'lsp', 'path', 'snippets', 'wiki_metadata' },
-            providers = {
-                snippets = {
-                    min_keyword_length = 4,
-                },
-                wiki_metadata = {
-                    name = 'Wiki Frontmatter',
-                    module = 'util.wiki_completions',
-                    score_offset = 100, -- Give frontmatter values higher sorting priority!
-                },
-            },
-        },
-        snippets = { preset = 'luasnip' },
+        config = function()
+            local cmp = require 'cmp'
+            local luasnip = require 'luasnip'
 
-        -- Blink.cmp includes an optional, recommended rust fuzzy matcher,
-        -- which automatically downloads a prebuilt binary when enabled.
-        -- See :h blink-cmp-config-fuzzy for more information
-        fuzzy = { implementation = 'prefer_rust' },
-        signature = { enabled = true },
+            require('cmp_luasnip_choice').setup {
+                auto_open = true,
+            }
+
+            -- Smart fallback logic for Wiki completions (Experimental -> Pro)
+            local ok_xp, exp_wiki = pcall(require, 'xperiments.wiki_completions')
+            local ok_pro, pro_wiki = pcall(require, 'util.wiki_completions')
+            
+            if ok_xp and exp_wiki then
+                cmp.register_source('wiki_exp', exp_wiki.new())
+            end
+            
+            if ok_pro and pro_wiki then
+                cmp.register_source('wiki', pro_wiki.new())
+            end
+
+            cmp.setup {
+                snippet = {
+                    expand = function(args) luasnip.lsp_expand(args.body) end,
+                },
+                mapping = cmp.mapping.preset.insert {
+                    ['<C-n>'] = cmp.mapping.select_next_item(),
+                    ['<C-p>'] = cmp.mapping.select_prev_item(),
+                    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+                    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+                    ['<C-Space>'] = cmp.mapping.complete(),
+                    ['<C-e>'] = cmp.mapping.abort(),
+                    ['<CR>'] = cmp.mapping.confirm { select = true },
+                    ['<C-y>'] = cmp.mapping.confirm { select = true },
+                    
+                    -- Intelligent Tab jumping through snippet placeholders
+                    ['<Tab>'] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_next_item()
+                        elseif luasnip.expand_or_locally_jumpable() then
+                            luasnip.expand_or_jump()
+                        else
+                            fallback()
+                        end
+                    end, { 'i', 's' }),
+                    
+                    ['<S-Tab>'] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_prev_item()
+                        elseif luasnip.locally_jumpable(-1) then
+                            luasnip.jump(-1)
+                        else
+                            fallback()
+                        end
+                    end, { 'i', 's' }),
+                },
+
+                -- Order matters here: top items have higher priority
+                sources = cmp.config.sources({
+                    { name = 'luasnip_choice' }, -- This now comes from the doxnit community plugin
+                    { name = 'luasnip' },
+                    { name = 'nvim_lsp' },
+                    { name = 'wiki_exp', priority = 100 }, -- Uses experimental if it exists
+                    { name = 'wiki', priority = 100 },     -- Uses stable if experimental fails
+                    { name = 'path' },
+                }, {
+                    { name = 'buffer' },
+                }),
+            }
+        end,
     },
 }
