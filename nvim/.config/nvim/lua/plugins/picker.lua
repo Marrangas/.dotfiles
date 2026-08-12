@@ -113,12 +113,7 @@ return {
                         end,
                     },
                     transform = function(item)
-                        if
-                            item.file:match '%.pdf$'
-                            or item.file:match '%.png$'
-                            or item.file:match '%.jpg$'
-                            or item.file:match '%.jpeg$'
-                        then
+                        if item.file:match '%.pdf$' or item.file:match '%.png$' or item.file:match '%.jpg$' or item.file:match '%.jpeg$' then
                             item.score_add = (item.score_add or 0) - 100
                         end
                         return item

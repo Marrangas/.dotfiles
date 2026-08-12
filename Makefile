@@ -5,39 +5,41 @@ SHELL := /bin/bash
 EXCLUDE := nix .git TODO helpers tests
 PACKAGES := $(filter-out $(EXCLUDE), $(patsubst %/,%,$(wildcard */)))
 
-.PHONY: help info build link sparse clean test live
-.SILENT: help info build link sparse clean test live
+.PHONY: help info build link sparse clean re test live validate
+.SILENT: help info build link sparse clean re test live validate
 
 help:
 	echo "Available Makefile targets:"
 	echo "  make info         Show active workspace environment and layered files"
-	echo "  make build        Initialize a new workspace profile and link to .envrc for direnv auto-loading"
+	echo "  make build        Initialize a new workspace profile and link to .seed for direnv auto-loading"
 	echo "  make link         Link active dotfiles (uses layered profile if present, else fallback to Stow)"
 	echo "  make sparse       Configure Git sparse-checkout (uses layered profile if present, else fallback to standard)"
 	echo "  make clean        Unlink all active files and completely nuke all untracked/ignored workspace configurations"
+	echo "  make validate     Verify that all active packages and layered files are fully synchronized"
+	echo "  make re           Validate, clean, rebuild the active profile (preserving workspace/layer), and link"
 	echo "  make test         Build and run the dotfiles deployment in a clean, isolated Docker test container"
 	echo "  make live         Deploy the dotfiles inside Docker and drop into an interactive bash shell"
 
 info:
 	@if [ ! -f .env ]; then \
-		echo "Error: .env not found. Run 'make bootstrap' first."; \
+		echo "Error: .env not found. Run 'make build' first."; \
 		exit 1; \
 	fi
-	source .env && \
-	active_pkgs=("$${DOTFILE_PACKAGES[@]}") && \
-	source helpers/config.sh && \
-	echo -e "Active Workspace Profile: $$WORKSPACE_NAME" && \
-	echo -e "Active Layer Setting:     $$DOTFILE_LAYER" && \
-	echo -e "Active Packages:          $${active_pkgs[*]}\n" && \
-	echo "Available Extra Packages:" && \
-	extra=$$(comm -13 <(echo "$${active_pkgs[*]}" | tr " " "\n" | sort) <(echo "$${DOTFILE_PACKAGES[*]}" | tr " " "\n" | sort)) && \
-	if [ -n "$$extra" ]; then \
-		echo "$$extra" | sed "s/^/  + /"; \
-	else \
-		echo "  None (all configured packages are active)"; \
-	fi
-
-
+	@bash -c ' \
+		source .env && \
+		active_pkgs=("$${DOTFILE_PACKAGES[@]}") && \
+		source helpers/bootstrap.sh && \
+		echo -e "Active Workspace Profile: $$WORKSPACE_NAME" && \
+		echo -e "Active Layer Setting:     $$DOTFILE_LAYER" && \
+		echo -e "Active Packages:          $${active_pkgs[*]}\n" && \
+		echo "Available Extra Packages:" && \
+		extra=$$(comm -13 <(echo "$${active_pkgs[*]}" | tr " " "\n" | sort) <(echo "$${DOTFILE_PACKAGES[*]}" | tr " " "\n" | sort)) && \
+		if [ -n "$$extra" ]; then \
+			echo "$$extra" | sed "s/^/  + /"; \
+		else \
+			echo "  None (all configured packages are active)"; \
+		fi \
+	'
 config:
 	git config core.hooksPath .githooks
 	echo "Fetching latest agnostic hooks from remote lib-gittools..."
@@ -48,7 +50,7 @@ config:
 	echo "Git configurations, scripts, and standard hooks are ready."
 
 build: config
-	./helpers/bootstrap.sh
+	./build.sh
 
 sparse:
 	@if [ -f .env ]; then \
@@ -68,14 +70,13 @@ sparse:
 				files+=("/$$file"); \
 			done && \
 			echo "Setting sparse checkout list with $${#DEPLOY_FILES[@]} active files..." && \
-			git sparse-checkout set "/Makefile" "/helpers/" "/tests/" "/.gitignore" "/.stow-local-ignore" "/.*.env" "$${files[@]}" \
+			git sparse-checkout set "/Makefile" "/README.md" "/build.sh" "/verify.sh" "/tests/" "/.gitignore" "/.stow-local-ignore" "/.*.env" "$${files[@]}" \
 		'; \
 	fi
 
-link:
-	#sparse
+link: sparse
 	@if [ ! -f .env ]; then \
-		echo "Error: .env not found. Run 'make bootstrap' first."; \
+		echo "Error: .env not found. Run 'make build' first."; \
 		exit 1; \
 	fi
 	@echo "Deploying visible packages:"
@@ -89,9 +90,28 @@ link:
 clean:
 	@if [ -f .env ]; then \
 		echo "Removing linked files for active packages..."; \
-		stow -D --target $(HOME) --dotfiles --verbose 1 $(STOW_SRC); \
+		stow -D --target $(HOME) --dotfiles --verbose 1 $(PACKAGES); \
 	fi
-	git clean -fdx
+	git clean -fdx --exclude=build.sh --exclude=verify.sh --exclude=.githooks/pre-commit
+
+validate:
+	./verify.sh
+
+re: validate
+	@if [ -f .env ]; then \
+		echo "Extracting active environment profile and layer configuration..."; \
+		WORKSPACE=$$(bash -c 'source .env 2>/dev/null && echo "$$WORKSPACE_NAME"'); \
+		LAYER=$$(bash -c 'source .env 2>/dev/null && echo "$$DOTFILE_LAYER"'); \
+		echo "Preserving Workspace: $$WORKSPACE (Layer: $$LAYER)"; \
+		$(MAKE) clean; \
+		echo "Rebuilding profile for $$WORKSPACE (Layer: $$LAYER)..."; \
+		ENV=$$WORKSPACE LAYER=$$LAYER ./build.sh; \
+	else \
+		echo "No active .env found, performing a fresh clean and build..."; \
+		$(MAKE) clean; \
+		$(MAKE) build; \
+	fi
+	$(MAKE) link
 
 test:
 	@docker build -f ansible/Dockerfile -t dotfiles-ansible-test .

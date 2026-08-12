@@ -1,41 +1,10 @@
-- layering
-- use variables
-- auto generated elements
-
-- [ ] headers
-- [ ] snippets
-
-- dotfile packages??
-- dotdile files? => seems like there are only some of them which make sense
-
-- dotdotdot ... or with the gliph ...
-
-- [[dotfiles]]
-- [ ] use all the elements not only the previous (como actualizar facilmente cuendo
-      añado un nuevo archivo??)
-- [ ] simplificar los nuevos snippets
-
-- makefile as a tab completion and something easy to watch files (not tasks)
-- layers? more or less: now input the variables with git sparse
-- variables to expose in my system (once you know the data, you probably know a lot)
-- secrets
-
-- [ ] secrets
-- [ ] instrumentalize secret watching
-- [ ] implement
-- [ ] being able to clean
-- [ ] expose variables
-  - https://github.com/adapta-project/adapta-gtk-theme
-  - [themes](https://github.com/mbadolato/iTerm2-Color-Schemes/tree/a56897c3e031cb1be715706b7b25df860d5fc0a5)
-  - [nvim theme](https://www.opendesktop.org/p/1154707/)
-
 ## Layered & Environment-by-Default Deployment
 
 This workspace is **Layered by Default** and **Environment-by-Default**. This means
 standard operations read your active configuration automatically, with optional
 overrides via environment variables or Makefile arguments.
 
-### 1. Default Behavior
+### Default Behavior
 
 By default, running `make link`, `make sparse`, or `make unlink` will:
 
@@ -47,7 +16,7 @@ By default, running `make link`, `make sparse`, or `make unlink` will:
 3. Deploy or clean files based on the active **layers** (e.g., `MINIMAL`, `STANDARD`,
    `SPECIFIC`) configured in that `.env` file using standard Bash indexed arrays.
 
-### 2. Overriding Configurations
+### Overriding Configurations
 
 You can override standard configurations instantly on the command line by passing the
 `ENV` variable. This will load the custom `.workspace-$(ENV).env` profile instead of
@@ -70,110 +39,44 @@ make sparse ENV=minimal
 make unlink ENV=minimal
 ```
 
-### 3. Pure-Bash Zero-Dependency Engine
+### File Tracking Subtleties: Layer Arrays vs Stow Ignore
 
-The deployment relies on native `/bin/bash` features (such as indirect expansion) to
-parse the indexed arrays inside `.workspace-$(ENV).env` files. This keeps the
-bootstrapping lifecycle completely independent of external dependencies or
-third-party interpreters.
+To maintain a perfectly controlled, sparse, and layerable dotfiles repository, this
+setup intentionally separates **Workspace Tracking** from **Symlink Deployment**.
+This can seem subtle but is crucial for how the system safely scales:
 
----
+- **Workspace Tracking (`build.sh` Layer Arrays)**: Every single file within a
+  layered package (e.g., `nvim/`) **must** be explicitly registered within its
+  appropriate layer array in `build.sh` (like `NVIM_MINIMAL_LAYER`).
+  - **Why?** The validation script (`make validate` / `./verify_config.sh`) strictly
+    enforces this to prevent "ghost" configurations that are modified/added locally
+    without being explicitly tracked in a layer. Furthermore, the Makefile
+    dynamically uses these arrays to generate the `git sparse-checkout` list,
+    checking out _only_ the specific files requested by your active profile.
 
-- [ ] better secret cli
+- **Symlink Deployment (`.stow-local-ignore`)**: Sometimes, a file belongs to a
+  package logically (and must be tracked via `build.sh`) but _should not_ be
+  symlinked into your home directory (e.g., `README.md`, or local formatters like
+  `.stylua.toml`).
+  - **Why?** We declare these exceptions in `.stow-local-ignore` via regex (e.g.,
+    `(^|/)\.stylua\.toml$`).
+  - **The Result:** `make sparse` will keep `.stylua.toml` visible on the filesystem
+    because it is safely tracked in `build.sh` layers, allowing you to edit the
+    configuration—but `make link` (via GNU Stow) will silently ignore it, preventing
+    it from polluting your actual `~/.config/nvim/` runtime folder.
 
----
+### Self-Healing Lifecycle (`make re`)
 
-- [ ] git commit hooks
-- [ ] headers and templates
-- [ ] make norm and auto headers to check for formating and autodocumentation
-      elements + a todo documentations to go to with links as a markdown or vim so it
-      is like a pane of glass for navegation (static tools)
+The `make re` command handles completely regenerating a layered workspace without
+requiring interactive prompts:
 
----
-
-- [ ] nvim with ia (use deep seek)
-- lsp the python bien
-  - de htmx
-  - de html
-  - de css
-
-- [[git-hooks]] y cuales son las tools que quiero para git...(poder analizarlo, no se
-  yo si esto me interesa hacerlo a mi, no son git-tools? o es un comienzo)
-  - cuando hago push de un cambio deben de sincronicarse? git-Ops
-  - linter de yaml
-  - secrets...
-  - formating
-
-- [[ansible]]
-
-## mac defaults
-
-hide the status bar in mac
-
-```sh
-defaults write NSGlobalDomain _HIHideMenuBar -bool true
-killall Finder
-defaults write NSGlobalDomain _HIHideMenuBar -bool false
-```
-
-- if mac, linux, or windows
-- MAC https://cbrgm.net/post/2021-05-5-setup-macos/
-- terminal
-
-## packages
-
-- FreeRDP Free rdp para Lynux: https://miloserdov.org/?p=4514 Free rdp manuals
-  configuration:
-  https://github.com/awakecoding/FreeRDP-Manuals/blob/master/Configuration/FreeRDP-Configuration-Manual.markdown
-  Free rdp manuals user:
-  https://github.com/awakecoding/FreeRDP-Manuals/blob/master/User/FreeRDP-User-Manual.markdown
-- FortyClient
-- NVIM
-- ghostscript (or inventariar)
-- tree-sitter
-
-- [[git]]
-- fzf
-- packer
-- rclone
-- fd
-- pgadmin
-- pulumi
-- pyenv
-- fuse
-- diagnostics
-- cmp
-- lsp
-- git subtree add --prefix helpers/.local/bin
-- git@github.com:Marrangas/bash-mrgs-lib.git master --squash
-- brew install starship bash-completion@2
-- python
-- golang
-- zsh
-- lsd bat eza tldr
-- starship
-- brew tap FelixKratz/formulae
-- brew install borders
-- gitleaks
-- trufflehog
-- xz git zsh bash curl cmake coreutils gettext lua luarocks ansible
-- postgresql sqlite redis
-
-- hcl2json terraform terraform-docs driftctl tfsec tofu docker ansible infracost
-  pulumi act kubectl
-- mtr nmap nginx rclone ipcalc openssh openssl
-- pyenv perl
-- direnv zsh-powerlevel10k gh csvq jq
-- pandoc imagemagick ffmpeg chafa catimg
-- neovim p7zip git-lfs tmux fzf ripgrep parallel sed direnv ssh stow
-
-## future
-
-- [ ] firebox config (maybe I do not like even firefox anymore)
-      https://github.com/sobolevn/dotfiles/blob/master/firefox/user-overrides.js
-
-## patrones de diseño
-
-- [ ] modularidad
-- [ ] reusabilidad
-- granularidad
+1. **Validates**: Runs `./verify.sh` to ensure no "ghost" files were left unaccounted
+   for.
+2. **Preserves**: Extracts the currently active workspace (`WORKSPACE_NAME`) and
+   layer (`DOTFILE_LAYER`) directly from your active `.env`.
+3. **Cleans**: Reverts all symlinks and aggressively runs `git clean -fdx` to nuke
+   everything untracked/ignored (which also wipes the current `.env` tracking
+   symlink).
+4. **Rebuilds & Links**: Transparently injects the preserved variables back into
+   `./build.sh` to recreate the layer definitions without prompting, re-applies the
+   sparse checkout (`make sparse`), and re-Stows the symlinks.

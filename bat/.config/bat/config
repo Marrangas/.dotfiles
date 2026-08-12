@@ -1,15 +1,5 @@
-# bat configuration file
-# Managed by dotfiles
-
-# Set the theme to Catppuccin Macchiato (if installed)
---theme="Catppuccin Mocha"
-
-# Show plain text with syntax highlighting (no line numbers, no boxes)
 --style="changes"
-
-# Disable pager (behave like cat)
 --pager="never"
-
-# Case-insensitive search
 --map-syntax "*.jenkinsfile:Groovy"
 --map-syntax "*.props:Java Properties"
+			--theme="Catppuccin Mocha"

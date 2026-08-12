@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# .githooks/pre-commit - Git pre-commit hook to validate dotfiles configuration
+set -euo pipefail
+
+echo "==> Running pre-commit dotfiles validation..."
+if ./verify.sh; then
+  echo "Validation successful! Proceeding with commit."
+  exit 0
+else
+  echo "ERROR: Dotfiles validation failed! Commit aborted." >&1
+  exit 1
+fi

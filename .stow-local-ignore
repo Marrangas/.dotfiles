@@ -12,12 +12,16 @@
 # Management Folders
 (^|/)\.git/.*
 (^|/)\.githooks/.*
-(^|/)helpers/.*
 (^|/)tests/.*
 (^|/)TODO/.*
 
-# macOS junk
+# Dotfile files
+(^|/)\build.sh$
+
+# macOS junk and formatters
+(^|/)\.stylua.toml$
 (^|/)\.DS_Store$
+(^|/)\README.md$
 
 # Git/Secrets config
 (^|/)\.pre-commit-config\.yaml$
