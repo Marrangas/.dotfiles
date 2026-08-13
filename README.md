@@ -23,20 +23,10 @@ You can override standard configurations instantly on the command line by passin
 the default:
 
 ```bash
-# Display the active configuration and files for the default profile
-make info-layered
+make info
 
-# Display active configuration for the minimal profile
-make info-layered ENV=minimal
-
-# Deploy layers for a specific environment (e.g. minimal)
-make link ENV=minimal
-
-# Configure Git sparse-checkout for a specific environment
-make sparse ENV=minimal
-
-# Clean and unlink files for a specific environment
-make unlink ENV=minimal
+# issue the rest of the commands just for one layer overriding the current one
+make info LAYER=minimal
 ```
 
 ### File Tracking Subtleties: Layer Arrays vs Stow Ignore
