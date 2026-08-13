@@ -140,7 +140,7 @@ generate_ghostty_config() {
 # Generated dynamically by helpers/bootstrap.sh - DO NOT EDIT MANUALLY
 font-family = "${DOTFILE_FONT:-FiraCode Nerd Font}"
 font-size = ${DOTFILE_FONT_SIZE:-12}
-theme = "${DOTFILE_THEME:-catppuccin-mocha}"
+theme = "${DOTFILE_THEME:-Catppuccin Macchiato}"
 background-opacity = ${DOTFILE_TERMINAL_OPACITY:-1.0}
 EOF
   fi

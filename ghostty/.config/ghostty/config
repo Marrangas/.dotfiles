@@ -6,10 +6,6 @@ cursor-style-blink = false
 mouse-hide-while-typing = true
 clipboard-paste-protection = false
 
-theme = Catppuccin Macchiato
-
-font-family = "FiraCode Nerd Font"
-font-size = 12
 font-feature = "calt"
 font-feature = "liga"
 font-feature = "zero" # Slashed zero for better variability
