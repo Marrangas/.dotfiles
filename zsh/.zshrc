@@ -84,6 +84,7 @@ path=(
   /usr/local/go/bin
   $HOME/.local/go/bin
   $path
+  $HOME/Documents/mrgs/script-tufo/
 )
 
 # Source tool-specific path injections

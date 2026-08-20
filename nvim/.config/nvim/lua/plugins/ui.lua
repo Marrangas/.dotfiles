@@ -1,19 +1,19 @@
 local active_theme = vim.env.DOTFILE_THEME
-if not active_theme or active_theme == "" then
-    vim.api.nvim_err_writeln("Error: 'DOTFILE_THEME' environment variable is not defined or is empty!")
-    active_theme = "tokyonight-moon"
+if not active_theme or active_theme == '' then
+    vim.api.nvim_err_writeln "Error: 'DOTFILE_THEME' environment variable is not defined or is empty!"
+    active_theme = 'tokyonight-moon'
 end
 
 local theme_plugin
 
-if active_theme:match("^catppuccin") then
+if active_theme:match '^catppuccin' then
     theme_plugin = {
         'catppuccin/nvim',
         name = 'catppuccin',
         lazy = false,
         priority = 1000,
         config = function()
-            local flavour = active_theme:match("catppuccin%-(%w+)") or "mocha"
+            local flavour = active_theme:match 'catppuccin%-(%w+)' or 'mocha'
             require('catppuccin').setup {
                 flavour = flavour,
                 integrations = {
@@ -87,102 +87,102 @@ if active_theme:match("^catppuccin") then
     }
 else
     theme_plugin = {
-        "folke/tokyonight.nvim",
+        'folke/tokyonight.nvim',
         lazy = false,
         priority = 1000,
         opts = {
-            style = active_theme:match("tokyonight%-(%w+)") or "moon",
+            style = active_theme:match 'tokyonight%-(%w+)' or 'moon',
             transparent = false,
             styles = {
                 comments = { italic = true },
                 keywords = { italic = true },
-                sidebars = "dark",
-                floats = "dark",
+                sidebars = 'dark',
+                floats = 'dark',
             },
             on_highlights = function(hl, c)
-                hl.markdownH1                         = { fg = c.magenta2, bold = true }
-                hl.markdownH2                         = { fg = c.red1, bold = true }
-                hl.markdownH3                         = { fg = c.red, bold = true }
-                hl.markdownH4                         = { fg = c.orange, bold = true }
-                hl.markdownH5                         = { fg = c.purple, bold = true }
-                hl.markdownH6                         = { fg = c.magenta, bold = true }
-                hl.markdownH1Delimiter                = { fg = c.magenta2, bold = true }
-                hl.markdownH2Delimiter                = { fg = c.red1, bold = true }
-                hl.markdownH3Delimiter                = { fg = c.red, bold = true }
-                hl.markdownH4Delimiter                = { fg = c.orange, bold = true }
-                hl.markdownH5Delimiter                = { fg = c.purple, bold = true }
-                hl.markdownH6Delimiter                = { fg = c.magenta, bold = true }
-                hl.markdownH7Delimiter                = { fg = c.magenta, bold = true }
+                hl.markdownH1 = { fg = c.magenta2, bold = true }
+                hl.markdownH2 = { fg = c.red1, bold = true }
+                hl.markdownH3 = { fg = c.red, bold = true }
+                hl.markdownH4 = { fg = c.orange, bold = true }
+                hl.markdownH5 = { fg = c.purple, bold = true }
+                hl.markdownH6 = { fg = c.magenta, bold = true }
+                hl.markdownH1Delimiter = { fg = c.magenta2, bold = true }
+                hl.markdownH2Delimiter = { fg = c.red1, bold = true }
+                hl.markdownH3Delimiter = { fg = c.red, bold = true }
+                hl.markdownH4Delimiter = { fg = c.orange, bold = true }
+                hl.markdownH5Delimiter = { fg = c.purple, bold = true }
+                hl.markdownH6Delimiter = { fg = c.magenta, bold = true }
+                hl.markdownH7Delimiter = { fg = c.magenta, bold = true }
 
-                hl["@markup.heading.1.markdown"]      = { link = "markdownH1" }
-                hl["@markup.heading.2.markdown"]      = { link = "markdownH2" }
-                hl["@markup.heading.3.markdown"]      = { link = "markdownH3" }
-                hl["@markup.heading.4.markdown"]      = { link = "markdownH4" }
-                hl["@markup.heading.5.markdown"]      = { link = "markdownH5" }
-                hl["@markup.heading.6.markdown"]      = { link = "markdownH6" }
+                hl['@markup.heading.1.markdown'] = { link = 'markdownH1' }
+                hl['@markup.heading.2.markdown'] = { link = 'markdownH2' }
+                hl['@markup.heading.3.markdown'] = { link = 'markdownH3' }
+                hl['@markup.heading.4.markdown'] = { link = 'markdownH4' }
+                hl['@markup.heading.5.markdown'] = { link = 'markdownH5' }
+                hl['@markup.heading.6.markdown'] = { link = 'markdownH6' }
 
-                hl.yamlPlainScalar                    = { fg = c.blue }
-                hl["@string.yaml"]                    = { link = "yamlPlainScalar" }
+                hl.yamlPlainScalar = { fg = c.blue }
+                hl['@string.yaml'] = { link = 'yamlPlainScalar' }
 
-                hl["@markup.metadata.markdown"]       = { fg = c.comment }
-                hl["@property.yaml"]                  = { fg = c.blue, bold = true }
-                hl["@string.yaml"]                    = { fg = c.green }
-                hl["@number.yaml"]                    = { fg = c.orange }
+                hl['@markup.metadata.markdown'] = { fg = c.comment }
+                hl['@property.yaml'] = { fg = c.blue, bold = true }
+                hl['@string.yaml'] = { fg = c.green }
+                hl['@number.yaml'] = { fg = c.orange }
 
-                hl.markdownBold                       = { fg = c.red, bold = true }
-                hl.markdownBoldDelimiter              = { fg = c.red }
-                hl["@markup.strong"]                  = { link = "markdownBold" }
-                hl["@markup.strong.markdown_inline"]  = { link = "markdownBold" }
+                hl.markdownBold = { fg = c.red, bold = true }
+                hl.markdownBoldDelimiter = { fg = c.red }
+                hl['@markup.strong'] = { link = 'markdownBold' }
+                hl['@markup.strong.markdown_inline'] = { link = 'markdownBold' }
 
-                hl.markdownItalic                     = { fg = c.yellow, italic = true }
-                hl.markdownItalicDelimiter            = { fg = c.orange }
-                hl["@markup.italic"]                  = { link = "markdownItalic" }
-                hl["@markup.italic.markdown_inline"]  = { link = "markdownItalic" }
-                hl["@punctuation.delimiter.markdown"] = { fg = c.blue8 }
+                hl.markdownItalic = { fg = c.yellow, italic = true }
+                hl.markdownItalicDelimiter = { fg = c.orange }
+                hl['@markup.italic'] = { link = 'markdownItalic' }
+                hl['@markup.italic.markdown_inline'] = { link = 'markdownItalic' }
+                hl['@punctuation.delimiter.markdown'] = { fg = c.blue8 }
 
-                hl.markdownOrderedListMarker          = { fg = c.orange, bold = true }
-                hl.markdownListMarker                 = { fg = c.orange, bold = true }
+                hl.markdownOrderedListMarker = { fg = c.orange, bold = true }
+                hl.markdownListMarker = { fg = c.orange, bold = true }
 
-                hl.markdownCode                       = { fg = c.green1, italic = true }
-                hl.markdownCodeDelimiter              = { fg = c.green1, italic = true }
-                hl.markdownCodeBlock                  = { fg = c.green2 }
+                hl.markdownCode = { fg = c.green1, italic = true }
+                hl.markdownCodeDelimiter = { fg = c.green1, italic = true }
+                hl.markdownCodeBlock = { fg = c.green2 }
 
-                hl.markdownUrlDelimiter               = { fg = c.pink, bold = true }
-                hl.markdownAutomaticLink              = { fg = c.pink, bold = true, italic = true }
-                hl["@markup.link.url.markdown"]       = { link = "markdownAutomaticLink" }
-                hl["@markup.link.label.markdown"]     = { link = "markdownUrlDelimiter" }
+                hl.markdownUrlDelimiter = { fg = c.pink, bold = true }
+                hl.markdownAutomaticLink = { fg = c.pink, bold = true, italic = true }
+                hl['@markup.link.url.markdown'] = { link = 'markdownAutomaticLink' }
+                hl['@markup.link.label.markdown'] = { link = 'markdownUrlDelimiter' }
 
                 hl.markdownBlockquote = { fg = c.green1, bold = true }
-                hl["@markup.quote"] = { link = "markdownBlockquote" }
-                hl["@markup.quote.markdown"] = { link = "markdownBlockquote" }
-                hl["@punctuation.definition.quote.markdown"] = { link = "markdownBlockquote" }
+                hl['@markup.quote'] = { link = 'markdownBlockquote' }
+                hl['@markup.quote.markdown'] = { link = 'markdownBlockquote' }
+                hl['@punctuation.definition.quote.markdown'] = { link = 'markdownBlockquote' }
 
                 hl.markdownUrl = { fg = c.green2, italic = true }
                 hl.markdownLinkDelimiter = { fg = c.green1, italic = true }
                 hl.markdownLinkTextDelimiter = { fg = c.green1 }
 
-                hl["@lsp.type.decorator.markdown"] = { fg = c.purple, bold = true }
-                hl["@lsp.typemod.link.resolved.markdown"] = { fg = c.purple, bold = true }
-                hl["@lsp.typemod.wikiLink.resolved.markdown"] = { fg = c.purple, bold = true }
-                hl["@markup.link.label.markdown_inline"] = { fg = c.purple, bold = true }
-                hl["@markup.link.url.markdown_inline"] = { fg = c.cyan, italic = true }
-                hl["@lsp.typemod.punctuation.bracket.resolved.markdown"] = { fg = c.blue0 }
+                hl['@lsp.type.decorator.markdown'] = { fg = c.purple, bold = true }
+                hl['@lsp.typemod.link.resolved.markdown'] = { fg = c.purple, bold = true }
+                hl['@lsp.typemod.wikiLink.resolved.markdown'] = { fg = c.purple, bold = true }
+                hl['@markup.link.label.markdown_inline'] = { fg = c.purple, bold = true }
+                hl['@markup.link.url.markdown_inline'] = { fg = c.cyan, italic = true }
+                hl['@lsp.typemod.punctuation.bracket.resolved.markdown'] = { fg = c.blue0 }
 
                 hl.markdownTableHeader = { fg = c.magenta2, bold = true }
                 hl.markdownTableSeparator = { fg = c.magenta2 }
                 hl.markdownTable = { fg = c.magenta2 }
                 hl.markdownTableRegex = { fg = c.magenta2, bold = true }
 
-                hl["@markup.table"] = { link = "markdownTable" }
-                hl["@markup.table.header"] = { link = "markdownTableHeader" }
-                hl["@markup.table.separator"] = { link = "markdownTableSeparator" }
-                hl["@markup.table.delimiter"] = { fg = c.magenta2 }
-                hl["@markup.table.pipe"] = { fg = c.magenta2 }
-                hl["@punctuation.special.markdown"] = { fg = c.magenta2 }
-                hl["@punctuation.special.markdown_inline"] = { fg = c.magenta2 }
-                hl["@punctuation.delimiter.markdown"] = { fg = c.magenta2 }
-                hl["@punctuation.delimiter.markdown_inline"] = { fg = c.magenta2 }
-                hl["@punctuation.bracket.markdown_inline"] = { fg = c.magenta2 }
+                hl['@markup.table'] = { link = 'markdownTable' }
+                hl['@markup.table.header'] = { link = 'markdownTableHeader' }
+                hl['@markup.table.separator'] = { link = 'markdownTableSeparator' }
+                hl['@markup.table.delimiter'] = { fg = c.magenta2 }
+                hl['@markup.table.pipe'] = { fg = c.magenta2 }
+                hl['@punctuation.special.markdown'] = { fg = c.magenta2 }
+                hl['@punctuation.special.markdown_inline'] = { fg = c.magenta2 }
+                hl['@punctuation.delimiter.markdown'] = { fg = c.magenta2 }
+                hl['@punctuation.delimiter.markdown_inline'] = { fg = c.magenta2 }
+                hl['@punctuation.bracket.markdown_inline'] = { fg = c.magenta2 }
 
                 hl.RenderMarkdownTableHead = { fg = c.magenta2, bold = true }
                 hl.RenderMarkdownTableRow = { fg = c.magenta2, bold = true }
@@ -198,8 +198,8 @@ else
             end,
         },
         config = function(_, opts)
-            require("tokyonight").setup(opts)
-            vim.cmd.colorscheme "tokyonight"
+            require('tokyonight').setup(opts)
+            vim.cmd.colorscheme 'tokyonight'
         end,
     }
 end
@@ -220,3 +220,4 @@ return {
         },
     },
 }
+
