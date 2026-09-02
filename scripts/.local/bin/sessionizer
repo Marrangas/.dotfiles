@@ -9,9 +9,9 @@ if [[ $# -eq 1 ]]; then
     selected=$1
 else
     # Dynamically find projects in common locations
-    selected=$( cat <(echo "$HOME/Documents/marrangas/.dotfiles") \
-                    <(echo "$HOME/Documents/marrangas/.secrets") \
-                    <(find "$HOME/Documents/marrangas" \
+    selected=$( cat <(echo "$HOME/Documents/mrgs/.dotfiles") \
+                    <(echo "$HOME/Documents/mrgs/.secrets") \
+                    <(find "$HOME/Documents/mrgs" \
                         -mindepth 1 -maxdepth 1 -type d  ! -name '.*' \
                     ) \
                     <(find "$HOME/Documents/alt/" \
