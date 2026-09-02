@@ -108,6 +108,7 @@ return {
                     { name = 'luasnip_choice' },
                     { name = 'luasnip' },
                     { name = 'nvim_lsp' },
+                    { name = 'otter' },
                     { name = 'wiki_exp', priority = 100 }, -- Uses experimental if it exists
                     { name = 'wiki', priority = 100 }, -- Uses stable if experimental fails
                     { name = 'path' },

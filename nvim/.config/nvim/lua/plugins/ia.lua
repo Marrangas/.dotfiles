@@ -121,6 +121,13 @@ return {
                 'MeanderingProgrammer/render-markdown.nvim',
                 opts = {
                     file_types = { 'Avante' },
+                    overrides = {
+                        filetype = {
+                            markdown = {
+                                enabled = false,
+                            },
+                        },
+                    },
                 },
                 ft = { 'Avante' },
             },

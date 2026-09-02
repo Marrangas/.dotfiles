@@ -109,6 +109,25 @@ return {
         },
     },
 
+    {
+        "jmbuhr/otter.nvim",
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter",
+        },
+        opts = {},
+        config = function(_, opts)
+            local otter = require("otter")
+            otter.setup(opts)
+            vim.api.nvim_create_autocmd("FileType", {
+                pattern = { "markdown" },
+                callback = function()
+                    -- Activate otter for languages of interest inside code blocks
+                    otter.activate({ "python", "lua", "bash", "javascript", "typescript", "json", "terraform", "hcl", "yaml", "yml" })
+                end,
+            })
+        end,
+    },
+
     -- TODO: maybe they are useful but not bundled with nvim
     -- as the start of it but as a bigger suite of tools
     -- { "zk-org/zk-nvim",}
